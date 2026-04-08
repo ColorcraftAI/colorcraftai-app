@@ -240,6 +240,54 @@ html,body{min-height:100%;font-family:var(--f-body);background:var(--bg);color:v
   .sec-h { font-size: 22px; }
 }
 
+
+/* ── MOBILE SIDEBAR TOGGLE ── */
+.sb-toggle {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 300;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  box-shadow: var(--sh-sm);
+  flex-direction: column;
+  gap: 4px;
+}
+.sb-toggle span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--tx);
+  border-radius: 2px;
+}
+.sb-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 198;
+}
+
+@media (max-width: 768px) {
+  .sb-toggle { display: flex; }
+  .sb { 
+    position: fixed !important;
+    left: -260px !important;
+    top: 0 !important;
+    height: 100vh !important;
+    z-index: 199 !important;
+    transition: left .25s !important;
+    box-shadow: var(--sh-xl) !important;
+  }
+  .sb.open { left: 0 !important; }
+  .sb-overlay.open { display: block; }
+  .main-content, .scan-main, .dash-main { margin-left: 0 !important; }
+}
+
 </style>
 </head>
 <body>
@@ -1411,5 +1459,33 @@ document.addEventListener("DOMContentLoaded",function(){
   Keerti.init({ page:"onboarding", proxyUrl:"https://keerti-proxy.vercel.app/api/keerti", persistKey:"keerti_onboarding" });
 });
 </script>
+
+<script>
+(function() {
+  // Add toggle button
+  const btn = document.createElement('button');
+  btn.className = 'sb-toggle';
+  btn.innerHTML = '<span></span><span></span><span></span>';
+  btn.setAttribute('aria-label', 'Open menu');
+  document.body.appendChild(btn);
+
+  // Add overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'sb-overlay';
+  document.body.appendChild(overlay);
+
+  const sb = document.querySelector('.sb');
+
+  btn.addEventListener('click', function() {
+    sb && sb.classList.toggle('open');
+    overlay.classList.toggle('open');
+  });
+  overlay.addEventListener('click', function() {
+    sb && sb.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+})();
+</script>
+
 </body>
 </html>
