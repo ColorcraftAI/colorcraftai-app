@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — ColorcraftAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafaf8;--white:#fff;--soft:#f4f3f0;--border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);
+  --tx:#18181b;--tx2:#52525b;--tx3:#a1a1aa;
+  --green:#16a34a;--green2:#15803d;--green-l:#f0fdf4;--green-b:#bbf7d0;
+  --amber:#b45309;--amber-l:#fffbeb;--amber-b:rgba(180,83,9,.2);
+  --red:#dc2626;
+  --sh-sm:0 1px 2px rgba(0,0,0,.04),0 2px 6px rgba(0,0,0,.04);
+  --sh:0 1px 3px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.06);
+  --sh-lg:0 4px 16px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.10);
+  --f-serif:'Playfair Display',Georgia,serif;
+  --f-body:'DM Sans',system-ui,sans-serif;
+  --r:14px;
+}
+body{font-family:var(--f-body);background:var(--bg);color:var(--tx);line-height:1.65;-webkit-font-smoothing:antialiased;font-size:14px;}
+a{text-decoration:none;color:inherit;}
+.nav{position:sticky;top:0;z-index:200;background:rgba(250,250,248,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 40px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:9px;cursor:pointer;}
+.logo-mark{width:28px;height:28px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.logo-mark svg{width:13px;height:13px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.logo-text{font-family:var(--f-serif);font-size:16px;font-weight:700;color:var(--tx);}
+.logo-text em{color:var(--green);font-style:italic;}
+.btn{font-family:var(--f-body);font-size:13px;font-weight:600;padding:8px 18px;border-radius:var(--r);cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
+.btn-green{background:var(--green);color:white;}
+.btn-green:hover{background:var(--green2);transform:translateY(-1px);}
+
+/* HERO */
+.hero{text-align:center;padding:60px 24px 40px;}
+.badge{display:inline-flex;align-items:center;background:var(--green-l);color:var(--green2);font-size:10px;font-weight:700;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;border:1px solid var(--green-b);}
+.hero h1{font-family:var(--f-serif);font-size:44px;font-weight:700;line-height:1.12;color:var(--tx);margin-bottom:12px;}
+.hero h1 em{color:var(--green);font-style:italic;}
+.hero-sub{font-size:16px;color:var(--tx2);max-width:480px;margin:0 auto 32px;line-height:1.65;}
+
+/* BILLING TOGGLE */
+.billing-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:32px;}
+.tgl-wrap{display:flex;background:var(--soft);border-radius:var(--r);padding:3px;border:1px solid var(--border);}
+.tgl{font-family:var(--f-body);font-size:12.5px;font-weight:600;padding:6px 16px;border-radius:10px;border:none;cursor:pointer;background:transparent;color:var(--tx2);transition:all .15s;}
+.tgl.on{background:white;color:var(--tx);box-shadow:var(--sh-sm);}
+.save-pill{font-size:11.5px;font-weight:600;color:var(--green2);background:var(--green-l);border:1px solid var(--green-b);padding:4px 12px;border-radius:100px;}
+
+/* PLANS */
+.plans-wrap{max-width:900px;margin:0 auto;padding:0 24px 80px;}
+.plan-grid{display:grid;grid-template-columns:1fr 1.08fr;gap:20px;align-items:start;margin-bottom:48px;}
+.plan-light{background:white;border:1px solid var(--border);border-radius:var(--r);padding:32px;box-shadow:var(--sh-sm);}
+.plan-dark{background:var(--green);border:none;border-radius:var(--r);padding:32px;box-shadow:var(--sh-lg);position:relative;overflow:hidden;}
+.plan-dark::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%;}
+.plan-popular{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.2);color:white;font-size:9.5px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:.04em;}
+.plan-onetime-tag{display:inline-flex;align-items:center;background:var(--amber-l);border:1px solid var(--amber-b);color:var(--amber);font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;margin-bottom:10px;}
+.plan-name{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+.plan-name-l{color:var(--tx2);}
+.plan-name-d{color:rgba(255,255,255,.65);}
+.plan-price{font-family:var(--f-serif);font-size:52px;font-weight:700;line-height:1;display:flex;align-items:baseline;gap:2px;}
+.plan-price-l{color:var(--tx);}
+.plan-price-d{color:white;}
+.plan-cur{font-size:22px;font-family:var(--f-body);font-weight:600;margin-top:6px;}
+.plan-per{font-size:14px;font-family:var(--f-body);font-weight:400;}
+.plan-per-l{color:var(--tx2);}
+.plan-per-d{color:rgba(255,255,255,.55);}
+.plan-type-tag{font-size:12px;font-weight:600;margin:6px 0 12px;}
+.plan-type-l{color:var(--amber);}
+.plan-type-d{color:rgba(255,255,255,.75);}
+.plan-desc-l{font-size:13.5px;color:var(--tx);margin:0 0 20px;line-height:1.65;opacity:.7;}
+.plan-desc-d{font-size:13.5px;color:rgba(255,255,255,.7);margin:0 0 16px;line-height:1.65;}
+.plan-annual{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:var(--r);padding:12px 14px;margin:0 0 20px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;}
+.pa-t{font-size:12px;font-weight:600;color:white;}
+.pa-s{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px;}
+.pa-badge{background:rgba(255,255,255,.2);color:white;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;}
+.plan-btn-l{width:100%;background:var(--tx);color:white;font-family:var(--f-body);font-size:14px;font-weight:700;padding:14px;border-radius:var(--r);border:none;cursor:pointer;margin-bottom:24px;transition:all .15s;}
+.plan-btn-l:hover{background:#000;transform:translateY(-1px);}
+.plan-btn-d{width:100%;background:white;color:var(--green);font-family:var(--f-body);font-size:14px;font-weight:700;padding:14px;border-radius:var(--r);border:none;cursor:pointer;margin-bottom:24px;transition:all .15s;position:relative;z-index:1;}
+.plan-btn-d:hover{background:var(--green-l);transform:translateY(-1px);}
+.feat-list{display:flex;flex-direction:column;gap:8px;}
+.feat-li{display:flex;align-items:flex-start;gap:8px;font-size:13px;}
+.fc-l{color:var(--green);font-weight:700;flex-shrink:0;}
+.fc-d{color:rgba(255,255,255,.8);font-weight:700;flex-shrink:0;}
+.ft-l{color:var(--tx);opacity:.75;}
+.ft-d{color:rgba(255,255,255,.75);}
+.fx-l{color:var(--tx3);flex-shrink:0;}
+.ft-x{color:var(--tx3);}
+
+/* FAQ */
+.faq{max-width:700px;margin:0 auto 80px;padding:0 24px;}
+.faq-title{font-family:var(--f-serif);font-size:32px;font-weight:700;text-align:center;margin-bottom:8px;}
+.faq-sub{text-align:center;color:var(--tx2);margin-bottom:40px;font-size:15px;}
+.faq-item{border-bottom:1px solid var(--border);padding:20px 0;}
+.faq-q{font-size:15px;font-weight:600;color:var(--tx);margin-bottom:8px;}
+.faq-a{font-size:14px;color:var(--tx2);line-height:1.7;}
+
+/* GUARANTEE */
+.guarantee{background:var(--green-l);border:1px solid var(--green-b);border-radius:20px;padding:40px;text-align:center;max-width:700px;margin:0 auto 80px;}
+.guarantee h2{font-family:var(--f-serif);font-size:26px;font-weight:700;margin-bottom:8px;}
+.guarantee p{color:var(--tx2);font-size:15px;line-height:1.7;}
+
+/* FOOTER */
+footer{padding:28px 40px;border-top:1px solid var(--border);background:white;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap;}
+.footer-links a{font-size:13px;color:var(--tx3);text-decoration:none;}
+.footer-links a:hover{color:var(--tx);}
+.footer-copy{font-size:12px;color:var(--tx3);}
+
+@media(max-width:680px){
+  .plan-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:30px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="logo" href="colorcraftai-v6_refactored_3.html">
+      <div class="logo-mark"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="logo-text">Colorcraft<em>AI</em></div>
+    </a>
+    <button class="btn btn-green" onclick="location.href='colorcraftai-scan-dashboard.html'">Fix my reviews →</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="badge">Pricing</div>
+  <h1>Simple, transparent<br><em>pricing for India</em></h1>
+  <p class="hero-sub">No agency fees. No hidden charges. Transparent pricing for Indian businesses.</p>
+  <div style="display:inline-flex;align-items:center;gap:6px;background:var(--green-l);border:1px solid var(--green-b);color:var(--green2);font-size:12px;font-weight:600;padding:6px 14px;border-radius:100px;margin-bottom:8px;">
+    ✓ Cancel anytime · GST invoice included
+  </div>
+</div>
+
+<div style="text-align:center;margin-bottom:32px;">
+  <p style="font-size:13px;color:var(--tx2);margin-bottom:12px;">ℹ️ Reputation Scan is a <strong>one-time purchase</strong>. Full AI Management is a <strong>monthly subscription</strong> you can cancel anytime.</p>
+  <div class="billing-row">
+    <div class="tgl-wrap">
+      <button class="tgl on" id="tgl-m" onclick="setBilling('m')">Monthly</button>
+      <button class="tgl" id="tgl-a" onclick="setBilling('a')">Annual</button>
+    </div>
+    <span class="save-pill">Save 20% on annual · ₹7,198 off</span>
+  </div>
+</div>
+
+<div class="plans-wrap">
+  <div class="plan-grid">
+
+    <!-- PLAN LIGHT — ONE TIME -->
+    <div class="plan-light">
+      <div class="plan-onetime-tag">📋 One-time purchase</div>
+      <div class="plan-name plan-name-l">Reputation Scan</div>
+      <div class="plan-price plan-price-l">
+        <span class="plan-cur" style="color:var(--tx2);">₹</span>
+        <span id="p1">999</span>
+      </div>
+      <div class="plan-type-tag plan-type-l">One-time · No subscription · Pay once</div>
+      <p class="plan-desc-l">Get a complete picture of where your reputation stands today — your ranking, weak spots, and a clear action plan in a branded PDF report.</p>
+      <button class="plan-btn-l" onclick="location.href='colorcraftai-scan-dashboard.html'">Get my ₹999 Scan Report →</button>
+      <div class="feat-list">
+        <div class="feat-li"><span class="fc-l">✓</span><span class="ft-l">Full Google Business Profile scan</span></div>
+        <div class="feat-li"><span class="fc-l">✓</span><span class="ft-l">Review sentiment & topic analysis</span></div>
+        <div class="feat-li"><span class="fc-l">✓</span><span class="ft-l">Local competitor ranking snapshot</span></div>
+        <div class="feat-li"><span class="fc-l">✓</span><span class="ft-l">Professional branded PDF report</span></div>
+        <div class="feat-li"><span class="fc-l">✓</span><span class="ft-l">GST invoice included</span></div>
+        <div class="feat-li"><span class="fx-l">✕</span><span class="ft-x">AI auto-replies</span></div>
+        <div class="feat-li"><span class="fx-l">✕</span><span class="ft-x">WhatsApp alerts</span></div>
+        <div class="feat-li"><span class="fx-l">✕</span><span class="ft-x">Ongoing monitoring</span></div>
+      </div>
+    </div>
+
+    <!-- PLAN DARK — SUBSCRIPTION -->
+    <div class="plan-dark">
+      <div class="plan-popular">⭐ Most popular</div>
+      <div class="plan-name plan-name-d">Full AI Management</div>
+
+      <div id="price-monthly">
+        <div class="plan-price plan-price-d">
+          <span class="plan-cur" style="color:rgba(255,255,255,.6);">₹</span>
+          <span>2,999</span>
+          <span class="plan-per plan-per-d">/mo</span>
+        </div>
+        <div class="plan-type-tag plan-type-d">Monthly subscription · Cancel anytime</div>
+      </div>
+
+      <div id="price-annual" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="font-family:var(--f-serif);font-size:18px;color:rgba(255,255,255,.4);text-decoration:line-through;">₹2,999</span>
+          <span style="background:white;color:var(--green2);font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;">20% OFF</span>
+        </div>
+        <div class="plan-price plan-price-d">
+          <span class="plan-cur" style="color:rgba(255,255,255,.6);">₹</span>
+          <span>2,399</span>
+          <span class="plan-per plan-per-d">/mo</span>
+        </div>
+        <div class="plan-type-tag plan-type-d">Billed as ₹28,790/year · Save ₹7,198</div>
+      </div>
+
+      <p class="plan-desc-d" style="margin-top:10px;">AI handles every review — replies, alerts, insights, and reports — while you focus on running your business.</p>
+      <div class="plan-annual" id="annual-box" style="display:none;">
+        <div><div class="pa-t">Annual plan — best value</div><div class="pa-s">₹28,790/year · saves ₹7,198 vs monthly</div></div>
+        <div class="pa-badge">Save 20%</div>
+      </div>
+      <button class="plan-btn-d" onclick="location.href='colorcraftai-onboarding.html'">Start AI Management — Fix my reviews →</button>
+      <div class="feat-list">
+        <div class="feat-li"><span class="fc-d">✓</span><span class="ft-d">Everything in Reputation Scan — monthly, auto</span></div>
+        <div class="feat-li"><span class="fc-d">✓</span><span class="ft-d">AI auto-replies in Hindi / English / Hinglish</span></div>
+        <div class="feat-li"><span class="fc-d">✓</span><span class="ft-d">Instant WhatsApp alert for 1★ & 2★ reviews</span></div>
+        <div class="feat-li"><span class="fc-d">✓</span><span class="ft-d">WhatsApp notification for every new review</span></div>
+        <div class="feat-li"><span class="fc-d">✓</span><span class="ft-d">Live analytics & sentiment dashboard</span></div>
+        <div class="feat-li"><span class="fc-d">✓</span><span class="ft-d">GBP Photo Manager</span></div>
+        <div class="feat-li"><span class="fc-d">✓</span><span class="ft-d">AI Insights panel with weekly patterns</span></div>
+        <div class="feat-li"><span class="fc-d">✓</span><span class="ft-d">GST invoice on every payment</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GUARANTEE -->
+  <div class="guarantee">
+    <div style="font-size:36px;margin-bottom:12px;">🛡️</div>
+    <h2>7-day money-back guarantee</h2>
+    <p>If you're not happy within the first 7 days of your paid subscription, email us and we'll refund you in full. No questions asked. We're confident you'll see results.</p>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <div class="faq-title">Frequently asked questions</div>
+    <p class="faq-sub">Everything you need to know about pricing and billing.</p>
+
+    <div class="faq-item">
+      <div class="faq-q">Do I need to pay upfront?</div>
+      <div class="faq-a">Yes — completely free. Payment required to activate. Payment is required to activate your subscription. You can cancel anytime from your dashboard.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I cancel anytime?</div>
+      <div class="faq-a">Yes. Cancel from your dashboard or email us at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="84edeae2ebc4e7ebe8ebf6e7f6e5e2f0e5edaaedea">[email&#160;protected]</a>. Your access continues until the end of the billing period. No penalty, no questions asked.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What payment methods do you accept?</div>
+      <div class="faq-a">We accept all major UPI apps (GPay, PhonePe, Paytm), credit/debit cards, and net banking via Razorpay. All payments are secured and encrypted.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do I get a GST invoice?</div>
+      <div class="faq-a">Yes. A GST invoice is automatically generated for every payment and sent to your registered email. You can use this for business expense claims.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What's the difference between the Scan and Full Management?</div>
+      <div class="faq-a">The Reputation Scan (₹999) is a one-time snapshot — it shows you where you stand and what to fix. Full AI Management (₹2,999/month) is ongoing — AI replies to every review automatically and monitors your reputation 24/7.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How does the annual plan work?</div>
+      <div class="faq-a">You pay ₹28,790 upfront for the year (equivalent to ₹2,399/month) and save ₹7,198 vs paying monthly. Annual subscribers also get priority support.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+    <a href="cancellation.html">Cancellation &amp; Refunds</a>
+    <a href="shipping.html">Delivery Policy</a>
+    <a href="blog.html">Blog</a>
+  </div>
+  <div class="footer-copy">© 2026 ColorcraftAI · Made in India</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function setBilling(type) {
+  const monthly = document.getElementById('price-monthly');
+  const annual = document.getElementById('price-annual');
+  const annualBox = document.getElementById('annual-box');
+  const tglM = document.getElementById('tgl-m');
+  const tglA = document.getElementById('tgl-a');
+  if (type === 'm') {
+    monthly.style.display = 'block';
+    annual.style.display = 'none';
+    annualBox.style.display = 'none';
+    tglM.classList.add('on');
+    tglA.classList
