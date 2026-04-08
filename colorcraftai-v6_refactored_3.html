@@ -234,20 +234,22 @@ details p{font-size:14px;color:var(--tx);margin-top:12px;line-height:1.7;font-we
 /* ── FOOTER ── */
 .footer{background:#18181b;color:white;padding:52px 40px 28px;}
 .footer-inner{max-width:1200px;margin:0 auto;}
-.footer-top{display:grid;grid-template-columns:2.2fr 1fr 1fr;gap:52px;margin-bottom:40px;}
+.footer-top{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:40px;margin-bottom:40px;}
 .footer-logo{display:flex;align-items:center;gap:9px;margin-bottom:12px;}
 .footer-logo-mark{width:28px;height:28px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;}
 .footer-logo-mark svg{width:13px;height:13px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .footer-logo-text{font-family:var(--f-serif);font-size:15px;font-weight:700;letter-spacing:-.2px;}
 .footer-logo-text em{color:#4ade80;font-style:italic;}
-.footer-tagline{font-size:13.5px;color:rgba(255,255,255,.38);line-height:1.65;max-width:280px;font-weight:400;}
+.footer-tagline{font-size:13px;color:rgba(255,255,255,.38);line-height:1.65;max-width:240px;font-weight:400;margin-bottom:20px;}
+.footer-socials{display:flex;gap:10px;margin-top:4px;}
 .footer-col-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:16px;}
-.footer-links{display:flex;flex-direction:column;gap:10px;}
-.footer-links a{font-size:13.5px;color:rgba(255,255,255,.48);transition:color .15s;}
+.footer-links{display:flex;flex-direction:column;gap:9px;}
+.footer-links a{font-size:13px;color:rgba(255,255,255,.48);transition:color .15s;}
 .footer-links a:hover{color:white;}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;align-items:center;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
 .footer-copy{font-size:12.5px;color:rgba(255,255,255,.26);}
 .footer-love{font-size:12.5px;color:rgba(255,255,255,.26);}
+@media(max-width:768px){.footer-top{grid-template-columns:1fr 1fr;gap:28px;}.footer-top>div:first-child{grid-column:1/-1;}}
 
 /* ── SCROLLING REVIEWS ── */
 .reviews-scroll-section{padding:60px 0;background:var(--bg);overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
@@ -514,10 +516,10 @@ details p{font-size:14px;color:var(--tx);margin-top:12px;line-height:1.7;font-we
   </div>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#how" onclick="closeMobileMenu()">How it works</a>
-  <a href="#features" onclick="closeMobileMenu()">Features</a>
-  <a href="#pricing" onclick="closeMobileMenu()">Pricing</a>
-  <a href="#reviews" onclick="closeMobileMenu()">Reviews</a>
+  <a href="colorcraftai-v6_refactored_3.html#how" onclick="closeMobileMenu()">How it works</a>
+  <a href="colorcraftai-v6_refactored_3.html#features" onclick="closeMobileMenu()">Features</a>
+  <a href="colorcraftai-v6_refactored_3.html#pricing" onclick="closeMobileMenu()">Pricing</a>
+  <a href="colorcraftai-v6_refactored_3.html#reviews" onclick="closeMobileMenu()">Reviews</a>
   <div class="mobile-menu-divider"></div>
   <div class="mobile-menu-bottom">
     <button class="btn btn-ghost" onclick="location.href='colorcraftai-admin.html';closeMobileMenu()">Sign in</button>
@@ -1070,13 +1072,18 @@ details p{font-size:14px;color:var(--tx);margin-top:12px;line-height:1.7;font-we
           <div class="footer-logo-text">Colorcraft<em>AI</em></div>
         </div>
         <p class="footer-tagline">AI-powered Google review management built specifically for Indian businesses. Replies in Hindi, English & Hinglish — automatically.</p>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:16px;">
+          <a href="/cdn-cgi/l/email-protection#cba2a5ada48ba8a4a7a4b9a8b9aaadbfaaa2e5a2a5" style="font-size:12.5px;color:rgba(255,255,255,.38);text-decoration:none;display:flex;align-items:center;gap:6px;">✉ <span class="__cf_email__" data-cfemail="e58c8b838aa5868a898a978697848391848ccb8c8b">[email&#160;protected]</span></a>
+          <span style="font-size:12.5px;color:rgba(255,255,255,.28);">📍 Faridabad, Haryana, India</span>
+          <a href="contact.html" style="display:inline-block;margin-top:8px;font-size:12.5px;font-weight:600;color:var(--green-m);border:1px solid rgba(74,222,128,.25);padding:6px 14px;border-radius:8px;text-decoration:none;width:fit-content;">Contact us →</a>
+        </div>
       </div>
       <div>
         <div class="footer-col-l">Product</div>
         <div class="footer-links">
-          <a href="#how">How it works</a>
-          <a href="#features">Features</a>
-          <a href="#pricing">Pricing</a>
+          <a href="colorcraftai-v6_refactored_3.html#how">How it works</a>
+          <a href="colorcraftai-v6_refactored_3.html#features">Features</a>
+          <a href="colorcraftai-v6_refactored_3.html#pricing">Pricing</a>
           <a href="colorcraftai-scan-dashboard.html">Reputation Scan</a>
         </div>
       </div>
@@ -1085,8 +1092,11 @@ details p{font-size:14px;color:var(--tx);margin-top:12px;line-height:1.7;font-we
         <div class="footer-links">
           <a href="contact.html">About</a>
           <a href="contact.html">Contact</a>
+          <a href="blog.html">Blog</a>
           <a href="privacy.html">Privacy Policy</a>
           <a href="terms.html">Terms of Service</a>
+          <a href="cancellation.html">Cancellation &amp; Refunds</a>
+          <a href="shipping.html">Delivery Policy</a>
         </div>
       </div>
     </div>
@@ -1110,7 +1120,7 @@ details p{font-size:14px;color:var(--tx);margin-top:12px;line-height:1.7;font-we
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 function setBilling(b){
   document.getElementById('tgl-m').classList.toggle('on',b==='m');
   document.getElementById('tgl-a').classList.toggle('on',b==='a');
@@ -1972,14 +1982,4 @@ function closeMobileMenu() {
 }
 // Close on outside click
 document.addEventListener('click', function(e) {
-  const menu = document.getElementById('mobileMenu');
-  const btn = document.getElementById('hamburger');
-  if (!menu.contains(e.target) && !btn.contains(e.target)) {
-    menu.classList.remove('open');
-    btn.classList.remove('open');
-  }
-});
-</script>
-
-</body>
-</html>
+  const menu = document.ge
