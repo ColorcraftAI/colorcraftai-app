@@ -292,6 +292,62 @@ html,body{height:100%;font-family:var(--f-body);background:var(--bg);color:var(-
 .badge-red{background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
 .badge-amber{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);}
 .badge-blue{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-b);}
+
+/* ── UI POLISH FIXES ── */
+
+/* Fix blank gap in hero */
+.hero { padding-bottom: 32px !important; }
+
+/* Fix trust logos section spacing */
+.trust-logos, .trust-section { padding-top: 24px !important; margin-top: 0 !important; }
+
+/* Mobile responsive improvements */
+@media (max-width: 768px) {
+  /* Nav */
+  .nav-inner { padding: 0 16px; }
+  .nav-links { display: none; }
+  .btn-ghost { display: none; }
+  
+  /* Hero */
+  .hero { padding: 28px 16px 24px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+  .hero h1 { font-size: 30px; }
+  .hero h1 em { font-size: 20px; }
+  .hero-sub { font-size: 15px; }
+  .hero-right { display: none; }
+  .hero-btns { flex-direction: column; }
+  .hero-btns .btn { width: 100%; justify-content: center; }
+  .hero-trust { gap: 10px; flex-wrap: wrap; }
+  
+  /* Sections */
+  .section { padding: 40px 16px; }
+  .sec-h { font-size: 26px; }
+  .steps { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr !important; }
+  .pricing-grid { grid-template-columns: 1fr !important; }
+  .testimonials-grid { grid-template-columns: 1fr !important; }
+  .reviews-grid { grid-template-columns: 1fr !important; }
+  .cta-grid { grid-template-columns: 1fr !important; }
+  
+  /* Scan dashboard mobile */
+  .sb { width: 200px !important; }
+  .sb-inner { padding: 12px !important; }
+  
+  /* Dashboard mobile */
+  .dash-grid { grid-template-columns: 1fr !important; }
+  .metrics-row { grid-template-columns: 1fr 1fr !important; }
+  
+  /* Keerti widget mobile positioning */
+  #keerti-launcher { bottom: 16px !important; right: 16px !important; }
+  #keerti-panel { bottom: 80px !important; right: 8px !important; width: calc(100vw - 16px) !important; max-width: 400px !important; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 26px; }
+  .ann { font-size: 11px; padding: 8px 12px; }
+  .sec-h { font-size: 22px; }
+}
+
 </style>
 </head>
 <body>
