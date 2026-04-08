@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ColorcraftAI — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f4;--white:#fff;--soft:#f0ede8;--surface:#e8e5e0;
+  --border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);
+  --tx:#18181b;--tx2:#52525b;--tx3:#a1a1aa;
+  --green:#16a34a;--green2:#15803d;--green-l:#f0fdf4;--green-b:#bbf7d0;--green-m:#4ade80;
+  --amber:#b45309;--amber-l:#fffbeb;--amber-b:#fde68a;
+  --red:#dc2626;--red-l:#fef2f2;--red-b:#fecaca;
+  --blue:#2563eb;--blue-l:#eff6ff;--blue-b:#bfdbfe;
+  --purple:#7c3aed;--purple-l:#f5f3ff;--purple-b:#ddd6fe;
+  --sh-sm:0 1px 2px rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.05);
+  --sh:0 1px 3px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.07);
+  --sh-md:0 2px 8px rgba(0,0,0,.06),0 10px 32px rgba(0,0,0,.09);
+  --f-serif:'Playfair Display',Georgia,serif;
+  --f-body:'DM Sans',system-ui,sans-serif;
+}
+html,body{height:100%;font-family:var(--f-body);background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+
+.shell{display:flex;height:100vh;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;flex-shrink:0;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.sb-logo-mark{width:28px;height:28px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(22,163,74,.3);}
+.sb-logo-mark svg{width:13px;height:13px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.sb-logo-text{font-family:var(--f-serif);font-size:15px;font-weight:700;color:var(--tx);}
+.sb-logo-text em{color:var(--green);font-style:italic;}
+.sb-admin-tag{margin:10px 14px;background:var(--purple-l);border:1px solid var(--purple-b);border-radius:7px;padding:8px 12px;display:flex;align-items:center;gap:7px;}
+.sb-admin-tag svg{width:13px;height:13px;fill:none;stroke:var(--purple);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.sb-admin-label{font-size:11px;font-weight:700;color:var(--purple);}
+.sb-admin-sub{font-size:10px;color:var(--purple);opacity:.7;}
+.sb-nav{padding:8px 0;flex:1;overflow-y:auto;}
+.sb-section{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;padding:10px 16px 4px;}
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 16px;font-size:12.5px;color:var(--tx2);cursor:pointer;transition:all .12s;border-left:2px solid transparent;margin:1px 0;font-weight:400;}
+.sb-item:hover{color:var(--tx);background:var(--bg);}
+.sb-item.on{color:var(--green);border-left-color:var(--green);background:var(--green-l);font-weight:500;}
+.sb-item svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.7;}
+.sb-badge{margin-left:auto;font-size:9px;font-weight:700;padding:1px 6px;border-radius:100px;}
+.sb-badge-red{background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
+.sb-badge-green{background:var(--green-l);color:var(--green);border:1px solid var(--green-b);}
+.sb-badge-amber{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);}
+.sb-bottom{padding:12px 14px;border-top:1px solid var(--border);}
+.sb-user{display:flex;align-items:center;gap:9px;}
+.sb-user-av{width:30px;height:30px;border-radius:50%;background:var(--purple-l);border:2px solid var(--purple-b);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--purple);flex-shrink:0;}
+.sb-user-name{font-size:12px;font-weight:600;color:var(--tx);}
+.sb-user-role{font-size:10px;color:var(--tx3);}
+
+/* ── TOPBAR ── */
+.topbar{height:52px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;}
+.page-title{font-family:var(--f-serif);font-size:17px;font-weight:700;color:var(--tx);letter-spacing:-.2px;}
+.page-sub{font-size:11.5px;color:var(--tx2);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.tb-sync{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--tx2);}
+.tb-sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.2)}}
+.tb-btn{font-family:var(--f-body);font-size:12.5px;font-weight:600;padding:7px 16px;border-radius:7px;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;gap:6px;}
+.tb-btn-ghost{background:transparent;color:var(--tx2);border:1px solid var(--border2);}
+.tb-btn-ghost:hover{color:var(--tx);background:var(--soft);}
+.tb-btn-green{background:var(--green);color:white;box-shadow:0 1px 4px rgba(22,163,74,.25);}
+.tb-btn-green:hover{background:var(--green2);}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.content{flex:1;overflow-y:auto;padding:22px 24px;}
+.view{display:none;}
+.view.on{display:block;}
+
+/* ── KPI ROW ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.kpi{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--sh-sm);position:relative;overflow:hidden;transition:box-shadow .2s;}
+.kpi:hover{box-shadow:var(--sh);}
+.kpi-top-bar{position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-label{font-size:10px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+.kpi-value{font-family:var(--f-serif);font-size:28px;font-weight:700;line-height:1;margin-bottom:5px;}
+.kpi-delta{font-size:11px;font-weight:600;}
+.kpi-delta.up{color:var(--green);}
+.kpi-delta.dn{color:var(--red);}
+.kpi-spark{display:flex;align-items:flex-end;gap:2px;height:18px;margin-top:8px;}
+.ks{width:6px;border-radius:1px;}
+
+/* ── GRID LAYOUTS ── */
+.g2{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
+.g-equal{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+
+/* ── CARD BASE ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--sh-sm);}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.card-title{font-size:13px;font-weight:600;color:var(--tx);}
+.card-sub{font-size:11px;color:var(--tx2);margin-top:1px;}
+.card-action{font-size:11.5px;font-weight:600;color:var(--green);cursor:pointer;}
+.card-action:hover{color:var(--green2);}
+
+/* ── BAR CHART ── */
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:100px;margin-top:4px;}
+.bc-bar{flex:1;border-radius:3px 3px 0 0;cursor:pointer;transition:opacity .15s;position:relative;}
+.bc-bar:hover{opacity:.8;}
+.bc-bar:hover .bc-tip{display:block;}
+.bc-tip{display:none;position:absolute;bottom:calc(100%+5px);left:50%;transform:translateX(-50%);background:var(--tx);color:white;font-size:9.5px;font-weight:600;padding:3px 7px;border-radius:4px;white-space:nowrap;z-index:5;}
+.bc-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--tx);}
+.bc-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:9.5px;color:var(--tx3);}
+
+/* ── DONUT ── */
+.donut-row{display:flex;align-items:center;gap:20px;margin-top:8px;}
+.donut-legend{display:flex;flex-direction:column;gap:10px;flex:1;}
+.legend-item{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.legend-left{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tx2);}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.legend-val{font-size:12px;font-weight:600;color:var(--tx);}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:10px;color:var(--tx3);text-align:left;padding:0 12px 10px;border-bottom:1px solid var(--border);font-weight:600;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
+.tbl td{font-size:12.5px;color:var(--tx);padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--bg);}
+.bx{font-size:10px;padding:2px 8px;border-radius:100px;font-weight:600;white-space:nowrap;}
+.bx-active{background:var(--green-l);color:var(--green2);border:1px solid var(--green-b);}
+.bx-trial{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);}
+.bx-churned{background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
+.bx-scan{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-b);}
+.bx-full{background:var(--green-l);color:var(--green2);border:1px solid var(--green-b);}
+.score-pill{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;}
+.tbl-action{font-size:11.5px;color:var(--green);font-weight:600;cursor:pointer;}
+.tbl-action:hover{color:var(--green2);}
+
+/* ── MINI STATS ── */
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.mini-stat{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;box-shadow:var(--sh-sm);}
+.ms-label{font-size:10px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;}
+.ms-val{font-family:var(--f-serif);font-size:22px;font-weight:700;color:var(--tx);line-height:1;}
+.ms-delta{font-size:10.5px;font-weight:600;margin-top:3px;}
+
+/* ── ACTIVITY FEED ── */
+.activity-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.activity-item:last-child{border:none;padding-bottom:0;}
+.act-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px;}
+.act-body{flex:1;}
+.act-text{font-size:12.5px;color:var(--tx);line-height:1.45;}
+.act-text strong{font-weight:600;}
+.act-time{font-size:10.5px;color:var(--tx3);margin-top:2px;}
+
+/* ── HEALTH BARS ── */
+.health-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.health-label{font-size:12px;color:var(--tx2);width:110px;flex-shrink:0;}
+.health-track{flex:1;height:6px;background:var(--soft);border-radius:3px;overflow:hidden;}
+.health-fill{height:100%;border-radius:3px;}
+.health-val{font-size:11px;font-weight:600;color:var(--tx);width:32px;text-align:right;}
+
+/* ── PLAN REVENUE ── */
+.plan-rev-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.plan-rev-row:last-child{border:none;}
+.pr-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.pr-info{flex:1;}
+.pr-name{font-size:12.5px;font-weight:600;color:var(--tx);}
+.pr-users{font-size:10.5px;color:var(--tx3);margin-top:1px;}
+.pr-mrr{font-size:13px;font-weight:700;color:var(--tx);text-align:right;}
+.pr-pct{font-size:10.5px;color:var(--tx3);text-align:right;margin-top:1px;}
+
+/* ── CHURN ── */
+.churn-alert{background:var(--red-l);border:1px solid var(--red-b);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;}
+.churn-alert:last-child{margin-bottom:0;}
+.ca-icon{font-size:16px;flex-shrink:0;}
+.ca-biz{font-size:12.5px;font-weight:600;color:var(--tx);margin-bottom:2px;}
+.ca-reason{font-size:11.5px;color:var(--tx2);}
+.ca-action{font-size:11px;font-weight:700;color:var(--red);cursor:pointer;margin-top:5px;display:inline-block;}
+
+/* ── SEARCH & FILTER ── */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;}
+.search-box{position:relative;flex:1;max-width:260px;}
+.search-box input{width:100%;font-family:var(--f-body);font-size:12.5px;padding:7px 12px 7px 30px;border:1px solid var(--border2);border-radius:7px;outline:none;color:var(--tx);background:white;}
+.search-box input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.08);}
+.search-box svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;fill:none;stroke:var(--tx3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.filter-btn{font-family:var(--f-body);font-size:11.5px;font-weight:500;padding:6px 14px;border-radius:100px;cursor:pointer;border:1px solid var(--border);background:white;color:var(--tx2);transition:all .12s;}
+.filter-btn:hover{border-color:var(--border2);color:var(--tx);}
+.filter-btn.on{background:var(--green);color:white;border-color:var(--green);}
+
+/* ── BILLING SECTION ── */
+.billing-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--sh-sm);margin-bottom:14px;}
+.bc-title{font-family:var(--f-serif);font-size:15px;font-weight:700;color:var(--tx);margin-bottom:3px;}
+.bc-sub{font-size:11.5px;color:var(--tx2);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.bc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.bc-row:last-child{border:none;}
+.bc-key{font-size:13px;font-weight:500;color:var(--tx);}
+.bc-desc{font-size:11.5px;color:var(--tx2);margin-top:2px;}
+.bc-val{font-size:13px;font-weight:600;color:var(--tx);}
+
+/* ── MISC ── */
+.divider{height:1px;background:var(--border);margin:12px 0;}
+.badge{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px;}
+.badge-green{background:var(--green-l);color:var(--green2);border:1px solid var(--green-b);}
+.badge-red{background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
+.badge-amber{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);}
+.badge-blue{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-b);}
+.badge-purple{background:var(--purple-l);color:var(--purple);border:1px solid var(--purple-b);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo" onclick="location.href='colorcraftai-v6_refactored_3.html'" style="cursor:pointer">
+    <div class="sb-logo-mark">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="sb-logo-text">Colorcraft<em>AI</em></div>
+  </div>
+  <div class="sb-admin-tag">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <div>
+      <div class="sb-admin-label">Admin Panel</div>
+      <div class="sb-admin-sub">Internal access only</div>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <div class="sb-item on" onclick="goView('overview',this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="sb-item" onclick="goView('analytics',this)">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Analytics
+    </div>
+    <div class="sb-section">Management</div>
+    <div class="sb-item" onclick="goView('users',this)">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Users
+      <span class="sb-badge sb-badge-green">2,847</span>
+    </div>
+    <div class="sb-item" onclick="goView('billing',this)">
+      <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Billing & MRR
+    </div>
+    <div class="sb-item" onclick="goView('churn',this)">
+      <svg viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+      Churn Risk
+      <span class="sb-badge sb-badge-red">3</span>
+    </div>
+    <div class="sb-section">System</div>
+    <div class="sb-item" onclick="goView('overview',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M4.93 4.93a10 10 0 0 0 14.14 14.14"/></svg>
+      Settings
+    </div>
+    <div class="sb-item" onclick="goView('overview',this)">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Audit Log
+    </div>
+  </nav>
+  <div class="sb-bottom">
+    <div class="sb-user">
+      <div class="sb-user-av">AD</div>
+      <div>
+        <div class="sb-user-name">Admin</div>
+        <div class="sb-user-role">admin@colorcraftai.com</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="pageTitle">Platform overview</div>
+      <div class="page-meta" id="pageMeta">ColorcraftAI Admin · All systems operational</div>
+    </div>
+    <div class="topbar-right">
+      <div class="tb-sync"><div class="tb-sync-dot"></div>Live data</div>
+      <button class="tb-btn tb-btn-ghost">↓ Export CSV</button>
+      <button class="tb-btn tb-btn-green">+ Invite user</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ OVERVIEW ══ -->
+    <div class="view on" id="view-overview">
+
+      <div class="kpi-row">
+        <div class="kpi">
+          <div class="kpi-top-bar" style="background:var(--green)"></div>
+          <div class="kpi-label">Total users</div>
+          <div class="kpi-value">2,847</div>
+          <div class="kpi-delta up">↑ +124 this month</div>
+          <div class="kpi-spark">
+            <div class="ks" style="height:40%;background:var(--green-b)"></div>
+            <div class="ks" style="height:52%;background:var(--green-b)"></div>
+            <div class="ks" style="height:60%;background:var(--green-b)"></div>
+            <div class="ks" style="height:68%;background:var(--green-m)"></div>
+            <div class="ks" style="height:75%;background:var(--green-m)"></div>
+            <div class="ks" style="height:84%;background:var(--green)"></div>
+            <div class="ks" style="height:92%;background:var(--green)"></div>
+            <div class="ks" style="height:100%;background:var(--green)"></div>
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-top-bar" style="background:var(--blue)"></div>
+          <div class="kpi-label">Monthly revenue (MRR)</div>
+          <div class="kpi-value">₹58.4L</div>
+          <div class="kpi-delta up">↑ +8.2% vs last month</div>
+          <div class="kpi-spark">
+            <div class="ks" style="height:45%;background:#bfdbfe"></div>
+            <div class="ks" style="height:55%;background:#bfdbfe"></div>
+            <div class="ks" style="height:60%;background:#93c5fd"></div>
+            <div class="ks" style="height:68%;background:#93c5fd"></div>
+            <div class="ks" style="height:74%;background:#60a5fa"></div>
+            <div class="ks" style="height:82%;background:#3b82f6"></div>
+            <div class="ks" style="height:90%;background:var(--blue)"></div>
+            <div class="ks" style="height:100%;background:var(--blue)"></div>
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-top-bar" style="background:var(--amber)"></div>
+          <div class="kpi-label">Churn rate</div>
+          <div class="kpi-value">1.8%</div>
+          <div class="kpi-delta dn">↑ +0.3% vs last month</div>
+          <div class="kpi-spark">
+            <div class="ks" style="height:30%;background:#fde68a"></div>
+            <div class="ks" style="height:28%;background:#fde68a"></div>
+            <div class="ks" style="height:35%;background:#fcd34d"></div>
+            <div class="ks" style="height:32%;background:#fcd34d"></div>
+            <div class="ks" style="height:40%;background:var(--amber)"></div>
+            <div class="ks" style="height:38%;background:var(--amber)"></div>
+            <div class="ks" style="height:42%;background:var(--amber)"></div>
+            <div class="ks" style="height:45%;background:var(--amber)"></div>
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-top-bar" style="background:var(--purple)"></div>
+          <div class="kpi-label">Reviews processed</div>
+          <div class="kpi-value">4.8M</div>
+          <div class="kpi-delta up">↑ +22% this month</div>
+          <div class="kpi-spark">
+            <div class="ks" style="height:38%;background:var(--purple-b)"></div>
+            <div class="ks" style="height:48%;background:var(--purple-b)"></div>
+            <div class="ks" style="height:55%;background:#c4b5fd"></div>
+            <div class="ks" style="height:63%;background:#a78bfa"></div>
+            <div class="ks" style="height:72%;background:#8b5cf6"></div>
+            <div class="ks" style="height:82%;background:#7c3aed"></div>
+            <div class="ks" style="height:90%;background:var(--purple)"></div>
+            <div class="ks" style="height:100%;background:var(--purple)"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <!-- MRR CHART -->
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Revenue trend</div><div class="card-sub">Monthly recurring revenue · Jan–Dec 2025</div></div>
+            <span class="badge badge-green">↑ ₹58.4L this month</span>
+          </div>
+          <div class="bar-chart">
+            <div class="bc-bar" style="height:42%;background:#dcfce7"><div class="bc-tip">Jan · ₹24.5L</div></div>
+            <div class="bc-bar" style="height:50%;background:#bbf7d0"><div class="bc-tip">Feb · ₹29.2L</div></div>
+            <div class="bc-bar" style="height:48%;background:#86efac"><div class="bc-tip">Mar · ₹28.0L</div></div>
+            <div class="bc-bar" style="height:57%;background:#4ade80"><div class="bc-tip">Apr · ₹33.4L</div></div>
+            <div class="bc-bar" style="height:54%;background:#22c55e"><div class="bc-tip">May · ₹31.6L</div></div>
+            <div class="bc-bar" style="height:63%;background:#16a34a"><div class="bc-tip">Jun · ₹36.8L</div></div>
+            <div class="bc-bar" style="height:69%;background:#15803d"><div class="bc-tip">Jul · ₹40.2L</div></div>
+            <div class="bc-bar" style="height:75%;background:#14532d"><div class="bc-tip">Aug · ₹43.7L</div></div>
+            <div class="bc-bar" style="height:80%;background:#14532d"><div class="bc-tip">Sep · ₹46.8L</div></div>
+            <div class="bc-bar" style="height:87%;background:#14532d"><div class="bc-tip">Oct · ₹50.6L</div></div>
+            <div class="bc-bar" style="height:93%;background:#14532d"><div class="bc-tip">Nov · ₹54.0L</div></div>
+            <div class="bc-bar" style="height:100%;background:#14532d"><div class="bc-tip">Dec · ₹58.4L</div></div>
+          </div>
+          <div class="bc-labels"><span>Jan</span><span>Apr</span><span>Jul</span><span>Oct</span><span>Dec</span></div>
+        </div>
+
+        <!-- PLAN DISTRIBUTION -->
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Plan distribution</div><div class="card-sub">Active subscribers by tier</div></div>
+          </div>
+          <div class="donut-row">
+            <svg width="110" height="110" viewBox="0 0 110 110" style="flex-shrink:0;transform:rotate(-90deg)">
+              <circle cx="55" cy="55" r="44" fill="none" stroke="#f0ede8" stroke-width="14"/>
+              <circle cx="55" cy="55" r="44" fill="none" stroke="#16a34a" stroke-width="14" stroke-dasharray="166 110" stroke-dashoffset="0"/>
+              <circle cx="55" cy="55" r="44" fill="none" stroke="#2563eb" stroke-width="14" stroke-dasharray="88 188" stroke-dashoffset="-166"/>
+              <circle cx="55" cy="55" r="44" fill="none" stroke="#b45309" stroke-width="14" stroke-dasharray="22 254" stroke-dashoffset="-254"/>
+            </svg>
+            <div class="donut-legend">
+              <div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:var(--green)"></div>Full Management</div><div class="legend-val">1,710 · 60%</div></div>
+              <div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:var(--blue)"></div>Scan only</div><div class="legend-val">910 · 32%</div></div>
+              <div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:var(--amber)"></div>Trial</div><div class="legend-val">227 · 8%</div></div>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <div class="plan-rev-row">
+              <div class="pr-icon" style="background:var(--green-l)">🤖</div>
+              <div class="pr-info"><div class="pr-name">Full Management</div><div class="pr-users">1,710 users · ₹2,999/mo</div></div>
+              <div><div class="pr-mrr">₹51.3L</div><div class="pr-pct">88% of MRR</div></div>
+            </div>
+            <div class="plan-rev-row">
+              <div class="pr-icon" style="background:var(--blue-l)">📋</div>
+              <div class="pr-info"><div class="pr-name">Reputation Scan</div><div class="pr-users">910 users · ₹999 one-time</div></div>
+              <div><div class="pr-mrr">₹9.1L</div><div class="pr-pct">One-time</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <!-- RECENT ACTIVITY -->
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Recent activity</div><div class="card-sub">Platform events · last 24 hours</div></div>
+            <span class="card-action">View all →</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:var(--green-l)">🎉</div>
+            <div class="act-body">
+              <div class="act-text"><strong>Priya Mehta</strong> upgraded from Scan → Full Management</div>
+              <div class="act-time">2 min ago · Mumbai · ₹2,999/mo</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:var(--blue-l)">🆕</div>
+            <div class="act-body">
+              <div class="act-text"><strong>Rajan Khanna</strong> purchased Reputation Scan</div>
+              <div class="act-time">18 min ago · Delhi · ₹999</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:var(--red-l)">⚠️</div>
+            <div class="act-body">
+              <div class="act-text"><strong>Al-Rashid Bakery</strong> payment failed — card declined</div>
+              <div class="act-time">1 hour ago · Hyderabad · retry pending</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:var(--green-l)">🆕</div>
+            <div class="act-body">
+              <div class="act-text"><strong>BloomFit Studios</strong> signed up for Full Management trial</div>
+              <div class="act-time">2 hours ago · Bangalore · 14-day trial</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:var(--amber-l)">🔄</div>
+            <div class="act-body">
+              <div class="act-text"><strong>Glam Salon</strong> renewed annual plan</div>
+              <div class="act-time">3 hours ago · Hyderabad · ₹28,790/yr</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:var(--red-l)">❌</div>
+            <div class="act-body">
+              <div class="act-text"><strong>Sharma Electronics</strong> cancelled Full Management</div>
+              <div class="act-time">5 hours ago · Pune · churn reason: "too expensive"</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PLATFORM HEALTH -->
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="card">
+            <div class="card-header">
+              <div><div class="card-title">Platform health</div><div class="card-sub">System metrics · real-time</div></div>
+              <span class="badge badge-green">All systems go</span>
+            </div>
+            <div class="health-row">
+              <span class="health-label">AI reply rate</span>
+              <div class="health-track"><div class="health-fill" style="width:94%;background:var(--green)"></div></div>
+              <span class="health-val" style="color:var(--green)">94%</span>
+            </div>
+            <div class="health-row">
+              <span class="health-label">WhatsApp delivery</span>
+              <div class="health-track"><div class="health-fill" style="width:99%;background:var(--green)"></div></div>
+              <span class="health-val" style="color:var(--green)">99%</span>
+            </div>
+            <div class="health-row">
+              <span class="health-label">Review sync lag</span>
+              <div class="health-track"><div class="health-fill" style="width:96%;background:var(--green)"></div></div>
+              <span class="health-val" style="color:var(--green)">&lt;60s</span>
+            </div>
+            <div class="health-row">
+              <span class="health-label">PDF generation</span>
+              <div class="health-track"><div class="health-fill" style="width:88%;background:var(--amber)"></div></div>
+              <span class="health-val" style="color:var(--amber)">2.4s</span>
+            </div>
+            <div class="health-row">
+              <span class="health-label">API uptime</span>
+              <div class="health-track"><div class="health-fill" style="width:100%;background:var(--green)"></div></div>
+              <span class="health-val" style="color:var(--green)">100%</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div><div class="card-title">Today's numbers</div><div class="card-sub">Dec 5, 2025</div></div>
+            </div>
+            <div class="plan-rev-row">
+              <div class="pr-icon" style="background:var(--green-l)">✍️</div>
+              <div class="pr-info"><div class="pr-name">AI replies posted</div></div>
+              <div><div class="pr-mrr">12,847</div></div>
+            </div>
+            <div class="plan-rev-row">
+              <div class="pr-icon" style="background:var(--blue-l)">📱</div>
+              <div class="pr-info"><div class="pr-name">WhatsApp alerts sent</div></div>
+              <div><div class="pr-mrr">2,340</div></div>
+            </div>
+            <div class="plan-rev-row">
+              <div class="pr-icon" style="background:var(--amber-l)">📄</div>
+              <div class="pr-info"><div class="pr-name">PDF reports generated</div></div>
+              <div><div class="pr-mrr">187</div></div>
+            </div>
+            <div class="plan-rev-row">
+              <div class="pr-icon" style="background:var(--purple-l)">🆕</div>
+              <div class="pr-info"><div class="pr-name">New signups today</div></div>
+              <div><div class="pr-mrr">14</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ANALYTICS ══ -->
+    <div class="view" id="view-analytics">
+      <div class="mini-stats">
+        <div class="mini-stat"><div class="ms-label">Avg revenue per user</div><div class="ms-val">₹2,052</div><div class="ms-delta up">↑ +₹180 vs Q3</div></div>
+        <div class="mini-stat"><div class="ms-label">Trial → Paid conversion</div><div class="ms-val">68%</div><div class="ms-delta up">↑ +4% this quarter</div></div>
+        <div class="mini-stat"><div class="ms-label">Scan → Full upgrade rate</div><div class="ms-val">41%</div><div class="ms-delta up">↑ +6% vs last month</div></div>
+        <div class="mini-stat"><div class="ms-label">Avg time to upgrade</div><div class="ms-val">12 days</div><div class="ms-delta up">↓ was 18 days</div></div>
+        <div class="mini-stat"><div class="ms-label">NPS score</div><div class="ms-val">72</div><div class="ms-delta up">↑ +5 this quarter</div></div>
+        <div class="mini-stat"><div class="ms-label">Annual plan take rate</div><div class="ms-val">34%</div><div class="ms-delta up">↑ +3% this month</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">User growth</div><div class="card-sub">New signups per month · 2025</div></div>
+          </div>
+          <div class="bar-chart">
+            <div class="bc-bar" style="height:35%;background:#dcfce7"><div class="bc-tip">Jan · 142</div></div>
+            <div class="bc-bar" style="height:44%;background:#bbf7d0"><div class="bc-tip">Feb · 180</div></div>
+            <div class="bc-bar" style="height:52%;background:#86efac"><div class="bc-tip">Mar · 212</div></div>
+            <div class="bc-bar" style="height:59%;background:#4ade80"><div class="bc-tip">Apr · 241</div></div>
+            <div class="bc-bar" style="height:66%;background:#22c55e"><div class="bc-tip">May · 270</div></div>
+            <div class="bc-bar" style="height:72%;background:#16a34a"><div class="bc-tip">Jun · 294</div></div>
+            <div class="bc-bar" style="height:78%;background:#15803d"><div class="bc-tip">Jul · 318</div></div>
+            <div class="bc-bar" style="height:83%;background:#14532d"><div class="bc-tip">Aug · 340</div></div>
+            <div class="bc-bar" style="height:88%;background:#14532d"><div class="bc-tip">Sep · 360</div></div>
+            <div class="bc-bar" style="height:92%;background:#14532d"><div class="bc-tip">Oct · 376</div></div>
+            <div class="bc-bar" style="height:96%;background:#14532d"><div class="bc-tip">Nov · 392</div></div>
+            <div class="bc-bar" style="height:100%;background:#14532d"><div class="bc-tip">Dec · 408</div></div>
+          </div>
+          <div class="bc-labels"><span>Jan</span><span>Apr</span><span>Jul</span><span>Oct</span><span>Dec</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Top cities</div><div class="card-sub">Users by location</div></div>
+          </div>
+          <div class="health-row" style="margin-top:4px;"><span class="health-label">Mumbai</span><div class="health-track"><div class="health-fill" style="width:82%;background:var(--green)"></div></div><span class="health-val">622</span></div>
+          <div class="health-row"><span class="health-label">Delhi</span><div class="health-track"><div class="health-fill" style="width:68%;background:var(--green)"></div></div><span class="health-val">516</span></div>
+          <div class="health-row"><span class="health-label">Bangalore</span><div class="health-track"><div class="health-fill" style="width:54%;background:var(--green)"></div></div><span class="health-val">409</span></div>
+          <div class="health-row"><span class="health-label">Hyderabad</span><div class="health-track"><div class="health-fill" style="width:42%;background:var(--blue)"></div></div><span class="health-val">318</span></div>
+          <div class="health-row"><span class="health-label">Chennai</span><div class="health-track"><div class="health-fill" style="width:33%;background:var(--blue)"></div></div><span class="health-val">250</span></div>
+          <div class="health-row"><span class="health-label">Pune</span><div class="health-track"><div class="health-fill" style="width:26%;background:var(--amber)"></div></div><span class="health-val">197</span></div>
+          <div class="health-row"><span class="health-label">Others</span><div class="health-track"><div class="health-fill" style="width:44%;background:var(--surface)"></div></div><span class="health-val">535</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Revenue by category</div><div class="card-sub">Business type breakdown · active Full Management users</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:4px;">
+          <div style="text-align:center;padding:14px;background:var(--bg);border-radius:10px;border:1px solid var(--border);">
+            <div style="font-size:22px;margin-bottom:6px;">🍽️</div>
+            <div style="font-family:var(--f-serif);font-size:20px;font-weight:700;color:var(--tx);">648</div>
+            <div style="font-size:11px;color:var(--tx2);margin-top:2px;">Restaurants</div>
+            <div style="font-size:10.5px;color:var(--green);font-weight:600;margin-top:2px;">38% of users</div>
+          </div>
+          <div style="text-align:center;padding:14px;background:var(--bg);border-radius:10px;border:1px solid var(--border);">
+            <div style="font-size:22px;margin-bottom:6px;">🏥</div>
+            <div style="font-family:var(--f-serif);font-size:20px;font-weight:700;color:var(--tx);">342</div>
+            <div style="font-size:11px;color:var(--tx2);margin-top:2px;">Clinics & Hospitals</div>
+            <div style="font-size:10.5px;color:var(--green);font-weight:600;margin-top:2px;">20% of users</div>
+          </div>
+          <div style="text-align:center;padding:14px;background:var(--bg);border-radius:10px;border:1px solid var(--border);">
+            <div style="font-size:22px;margin-bottom:6px;">💇</div>
+            <div style="font-family:var(--f-serif);font-size:20px;font-weight:700;color:var(--tx);">257</div>
+            <div style="font-size:11px;color:var(--tx2);margin-top:2px;">Salons & Spas</div>
+            <div style="font-size:10.5px;color:var(--green);font-weight:600;margin-top:2px;">15% of users</div>
+          </div>
+          <div style="text-align:center;padding:14px;background:var(--bg);border-radius:10px;border:1px solid var(--border);">
+            <div style="font-size:22px;margin-bottom:6px;">🏨</div>
+            <div style="font-family:var(--f-serif);font-size:20px;font-weight:700;color:var(--tx);">463</div>
+            <div style="font-size:11px;color:var(--tx2);margin-top:2px;">Hotels & Others</div>
+            <div style="font-size:10.5px;color:var(--green);font-weight:600;margin-top:2px;">27% of users</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ USERS ══ -->
+    <div class="view" id="view-users">
+      <div class="mini-stats" style="grid-template-columns:repeat(4,1fr);">
+        <div class="mini-stat"><div class="ms-label">Total users</div><div class="ms-val">2,847</div><div class="ms-delta up">↑ +124 this month</div></div>
+        <div class="mini-stat"><div class="ms-label">Full management</div><div class="ms-val" style="color:var(--green)">1,710</div><div class="ms-delta up">60% of total</div></div>
+        <div class="mini-stat"><div class="ms-label">Scan only</div><div class="ms-val" style="color:var(--blue)">910</div><div class="ms-delta up">41% upgrade rate</div></div>
+        <div class="mini-stat"><div class="ms-label">Active trial</div><div class="ms-val" style="color:var(--amber)">227</div><div class="ms-delta up">68% convert</div></div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search users, businesses…"/>
+        </div>
+        <button class="filter-btn on">All</button>
+        <button class="filter-btn">Full Management</button>
+        <button class="filter-btn">Scan only</button>
+        <button class="filter-btn">Trial</button>
+        <button class="filter-btn">Churned</button>
+      </div>
+      <div class="card">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>User</th><th>Business</th><th>City</th><th>Plan</th>
+              <th>Reviews</th><th>Score</th><th>Response rate</th>
+              <th>Status</th><th>Joined</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div style="font-weight:600">Priya Mehta</div><div style="font-size:10.5px;color:var(--tx3)">priya@gmail.com</div></td>
+              <td>Spice Garden Restaurant</td><td style="color:var(--tx2)">Mumbai</td>
+              <td><span class="bx bx-full">Full Mgmt</span></td>
+              <td>1,240</td>
+              <td><span class="score-pill" style="background:var(--green-l);color:var(--green2)">92</span></td>
+              <td style="color:var(--green);font-weight:600">94%</td>
+              <td><span class="bx bx-active">Active</span></td>
+              <td style="color:var(--tx3)">Dec 1</td>
+              <td><span class="tbl-action">View →</span></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600">James O'Brien</div><div style="font-size:10.5px;color:var(--tx3)">james@repair.in</div></td>
+              <td>Dublin Auto Repair</td><td style="color:var(--tx2)">Delhi</td>
+              <td><span class="bx bx-scan">Scan</span></td>
+              <td>387</td>
+              <td><span class="score-pill" style="background:var(--amber-l);color:var(--amber)">61</span></td>
+              <td style="color:var(--amber);font-weight:600">18%</td>
+              <td><span class="bx bx-trial">Trial</span></td>
+              <td style="color:var(--tx3)">Dec 3</td>
+              <td><span class="tbl-action">View →</span></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600">Ananya Shah</div><div style="font-size:10.5px;color:var(--tx3)">ananya@bloom.co</div></td>
+              <td>BloomFit Studios</td><td style="color:var(--tx2)">Bangalore</td>
+              <td><span class="bx bx-full">Full Mgmt</span></td>
+              <td>892</td>
+              <td><span class="score-pill" style="background:var(--green-l);color:var(--green2)">88</span></td>
+              <td style="color:var(--green);font-weight:600">91%</td>
+              <td><span class="bx bx-active">Active</span></td>
+              <td style="color:var(--tx3)">Dec 5</td>
+              <td><span class="tbl-action">View →</span></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600">Kiran Reddy</div><div style="font-size:10.5px;color:var(--tx3)">kiran@glamhyd.in</div></td>
+              <td>Glam Salon</td><td style="color:var(--tx2)">Hyderabad</td>
+              <td><span class="bx bx-full">Full Mgmt</span></td>
+              <td>654</td>
+              <td><span class="score-pill" style="background:var(--green-l);color:var(--green2)">85</span></td>
+              <td style="color:var(--green);font-weight:600">89%</td>
+              <td><span class="bx bx-active">Active</span></td>
+              <td style="color:var(--tx3)">Nov 14</td>
+              <td><span class="tbl-action">View →</span></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600">Dr. Priya Sharma</div><div style="font-size:10.5px;color:var(--tx3)">priya@smileclinic.in</div></td>
+              <td>Smile Clinic</td><td style="color:var(--tx2)">Delhi</td>
+              <td><span class="bx bx-full">Full Mgmt</span></td>
+              <td>1,102</td>
+              <td><span class="score-pill" style="background:var(--green-l);color:var(--green2)">91</span></td>
+              <td style="color:var(--green);font-weight:600">96%</td>
+              <td><span class="bx bx-active">Active</span></td>
+              <td style="color:var(--tx3)">Nov 2</td>
+              <td><span class="tbl-action">View →</span></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600">Rajan Khanna</div><div style="font-size:10.5px;color:var(--tx3)">rajan@khanna.co</div></td>
+              <td>Khanna Electronics</td><td style="color:var(--tx2)">Delhi</td>
+              <td><span class="bx bx-scan">Scan</span></td>
+              <td>204</td>
+              <td><span class="score-pill" style="background:var(--red-l);color:var(--red)">44</span></td>
+              <td style="color:var(--red);font-weight:600">6%</td>
+              <td><span class="bx bx-trial">Trial</span></td>
+              <td style="color:var(--tx3)">Today</td>
+              <td><span class="tbl-action">View →</span></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600">Fatima Al-Rashid</div><div style="font-size:10.5px;color:var(--tx3)">fatima@alrashid.in</div></td>
+              <td>Al-Rashid Bakery</td><td style="color:var(--tx2)">Hyderabad</td>
+              <td><span class="bx bx-scan">Scan</span></td>
+              <td>178</td>
+              <td><span class="score-pill" style="background:var(--amber-l);color:var(--amber)">58</span></td>
+              <td style="color:var(--amber);font-weight:600">12%</td>
+              <td><span class="bx bx-churned">Churned</span></td>
+              <td style="color:var(--tx3)">Nov 20</td>
+              <td><span class="tbl-action">View →</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ BILLING ══ -->
+    <div class="view" id="view-billing">
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-top-bar" style="background:var(--green)"></div><div class="kpi-label">MRR</div><div class="kpi-value">₹58.4L</div><div class="kpi-delta up">↑ +8.2% vs Nov</div></div>
+        <div class="kpi"><div class="kpi-top-bar" style="background:var(--blue)"></div><div class="kpi-label">ARR (projected)</div><div class="kpi-value">₹7.0Cr</div><div class="kpi-delta up">↑ On track</div></div>
+        <div class="kpi"><div class="kpi-top-bar" style="background:var(--amber)"></div><div class="kpi-label">Failed payments</div><div class="kpi-value">12</div><div class="kpi-delta dn">↑ +3 this week</div></div>
+        <div class="kpi"><div class="kpi-top-bar" style="background:var(--purple)"></div><div class="kpi-label">Annual plan users</div><div class="kpi-value">581</div><div class="kpi-delta up">34% take rate</div></div>
+      </div>
+      <div class="g2">
+        <div class="billing-card">
+          <div class="bc-title">Revenue breakdown</div>
+          <div class="bc-sub">Current month · December 2025</div>
+          <div class="bc-row"><div><div class="bc-key">Full Management — Monthly</div><div class="bc-desc">1,129 users × ₹2,999</div></div><div class="bc-val">₹33.8L</div></div>
+          <div class="bc-row"><div><div class="bc-key">Full Management — Annual</div><div class="bc-desc">581 users × ₹2,399/mo effective</div></div><div class="bc-val">₹13.9L</div></div>
+          <div class="bc-row"><div><div class="bc-key">Reputation Scan (one-time)</div><div class="bc-desc">910 scans this month</div></div><div class="bc-val">₹9.1L</div></div>
+          <div class="bc-row"><div><div class="bc-key">Upgrades this month</div><div class="bc-desc">47 scan → full conversions</div></div><div class="bc-val">₹1.6L</div></div>
+          <div class="bc-row" style="border-top:2px solid var(--border);margin-top:4px;"><div><div class="bc-key" style="font-weight:700;font-size:14px;">Total revenue</div></div><div class="bc-val" style="color:var(--green);font-family:var(--f-serif);font-size:22px;">₹58.4L</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Failed payments</div><div class="card-sub">Requires action</div></div>
+            <span class="badge badge-red">12 pending</span>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:var(--red-l)">💳</div>
+            <div class="act-body">
+              <div class="act-text"><strong>Al-Rashid Bakery</strong> · ₹2,999 · Card declined</div>
+              <div class="act-time">1 hour ago · 2nd retry tomorrow</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:var(--red-l)">💳</div>
+            <div class="act-body">
+              <div class="act-text"><strong>Taj Hotel Annexe</strong> · ₹2,999 · Expired card</div>
+              <div class="act-time">6 hours ago · Email sent</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:var(--amber-l)">⏰</div>
+            <div class="act-body">
+              <div class="act-text"><strong>Green Valley Resort</strong> · ₹28,790 · Renewal in 3 days</div>
+              <div class="act-time">Annual plan · Reminder sent</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="act-icon" style="background:var(--red-l)">💳</div>
+            <div class="act-body">
+              <div class="act-text"><strong>Singh Motors</strong> · ₹2,999 · Insufficient funds</div>
+              <div class="act-time">Yesterday · Final retry pending</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CHURN ══ -->
+    <div class="view" id="view-churn">
+      <div class="mini-stats" style="grid-template-columns:repeat(3,1fr);">
+        <div class="mini-stat"><div class="ms-label">Churn rate</div><div class="ms-val" style="color:var(--red)">1.8%</div><div class="ms-delta dn">↑ +0.3% vs Nov · watch carefully</div></div>
+        <div class="mini-stat"><div class="ms-label">At-risk users</div><div class="ms-val" style="color:var(--amber)">23</div><div class="ms-delta">Low activity last 14 days</div></div>
+        <div class="mini-stat"><div class="ms-label">Churned this month</div><div class="ms-val" style="color:var(--red)">51</div><div class="ms-delta dn">↑ +8 vs last month</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">High churn risk</div><div class="card-sub">No activity in last 14 days · Full Management users</div></div>
+            <span class="badge badge-red">23 at risk</span>
+          </div>
+          <div class="churn-alert">
+            <div class="ca-icon">⚠️</div>
+            <div>
+              <div class="ca-biz">Sharma Electronics · Delhi</div>
+              <div class="ca-reason">No login in 21 days · Only 3% response rate · Likely disengaged</div>
+              <span class="ca-action">Send re-engagement email →</span>
+            </div>
+          </div>
+          <div class="churn-alert">
+            <div class="ca-icon">⚠️</div>
+            <div>
+              <div class="ca-biz">Royal Palace Hotel · Jaipur</div>
+              <div class="ca-reason">No login in 18 days · Payment due in 5 days · High risk</div>
+              <span class="ca-action">Send re-engagement email →</span>
+            </div>
+          </div>
+          <div class="churn-alert">
+            <div class="ca-icon">⚠️</div>
+            <div>
+              <div class="ca-biz">Mehta Jewellers · Surat</div>
+              <div class="ca-reason">Support ticket open 7 days · "AI replies sound generic" complaint</div>
+              <span class="ca-action">Escalate to support →</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Churn reasons</div><div class="card-sub">Exit survey data · last 30 days</div></div>
+          </div>
+          <div class="health-row" style="margin-top:4px;"><span class="health-label">Too expensive</span><div class="health-track"><div class="health-fill" style="width:42%;background:var(--red)"></div></div><span class="health-val" style="color:var(--red)">42%</span></div>
+          <div class="health-row"><span class="health-label">Not using it</span><div class="health-track"><div class="health-fill" style="width:28%;background:var(--amber)"></div></div><span class="health-val" style="color:var(--amber)">28%</span></div>
+          <div class="health-row"><span class="health-label">AI quality issues</span><div class="health-track"><div class="health-fill" style="width:16%;background:var(--amber)"></div></div><span class="health-val" style="color:var(--amber)">16%</span></div>
+          <div class="health-row"><span class="health-label">Switching product</span><div class="health-track"><div class="health-fill" style="width:9%;background:var(--tx3)"></div></div><span class="health-val">9%</span></div>
+          <div class="health-row"><span class="health-label">Business closed</span><div class="health-track"><div class="health-fill" style="width:5%;background:var(--tx3)"></div></div><span class="health-val">5%</span></div>
+          <div style="margin-top:16px;background:var(--green-l);border:1px solid var(--green-b);border-radius:9px;padding:12px;">
+            <div style="font-size:12px;font-weight:600;color:var(--green2);margin-bottom:4px;">💡 Key insight</div>
+            <div style="font-size:11.5px;color:var(--green2);line-height:1.5;">70% of churn is price or engagement — not product quality. Consider a ₹1,499 mid-tier plan or better onboarding to reduce early drop-off.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end content -->
+</div><!-- end main -->
+</div><!-- end shell -->
+
+<script>
+function goView(v, el){
+  document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(e=>e.classList.remove('on'));
+  document.getElementById('view-'+v).classList.add('on');
+  el.classList.add('on');
+  const titles={overview:'Platform overview',analytics:'Analytics',users:'User management',billing:'Billing & MRR',churn:'Churn risk'};
+  const metas={overview:'ColorcraftAI Admin · All systems operational',analytics:'Growth & conversion metrics · 2025',users:'All registered users · 2,847 total',billing:'Revenue breakdown · December 2025',churn:'At-risk and churned users'};
+  document.getElementById('pageTitle').textContent=titles[v]||v;
+  document.getElementById('pageMeta').textContent=metas[v]||'';
+}
+document.querySelectorAll('.filter-btn').forEach(b=>{
+  b.addEventListener('click',function(){
+    this.closest('.toolbar').querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on');
+  });
+});
+</script>
+<script>
+(function () {
+  'use strict';
+
+  var OPENAI_URL  = 'https://api.openai.com/v1/chat/completions';
+  var MODEL       = 'gpt-4o';
+  var MODEL_LEARN = 'gpt-4o-mini';
+  var INSIGHT_KEY = 'keerti_insights_v1';
+  var PERSIST_VER = 'v3';
+
+  // ── FONT ────────────────────────────────────────────────────────
+  (function () {
+    if (!document.getElementById('ki-font')) {
+      var l = document.createElement('link');
+      l.id = 'ki-font'; l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap';
+      document.head.appendChild(l);
+    }
+  })();
+
+  // ── CSS ─────────────────────────────────────────────────────────
+  var CSS = `
+    #ki * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+
+    /* ── LAUNCHER BUBBLE ── */
+    #ki-bubble {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #16a34a; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(22,163,74,.45), 0 1px 4px rgba(0,0,0,.1);
+      transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+      z-index: 2147483640;
+    }
+    #ki-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(22,163,74,.55); }
+    #ki-bubble svg { width: 24px; height: 24px; color: #fff; }
+    #ki-bubble.open #ki-ico-chat { display: none; }
+    #ki-bubble.open #ki-ico-close { display: block !important; }
+    #ki-ico-close { display: none; }
+
+    /* Badge */
+    #ki-badge {
+      position: fixed; bottom: 66px; right: 20px;
+      min-width: 18px; height: 18px; padding: 0 4px;
+      border-radius: 99px; background: #ef4444; border: 2px solid #fff;
+      color: #fff; font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2147483641; transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+    }
+    #ki-badge.hidden { display: none; }
+
+    /* ── PANEL ── */
+    #ki-panel {
+      position: fixed; bottom: 88px; right: 24px;
+      width: 376px; height: 580px; max-height: calc(100vh - 110px);
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.18), 0 4px 16px rgba(0,0,0,.08);
+      z-index: 2147483647; display: none; flex-direction: column;
+      overflow: hidden; animation: ki-open .22s cubic-bezier(.16,1,.3,1);
+    }
+    #ki-panel.open { display: flex; }
+    @keyframes ki-open {
+      from { opacity: 0; transform: translateY(16px) scale(.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── HEADER ── */
+    #ki-header {
+      background: linear-gradient(160deg, #14532d 0%, #16a34a 100%);
+      padding: 20px 18px 18px; flex-shrink: 0; position: relative;
+      overflow: hidden;
+    }
+    #ki-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top right, rgba(255,255,255,.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    #ki-hdr-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
+    #ki-agent-row { display: flex; align-items: center; gap: 10px; }
+    #ki-agent-av {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      border: 2px solid rgba(255,255,255,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    #ki-agent-info {}
+    #ki-agent-name { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -.15px; }
+    #ki-agent-status { font-size: 11.5px; color: rgba(255,255,255,.75); margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+    .ki-online { width: 6px; height: 6px; border-radius: 50%; background: #86efac; box-shadow: 0 0 0 2px rgba(134,239,172,.3); animation: ki-pulse 2s infinite; }
+    @keyframes ki-pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    #ki-hdr-close {
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 8px; width: 30px; height: 30px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: #fff; transition: background .15s; position: relative; z-index: 1;
+    }
+    #ki-hdr-close:hover { background: rgba(255,255,255,.28); }
+    #ki-hdr-close svg { width: 14px; height: 14px; }
+    #ki-hdr-tagline {
+      font-size: 12.5px; color: rgba(255,255,255,.8); margin-top: 14px;
+      line-height: 1.5; position: relative; z-index: 1;
+    }
+
+    /* ── LEARN STRIP ── */
+    #ki-learn-strip {
+      background: #f0fdf4; border-bottom: 1px solid #dcfce7;
+      padding: 8px 16px; display: none; align-items: center;
+      justify-content: space-between; flex-shrink: 0;
+    }
+    #ki-learn-strip.show { display: flex; }
+    #ki-learn-label { font-size: 11px; color: #15803d; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+    #ki-learn-actions { display: flex; gap: 8px; }
+    .ki-learn-btn { font-size: 10.5px; cursor: pointer; font-weight: 500; background: none; border: none; padding: 0; }
+    #ki-learn-view { color: #15803d; }
+    #ki-learn-view:hover { text-decoration: underline; }
+    #ki-learn-dismiss { color: #a1a1aa; }
+
+    /* ── INSIGHT DRAWER ── */
+    #ki-drawer {
+      background: #f9fafb; border-bottom: 1px solid #f0f0f0;
+      display: none; padding: 12px 16px; flex-shrink: 0;
+      animation: ki-fade .18s ease;
+    }
+    #ki-drawer.open { display: block; }
+    @keyframes ki-fade { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+    #ki-drawer-title { font-size: 11px; font-weight: 600; color: #09090b; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; }
+    #ki-drawer-clear { font-size: 10px; color: #a1a1aa; cursor: pointer; font-weight: 400; }
+    #ki-drawer-clear:hover { color: #ef4444; }
+    #ki-drawer-list { display: flex; flex-direction: column; gap: 4px; }
+    .ki-ins { font-size: 11px; color: #52525b; padding: 5px 8px; background: #fff; border: 1px solid #f0f0f0; border-radius: 6px; line-height: 1.5; }
+    .ki-ins-empty { font-size: 11px; color: #a1a1aa; font-style: italic; }
+
+    /* ── MESSAGES ── */
+    #ki-msgs {
+      flex: 1; overflow-y: auto; padding: 16px 14px 10px;
+      display: flex; flex-direction: column; gap: 4px;
+      scroll-behavior: smooth;
+    }
+    #ki-msgs::-webkit-scrollbar { width: 3px; }
+    #ki-msgs::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 3px; }
+
+    /* Message groups */
+    .ki-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+    .ki-group.user { align-items: flex-end; }
+    .ki-group.ai   { align-items: flex-start; }
+
+    /* Agent row in group */
+    .ki-group-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .ki-group.user .ki-group-meta { justify-content: flex-end; }
+    .ki-mini-av {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #16a34a; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ki-mini-av svg { width: 9px; height: 9px; color: #fff; }
+    .ki-sender { font-size: 11px; font-weight: 600; color: #3f3f46; }
+    .ki-ago    { font-size: 10.5px; color: #a1a1aa; }
+
+    /* Bubbles */
+    .ki-bubble {
+      max-width: 280px; font-size: 13px; line-height: 1.6;
+      padding: 10px 14px; border-radius: 18px;
+      word-break: break-word; animation: ki-msg .18s ease;
+    }
+    @keyframes ki-msg { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+    .ki-bubble.ai {
+      background: #f4f4f5; color: #09090b;
+      border-radius: 4px 18px 18px 18px;
+    }
+    .ki-bubble.ai strong { color: #16a34a; font-weight: 600; }
+    .ki-bubble.user {
+      background: #f0fdf4; color: #14532d;
+      border-radius: 18px 4px 18px 18px;
+      border: 1px solid #bbf7d0;
+    }
+    /* Multi-bubble stacking */
+    .ki-group.ai  .ki-bubble:not(:last-child)  { border-radius: 4px 18px 18px 4px; margin-bottom: 2px; }
+    .ki-group.user .ki-bubble:not(:last-child)  { border-radius: 18px 4px 4px 18px; margin-bottom: 2px; }
+
+    /* Typing */
+    #ki-typing {
+      display: none; align-items: center; gap: 6px;
+      margin-bottom: 8px; animation: ki-msg .18s ease;
+    }
+    #ki-typing.show { display: flex; }
+    .ki-typing-dots {
+      background: #f4f4f5; border-radius: 4px 18px 18px 18px;
+      padding: 12px 16px; display: flex; gap: 4px; align-items: center;
+    }
+    .ki-dot { width: 5px; height: 5px; border-radius: 50%; background: #a1a1aa; animation: ki-bounce .9s infinite; }
+    .ki-dot:nth-child(2) { animation-delay: .15s; }
+    .ki-dot:nth-child(3) { animation-delay: .3s; }
+    @keyframes ki-bounce { 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-5px);opacity:1} }
+
+    /* System messages */
+    .ki-system {
+      text-align: center; font-size: 11px; color: #a1a1aa;
+      margin: 8px 0; display: flex; align-items: center; gap: 8px;
+    }
+    .ki-system::before,.ki-system::after { content:''; flex:1; height:1px; background:#f0f0f0; }
+
+    /* Email capture card */
+    .ki-card {
+      background: #fff; border: 1px solid #e4e4e7;
+      border-radius: 14px; padding: 14px; margin: 6px 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .ki-card-title { font-size: 12px; font-weight: 600; color: #09090b; margin-bottom: 10px; }
+    .ki-card-row { display: flex; gap: 0; }
+    .ki-card-input {
+      flex: 1; border: 1px solid #e4e4e7; border-radius: 8px 0 0 8px;
+      padding: 8px 12px; font-size: 12.5px; color: #09090b;
+      background: #fafafa; outline: none; font-family: inherit;
+      transition: border-color .15s;
+    }
+    .ki-card-input:focus { border-color: #16a34a; background: #fff; }
+    .ki-card-input::placeholder { color: #a1a1aa; }
+    .ki-card-submit {
+      background: #16a34a; border: none; border-radius: 0 8px 8px 0;
+      width: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .ki-card-submit:hover { background: #15803d; }
+    .ki-card-submit svg { width: 14px; height: 14px; color: #fff; }
+
+    /* Suggestions */
+    #ki-sugg {
+      padding: 0 14px 10px; display: flex; flex-wrap: wrap; gap: 6px;
+      flex-shrink: 0;
+    }
+    /* Inline follow-up suggestions inside messages */
+    .ki-followup {
+      display: flex; flex-direction: column; gap: 5px;
+      margin-top: 10px; margin-bottom: 4px;
+      padding-left: 26px; animation: ki-msg .25s ease;
+    }
+    .ki-followup-label {
+      font-size: 10px; font-weight: 600; color: #a1a1aa;
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-bottom: 2px;
+    }
+    .ki-sug {
+      background: #fff; border: 1px solid #e4e4e7; border-radius: 99px;
+      padding: 5px 12px; font-size: 12px; font-weight: 500; color: #3f3f46;
+      cursor: pointer; transition: all .12s; white-space: nowrap;
+      text-align: left; display: inline-block; width: fit-content;
+    }
+    .ki-sug:hover { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+
+    /* ── INPUT BAR ── */
+    #ki-bar {
+      border-top: 1px solid #f4f4f5; padding: 10px 12px;
+      display: flex; align-items: flex-end; gap: 8px;
+      background: #fff; flex-shrink: 0;
+    }
+    #ki-input {
+      flex: 1; border: 1.5px solid #e4e4e7; border-radius: 10px;
+      padding: 9px 13px; font-size: 13px; color: #09090b;
+      background: #fafafa; outline: none; resize: none;
+      min-height: 38px; max-height: 90px; line-height: 1.5;
+      font-family: inherit; transition: border-color .15s, box-shadow .15s;
+    }
+    #ki-input:focus { border-color: #86efac; background: #fff; box-shadow: 0 0 0 3px rgba(22,163,74,.08); }
+    #ki-input::placeholder { color: #a1a1aa; }
+    #ki-send {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: #16a34a; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background .15s, transform .15s;
+      box-shadow: 0 2px 8px rgba(22,163,74,.3);
+    }
+    #ki-send:hover { background: #15803d; transform: scale(1.05); }
+    #ki-send:disabled { background: #d4d4d8; box-shadow: none; cursor: not-allowed; transform: none; }
+    #ki-send svg { width: 15px; height: 15px; color: #fff; }
+
+    /* Footer */
+    #ki-footer { text-align: center; padding: 6px; font-size: 10px; color: #d4d4d8; background: #fff; flex-shrink: 0; }
+
+    /* Toast */
+    #ki-toast {
+      position: fixed; bottom: 92px; right: 86px;
+      background: #09090b; color: #fff;
+      font-size: 11.5px; padding: 8px 13px; border-radius: 9px;
+      display: none; z-index: 2147483648;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      animation: ki-open .2s ease; white-space: nowrap;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    @media (max-width: 480px) {
+      #ki-panel { width: calc(100vw - 12px); right: 6px; bottom: 80px; height: calc(100vh - 96px); border-radius: 16px; }
+      #ki-bubble { bottom: 16px; right: 16px; }
+      #ki-badge  { bottom: 60px; right: 12px; }
+    }
+  `;
+
+  // ── ICONS ────────────────────────────────────────────────────────
+  function icon(d, s) {
+    s = s || 16;
+    return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';
+  }
+  var I_CHAT  = '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>';
+  var I_CLOSE = '<path d="M18 6L6 18M6 6l12 12"/>';
+  var I_SEND  = '<path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/>';
+  var I_SPARK = '<path d="M12 2L9.5 9.5L2 12L9.5 14.5L12 22L14.5 14.5L22 12L14.5 9.5Z"/>';
+  var I_ARROW = '<path d="M5 12h14M12 5l7 7-7 7"/>';
+
+  // ── INSIGHT STORE ────────────────────────────────────────────────
+  function loadInsights(page) {
+    try { return (JSON.parse(localStorage.getItem(INSIGHT_KEY))||{})[page]||[]; }
+    catch(e) { return []; }
+  }
+  function saveInsight(page, text) {
+    if (!text||text.length<8) return false;
+    try {
+      var all = JSON.parse(localStorage.getItem(INSIGHT_KEY))||{};
+      var arr = all[page]||[];
+      if (arr.some(function(i){ return i.toLowerCase().slice(0,25)===text.toLowerCase().slice(0,25); })) return false;
+      all[page] = [text].concat(arr).slice(0,12);
+      localStorage.setItem(INSIGHT_KEY, JSON.stringify(all));
+      return true;
+    } catch(e) { return false; }
+  }
+  function clearInsights(page) {
+    try { var all=JSON.parse(localStorage.getItem(INSIGHT_KEY))||{}; all[page]=[]; localStorage.setItem(INSIGHT_KEY,JSON.stringify(all)); } catch(e){}
+  }
+
+  // ── SYSTEM PROMPT ────────────────────────────────────────────────
+  function buildPrompt(cfg) {
+    var base = 'You are Keerti, ColorcraftAI\'s AI reputation analyst. Be direct, warm, and data-driven. Skip greetings. Max 3 sentences unless more is asked. Bold key numbers. Never say "As an AI". PRICING: ColorcraftAI costs ₹2,999/month — never quote any other price, never say $49.';
+
+    if (cfg.page === 'homepage') {
+      base += ' Demo mode. Sample: Sharma\'s Kitchen Delhi, 4.1★, 312 reviews, 34 unanswered, issues: slow service, packaging. Show capabilities. If asked about pricing, say ₹2,999/month. End with CTA to sign up.';
+
+    } else if (cfg.page === 'scan') {
+      base += ' Scan page. Business: '+(cfg.businessName||'–')+'. Score: '+(cfg.scanScore||54)+'/100. Issues: '+(Array.isArray(cfg.issues)?cfg.issues.join(', '):(cfg.issues||'low reply rate'))+'. Explain results. Recommend upgrading to Full AI Management at ₹2,999/month when natural.';
+
+    } else if (cfg.page === 'onboarding') {
+      base += ' Onboarding wizard. The user just signed up and is setting up their account — connecting Google Business Profile, configuring WhatsApp alerts, and setting AI reply preferences. Help them complete each step confidently. Reassure them if they seem unsure. Explain what each step does in plain language. Be encouraging — they are about to see results within days.';
+
+    } else if (cfg.page === 'admin') {
+      base += ' Admin panel. This is the ColorcraftAI agency owner (internal access only). They manage all client accounts. Client data: Sharma Dental 4.4★, Spice Garden 4.1★, Hotel Crown 3.8★ (needs attention), Prime Derma 4.6★, Tandoor King 4.0★. MRR: ₹58.4L total revenue to date, avg ₹2,052/client. Help with: client health checks, drafting WhatsApp updates to clients, review response queues, churn risk, and business decisions. Be concise and business-focused.';
+
+    } else {
+      base += ' Data — business:'+(cfg.businessName||'')+', rating:'+(cfg.rating||4.7)+'★, reviews:'+(cfg.reviewCount||1240)+', replyRate:'+(cfg.replyRate||98)+'%, complaints:'+(cfg.recentIssues||[]).join('/')+', rank:#'+(cfg.competitorRank||'–')+', trend:'+(cfg.ratingTrend||'stable')+'. Answer from data. Offer to draft replies when relevant.';
+    }
+
+    var ins = loadInsights(cfg.page);
+    if (ins.length) {
+      base += '\n\nLEARNED FROM PREVIOUS CONVERSATIONS:\n'+ins.map(function(i){ return '- '+i; }).join('\n')+'\n\nUse these to personalise answers.';
+    }
+    return base;
+  }
+
+  // ── AUTO-LEARN ───────────────────────────────────────────────────
+  var learnTimer = null;
+  function triggerLearn() { clearTimeout(learnTimer); learnTimer = setTimeout(doLearn, 1800); }
+  function doLearn() {
+    var cfg=state.cfg;
+    if (state.msgs.length<4) return;
+    var ep=cfg.proxyUrl||OPENAI_URL;
+    var hdr={'Content-Type':'application/json'};
+    if (!cfg.proxyUrl&&cfg.apiKey) hdr['Authorization']='Bearer '+cfg.apiKey;
+    var convo=state.msgs.map(function(m){ return m.role.toUpperCase()+': '+m.content; }).join('\n\n');
+    fetch(ep,{
+      method:'POST', headers:hdr,
+      body:JSON.stringify({
+        model:MODEL_LEARN, max_tokens:150,
+        messages:[
+          {role:'system',content:'Extract 1-3 short insights (max 12 words each) about what this user cares about. Output ONLY valid JSON array. Example: ["Prefers short answers","Concerned about competitor ratings"]'},
+          {role:'user',content:'Page: '+cfg.page+'\n\n'+convo}
+        ]
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var raw=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content;
+      if (!raw) return;
+      raw=raw.trim().replace(/```json|```/g,'').trim();
+      var arr; try{arr=JSON.parse(raw);}catch(e){return;}
+      if (!Array.isArray(arr)) return;
+      var added=0;
+      arr.forEach(function(i){ if(typeof i==='string'&&saveInsight(cfg.page,i)) added++; });
+      if (added>0) { showToast('✦ Keerti learned something new'); renderDrawer(); showLearnStrip(); }
+    })
+    .catch(function(){});
+  }
+
+  // ── PERSIST ──────────────────────────────────────────────────────
+  function pKey()   { return (state.cfg.persistKey||'ki')+'_'+PERSIST_VER; }
+  function psave()  { if(!state.cfg.persistKey) return; try{localStorage.setItem(pKey(),JSON.stringify(state.msgs));}catch(e){} }
+  function pload()  { if(!state.cfg.persistKey) return null; try{var r=localStorage.getItem(pKey());return r?JSON.parse(r):null;}catch(e){return null;} }
+  function pclear() { try{localStorage.removeItem(pKey());}catch(e){} }
+
+  // ── STATE ────────────────────────────────────────────────────────
+  var state = { open:false, msgs:[], cfg:{}, busy:false, emailCaptured:false };
+
+  // ── HELPERS ──────────────────────────────────────────────────────
+  function q(id)    { return document.getElementById(id); }
+  function el(tag, attrs, html) {
+    var e=document.createElement(tag);
+    if(attrs) Object.keys(attrs).forEach(function(k){ e.setAttribute(k,attrs[k]); });
+    if(html!==undefined) e.innerHTML=html;
+    return e;
+  }
+  function scrollBot() { var m=q('ki-msgs'); if(m) setTimeout(function(){ m.scrollTop=m.scrollHeight; },50); }
+  function ts() { var d=new Date(),h=d.getHours(),m=d.getMinutes(); return (h%12||12)+':'+(m<10?'0':'')+m+(h>=12?'pm':'am'); }
+  function md(t) { return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>'); }
+
+  // ── RENDER MESSAGES ──────────────────────────────────────────────
+  var currentGroup = null;
+  var currentGroupRole = null;
+
+  function renderMsg(role, text, time, skipGroup) {
+    var msgs = q('ki-msgs');
+    // Group consecutive same-role messages
+    if (!skipGroup && role === currentGroupRole && currentGroup && msgs.contains(currentGroup)) {
+      var bubble = el('div', { class:'ki-bubble '+( role==='user'?'user':'ai') });
+      bubble.innerHTML = md(text);
+      currentGroup.appendChild(bubble);
+    } else {
+      var group = el('div', { class:'ki-group '+(role==='user'?'user':'ai') });
+      // Meta row
+      if (role==='ai'||role==='assistant') {
+        var meta = el('div', { class:'ki-group-meta' });
+        var mav  = el('div', { class:'ki-mini-av' });
+        mav.innerHTML = icon(I_SPARK, 9);
+        meta.appendChild(mav);
+        meta.appendChild(el('span', { class:'ki-sender' }, 'Keerti'));
+        if (time) meta.appendChild(el('span', { class:'ki-ago' }, time));
+        group.appendChild(meta);
+      }
+      var bubble = el('div', { class:'ki-bubble '+(role==='user'?'user':'ai') });
+      bubble.innerHTML = md(text);
+      group.appendChild(bubble);
+      if (role==='user' && time) group.appendChild(el('div', { class:'ki-ago', style:'margin-top:3px;font-size:10.5px;color:#a1a1aa;' }, time));
+      msgs.appendChild(group);
+      currentGroup = group;
+      currentGroupRole = role;
+    }
+    scrollBot();
+  }
+
+  function renderSystem(text) {
+    var msgs = q('ki-msgs');
+    msgs.appendChild(el('div', { class:'ki-system' }, text));
+    currentGroup = null; currentGroupRole = null;
+    scrollBot();
+  }
+
+  function renderEmailCard() {
+    if (state.emailCaptured) return;
+    var msgs = q('ki-msgs');
+    var card = el('div', { class:'ki-card', id:'ki-email-card' });
+    card.innerHTML =
+      '<div class="ki-card-title">Get notified by email</div>'+
+      '<div class="ki-card-row">'+
+        '<input class="ki-card-input" id="ki-email-inp" type="email" placeholder="email@example.com"/>'+
+        '<button class="ki-card-submit" id="ki-email-sub">'+icon(I_ARROW,14)+'</button>'+
+      '</div>';
+    msgs.appendChild(card);
+    currentGroup = null; currentGroupRole = null;
+    scrollBot();
+    setTimeout(function(){
+      var sub = q('ki-email-sub');
+      var inp = q('ki-email-inp');
+      if (sub && inp) {
+        function submitEmail() {
+          var v = inp.value.trim();
+          if (!v||!v.includes('@')) { inp.style.borderColor='#ef4444'; return; }
+          state.emailCaptured = true;
+          var c = q('ki-email-card');
+          if (c) c.remove();
+          renderSystem('Email saved — we\'ll follow up shortly');
+          renderMsg('assistant', 'Got it. A member of the team will reach out to you at **'+v+'** soon.', ts());
+        }
+        sub.addEventListener('click', submitEmail);
+        inp.addEventListener('keydown', function(e){ if(e.key==='Enter') submitEmail(); });
+      }
+    }, 100);
+  }
+
+  function showTyping() { var t=q('ki-typing'); if(t) t.classList.add('show'); scrollBot(); }
+  function hideTyping() { var t=q('ki-typing'); if(t) t.classList.remove('show'); }
+
+  // ── SUGGESTIONS ──────────────────────────────────────────────────
+  function getSugg(page) {
+    if (page==='homepage')   return ['What can you do?','Show a sample reply','Pricing?'];
+    if (page==='scan')       return ['Explain my score','What to fix first?','Reach 4.5★?'];
+    if (page==='onboarding') return ['How do I connect Google?','What does AI reply do?','How long till I see results?'];
+    if (page==='admin')      return ['Which client needs attention?','Hotel Crown status?','Draft client WhatsApp update'];
+    return ['Rating change?','Top complaints?','Draft 1★ reply','vs competitors?'];
+  }
+
+  // Follow-up suggestion pools per page
+  var FOLLOWUPS = {
+    homepage: [
+      ['How does it work?','Show me an example','What\'s included?'],
+      ['How long to see results?','Do you handle WhatsApp?','How do I get started?'],
+      ['Can I try for free?','Which platforms do you cover?','Who else uses this?'],
+    ],
+    scan: [
+      ['What should I fix first?','How long to improve?','What\'s a good score?'],
+      ['What do competitors score?','How does reply rate affect ranking?','Can you draft a reply?'],
+      ['What\'s the upgrade cost?','Will my score improve fast?','What happens after I subscribe?'],
+    ],
+    onboarding: [
+      ['What happens after I connect Google?','How do AI replies work?','When will I see first results?'],
+      ['Can I customise the reply tone?','What is WhatsApp alert?','How do I skip a step?'],
+      ['Is my data safe?','Can I connect multiple locations?','Who do I contact for help?'],
+    ],
+    admin: [
+      ['Which client has lowest reply rate?','Any churn risk this month?','Top performing client?'],
+      ['Draft update for Hotel Crown','How many reviews responded today?','Which client improved most?'],
+      ['Show clients below 4.0★','MRR this month?','Which client to prioritise?'],
+    ],
+    dashboard: [
+      ['What are customers saying?','Any urgent issues?','Draft a reply for me'],
+      ['How do I improve faster?','Compare to competitors','Why did my rating change?'],
+      ['What\'s my reply rate?','Top complaint this week?','What should I focus on?'],
+    ],
+  };
+  var followupIdx = 0;
+
+  function renderFollowup(page) {
+    var pool = FOLLOWUPS[page] || FOLLOWUPS.dashboard;
+    var set  = pool[followupIdx % pool.length];
+    followupIdx++;
+    var msgs = q('ki-msgs');
+    var row  = el('div', { class:'ki-followup' });
+    row.appendChild(el('div', { class:'ki-followup-label' }, 'Suggested questions'));
+    set.forEach(function(s) {
+      var p = el('button', { class:'ki-sug' }, s);
+      p.addEventListener('click', function() {
+        // Remove all follow-up rows
+        var rows = msgs.querySelectorAll('.ki-followup');
+        rows.forEach(function(r){ r.remove(); });
+        sendMsg(s);
+      });
+      row.appendChild(p);
+    });
+    msgs.appendChild(row);
+    scrollBot();
+  }
+
+  function hideSugg() { var s=q('ki-sugg'); if(s) s.style.display='none'; }
+
+  // ── INSIGHT DRAWER ───────────────────────────────────────────────
+  function renderDrawer() {
+    var ins = loadInsights(state.cfg.page);
+    var list = q('ki-drawer-list');
+    if (!list) return;
+    if (ins.length) {
+      list.innerHTML = ins.map(function(i){ return '<div class="ki-ins">'+i+'</div>'; }).join('');
+    } else {
+      list.innerHTML = '<span class="ki-ins-empty">No insights yet — keep chatting.</span>';
+    }
+    // Update badge count
+    var strip = q('ki-learn-strip');
+    var label = q('ki-learn-label');
+    if (ins.length && strip && label) {
+      label.innerHTML = '✦ '+ins.length+' insight'+(ins.length!==1?'s':'')+' learned';
+    }
+  }
+
+  function showLearnStrip() {
+    var s = q('ki-learn-strip');
+    if (s) s.classList.add('show');
+    renderDrawer();
+  }
+
+  // ── TOAST ────────────────────────────────────────────────────────
+  function showToast(msg) {
+    var t = q('ki-toast');
+    if (!t) return;
+    t.textContent = msg||'✦ New insight learned';
+    t.style.display='block';
+    clearTimeout(state._toast);
+    state._toast = setTimeout(function(){ t.style.display='none'; },2500);
+  }
+
+  // ── SEND ─────────────────────────────────────────────────────────
+  function sendMsg(text) {
+    text=(text||'').trim();
+    if (!text||state.busy) return;
+    hideSugg();
+    // Remove any pending follow-up rows
+    var msgs = q('ki-msgs');
+    if (msgs) { var rows=msgs.querySelectorAll('.ki-followup'); rows.forEach(function(r){r.remove();}); }
+    currentGroup=null; currentGroupRole=null;
+    state.msgs.push({role:'user',content:text});
+    renderMsg('user',text,ts());
+    var inp=q('ki-input'), btn=q('ki-send');
+    if(inp){inp.value='';inp.style.height='auto';}
+    if(btn) btn.disabled=true;
+    state.busy=true;
+    showTyping();
+
+    var cfg=state.cfg;
+    var ep=cfg.proxyUrl||OPENAI_URL;
+    var hdr={'Content-Type':'application/json'};
+    if(!cfg.proxyUrl&&cfg.apiKey) hdr['Authorization']='Bearer '+cfg.apiKey;
+
+    fetch(ep,{
+      method:'POST', headers:hdr,
+      body:JSON.stringify({
+        model:MODEL, max_tokens:400,
+        messages:[{role:'system',content:buildPrompt(cfg)}].concat(state.msgs)
+      })
+    })
+    .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
+    .then(function(res){
+      hideTyping(); state.busy=false; if(btn) btn.disabled=false;
+      if(!res.ok){ renderMsg('assistant',(res.d.error&&res.d.error.message)||'Error '+res.status,ts()); return; }
+      var reply=res.d.choices&&res.d.choices[0]&&res.d.choices[0].message&&res.d.choices[0].message.content||'–';
+      state.msgs.push({role:'assistant',content:reply});
+      renderMsg('assistant',reply,ts());
+      psave();
+      // Show follow-up suggestions after every AI reply
+      setTimeout(function(){ renderFollowup(cfg.page); }, 300);
+      // Learn every 2 exchanges
+      if (state.msgs.length%4===0) triggerLearn();
+    })
+    .catch(function(){
+      hideTyping(); state.busy=false; if(btn) btn.disabled=false;
+      renderMsg('assistant','Connection error — please try again.',ts());
+    });
+  }
+
+  // ── OPEN / CLOSE ─────────────────────────────────────────────────
+  function openPanel() {
+    state.open=true;
+    var p=q('ki-panel'); if(p) p.classList.add('open');
+    var b=q('ki-bubble'); if(b) b.classList.add('open');
+    var n=q('ki-nudge'); if(n) n.style.display='none';
+    var bdg=q('ki-badge'); if(bdg) bdg.classList.add('hidden');
+    var i=q('ki-input'); if(i) setTimeout(function(){i.focus();},220);
+    scrollBot();
+  }
+  function closePanel() {
+    state.open=false;
+    var p=q('ki-panel'); if(p) p.classList.remove('open');
+    var b=q('ki-bubble'); if(b) b.classList.remove('open');
+  }
+
+  // ── GREETING ─────────────────────────────────────────────────────
+  function greet(cfg) {
+    if (cfg.page==='homepage') return 'Ask me anything about reputation management. I\'ll show you exactly what I can do for your business.';
+    if (cfg.page==='scan') return 'Your scan is ready. Ask me what any result means, or what to fix first.';
+    return 'Connected to **'+(cfg.businessName||'your account')+'**. What do you want to know?';
+  }
+
+  // ── INIT ─────────────────────────────────────────────────────────
+  window.Keerti = {
+    init: function(cfg) {
+      state.cfg = cfg||{};
+
+      var style=document.createElement('style');
+      style.textContent=CSS;
+      document.head.appendChild(style);
+
+      var root=el('div',{id:'ki'});
+
+      // Toast
+      root.appendChild(el('div',{id:'ki-toast'},''));
+
+      // Launcher bubble
+      var bbl=el('button',{id:'ki-bubble','aria-label':'Open Keerti'});
+      bbl.innerHTML=icon(I_CHAT,24)+'<span id="ki-ico-close" style="display:none">'+icon(I_CLOSE,20)+'</span>';
+      bbl.addEventListener('click',function(){ state.open?closePanel():openPanel(); });
+      root.appendChild(bbl);
+
+      // Badge
+      var bdg=el('div',{id:'ki-badge'},'1');
+      root.appendChild(bdg);
+
+      // Panel
+      var panel=el('div',{id:'ki-panel'});
+
+      // Header
+      var initials=(cfg.businessName||'K').charAt(0).toUpperCase();
+      var hdr=el('div',{id:'ki-header'});
+      hdr.innerHTML=
+        '<div id="ki-hdr-top">'+
+          '<div id="ki-agent-row">'+
+            '<div id="ki-agent-av">'+initials+'</div>'+
+            '<div id="ki-agent-info">'+
+              '<div id="ki-agent-name">Keerti</div>'+
+              '<div id="ki-agent-status"><div class="ki-online"></div>Active now</div>'+
+            '</div>'+
+          '</div>'+
+          '<button id="ki-hdr-close">'+icon(I_CLOSE,14)+'</button>'+
+        '</div>'+
+        '<div id="ki-hdr-tagline">Your AI reputation analyst — always on, always learning.</div>';
+      panel.appendChild(hdr);
+
+      // Learn strip (hidden until insight appears)
+      var strip=el('div',{id:'ki-learn-strip'});
+      strip.innerHTML=
+        '<div id="ki-learn-label">✦ 0 insights learned</div>'+
+        '<div id="ki-learn-actions">'+
+          '<button class="ki-learn-btn" id="ki-learn-view">View</button>'+
+          '<button class="ki-learn-btn" id="ki-learn-dismiss">Dismiss</button>'+
+        '</div>';
+      panel.appendChild(strip);
+
+      // Insight drawer
+      var drawer=el('div',{id:'ki-drawer'});
+      drawer.innerHTML=
+        '<div id="ki-drawer-title">What Keerti has learned <span id="ki-drawer-clear">Clear</span></div>'+
+        '<div id="ki-drawer-list"><span class="ki-ins-empty">No insights yet.</span></div>';
+      panel.appendChild(drawer);
+
+      // Messages
+      var msgs=el('div',{id:'ki-msgs'});
+      // Typing indicator (always in DOM)
+      var typing=el('div',{id:'ki-typing'});
+      var tmav=el('div',{class:'ki-mini-av'}); tmav.innerHTML=icon(I_SPARK,9);
+      var tdots=el('div',{class:'ki-typing-dots'});
+      tdots.innerHTML='<div class="ki-dot"></div><div class="ki-dot"></div><div class="ki-dot"></div>';
+      typing.appendChild(tmav); typing.appendChild(tdots);
+      msgs.appendChild(typing);
+      panel.appendChild(msgs);
+
+      // Suggestions
+      var sugg=el('div',{id:'ki-sugg'});
+      getSugg(cfg.page).forEach(function(s){
+        var p=el('button',{class:'ki-sug'},s);
+        p.addEventListener('click',function(){ sendMsg(s); });
+        sugg.appendChild(p);
+      });
+      panel.appendChild(sugg);
+
+      // Input bar
+      var bar=el('div',{id:'ki-bar'});
+      var inp=el('textarea',{id:'ki-input',placeholder:'Message Keerti\u2026',rows:'1',autocomplete:'off'});
+      inp.addEventListener('keydown',function(e){
+        if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(inp.value); }
+      });
+      inp.addEventListener('input',function(){
+        inp.style.height='auto';
+        inp.style.height=Math.min(inp.scrollHeight,90)+'px';
+      });
+      var snd=el('button',{id:'ki-send','aria-label':'Send'});
+      snd.innerHTML=icon(I_SEND,15);
+      snd.addEventListener('click',function(){ sendMsg(inp.value); });
+      bar.appendChild(inp); bar.appendChild(snd);
+      panel.appendChild(bar);
+      panel.appendChild(el('div',{id:'ki-footer'},'Keerti \xb7 ColorcraftAI \xb7 learns from every conversation'));
+
+      root.appendChild(panel);
+      document.body.appendChild(root);
+
+      // Events
+      q('ki-hdr-close').addEventListener('click',closePanel);
+      q('ki-learn-view').addEventListener('click',function(){
+        q('ki-drawer').classList.toggle('open');
+      });
+      q('ki-learn-dismiss').addEventListener('click',function(){
+        q('ki-learn-strip').classList.remove('show');
+        q('ki-drawer').classList.remove('open');
+      });
+      q('ki-drawer-clear').addEventListener('click',function(){
+        clearInsights(cfg.page);
+        renderDrawer();
+        q('ki-learn-strip').classList.remove('show');
+        q('ki-drawer').classList.remove('open');
+      });
+
+      // Load history or show greeting
+      var hist=pload();
+      if (hist&&hist.length) {
+        state.msgs=hist;
+        // Re-render all messages
+        hist.forEach(function(m){ renderMsg(m.role==='user'?'user':'assistant',m.content,null,true); });
+      } else {
+        var g=greet(cfg);
+        state.msgs.push({role:'assistant',content:g});
+        renderMsg('assistant',g,ts());
+        psave();
+      }
+
+      // Check if insights already exist
+      var existingIns=loadInsights(cfg.page);
+      if (existingIns.length) { showLearnStrip(); }
+
+      // Nudge — no bubble nudge, just open after delay if not interacted
+      setTimeout(function(){
+        if(!state.open) bdg.classList.remove('hidden');
+      },3000);
+
+      // Learn on page close
+      window.addEventListener('beforeunload',function(){
+        if(state.msgs.length>=4) doLearn();
+      });
+    },
+
+    clearChat: function() {
+      pclear(); state.msgs=[]; state.busy=false; state.emailCaptured=false;
+      followupIdx=0;
+      currentGroup=null; currentGroupRole=null;
+      var m=q('ki-msgs');
+      // Keep typing indicator, remove everything else
+      var typing=q('ki-typing');
+      if(m){ m.innerHTML=''; if(typing) m.appendChild(typing); }
+      var s=q('ki-sugg'); if(s) s.style.display='flex';
+      var g=greet(state.cfg);
+      state.msgs.push({role:'assistant',content:g});
+      renderMsg('assistant',g,ts());
+      psave();
+    }
+  };
+
+})();
+
+document.addEventListener("DOMContentLoaded",function(){
+  Keerti.init({ page:"admin", proxyUrl:"https://keerti-proxy.vercel.app/api/keerti", persistKey:"keerti_admin" });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ColorcraftAI — Reputation Scan Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f4;--white:#fff;--soft:#f0ede8;--border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);
+  --tx:#18181b;--tx2:#52525b;--tx3:#a1a1aa;
+  --green:#16a34a;--green2:#15803d;--green-l:#f0fdf4;--green-b:#bbf7d0;--green-m:#4ade80;
+  --amber:#b45309;--amber-l:#fffbeb;--amber-b:#fde68a;
+  --red:#dc2626;--red-l:#fef2f2;--red-b:#fecaca;
+  --blue:#2563eb;--blue-l:#eff6ff;--blue-b:#bfdbfe;
+  --locked:#f1f0ee;--locked-border:#e0ddd8;--locked-tx:#c4c0b8;
+  --sh-sm:0 1px 2px rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.05);
+  --sh:0 1px 3px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.07);
+  --sh-md:0 2px 8px rgba(0,0,0,.06),0 10px 32px rgba(0,0,0,.09);
+  --sh-lg:0 8px 24px rgba(0,0,0,.08),0 24px 64px rgba(0,0,0,.12);
+  --f-serif:'Playfair Display',Georgia,serif;
+  --f-body:'DM Sans',system-ui,sans-serif;
+}
+html,body{height:100%;font-family:var(--f-body);background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+
+/* ── SHELL ── */
+.shell{display:flex;height:100vh;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;flex-shrink:0;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.sb-logo-mark{width:28px;height:28px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(22,163,74,.3);}
+.sb-logo-mark svg{width:13px;height:13px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.sb-logo-text{font-family:var(--f-serif);font-size:15px;font-weight:700;color:var(--tx);}
+.sb-logo-text em{color:var(--green);font-style:italic;}
+
+.sb-biz{padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sb-biz-label{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
+.sb-biz-name{font-size:13px;font-weight:600;color:var(--tx);}
+.sb-biz-meta{font-size:11px;color:var(--tx2);margin-top:2px;}
+.sb-plan-tag{display:inline-flex;align-items:center;gap:4px;background:var(--amber-l);border:1px solid var(--amber-b);color:var(--amber);font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-top:6px;}
+
+.sb-nav{padding:10px 0;flex:1;}
+.sb-section{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;padding:10px 16px 4px;}
+
+/* Active scan item */
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 16px;font-size:12.5px;color:var(--tx2);cursor:pointer;transition:all .12s;border-left:2px solid transparent;margin:1px 0;font-weight:400;position:relative;}
+.sb-item:hover{color:var(--tx);background:var(--bg);}
+.sb-item.on{color:var(--green);border-left-color:var(--green);background:var(--green-l);font-weight:500;}
+.sb-item svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.7;}
+
+/* Locked items */
+.sb-item-locked{display:flex;align-items:center;gap:9px;padding:7px 16px;font-size:12.5px;color:var(--locked-tx);margin:1px 0;font-weight:400;cursor:not-allowed;position:relative;}
+.sb-item-locked svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.lock-icon{width:14px;height:14px;margin-left:auto;flex-shrink:0;fill:none;stroke:var(--locked-tx);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+.sb-upgrade{padding:12px 14px;border-top:1px solid var(--border);flex-shrink:0;}
+.sb-upgrade-card{background:var(--green);border-radius:10px;padding:14px;cursor:pointer;transition:all .15s;}
+.sb-upgrade-card:hover{background:var(--green2);transform:translateY(-1px);}
+.sb-up-label{font-size:9px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.sb-up-title{font-family:var(--f-serif);font-size:13px;font-weight:700;color:white;margin-bottom:4px;}
+.sb-up-desc{font-size:11px;color:rgba(255,255,255,.75);line-height:1.4;margin-bottom:10px;}
+.sb-up-btn{width:100%;background:white;color:var(--green);font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:7px;border-radius:7px;border:none;cursor:pointer;transition:all .12s;}
+.sb-up-btn:hover{background:var(--green-l);}
+
+/* ── TOPBAR ── */
+.topbar{height:52px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;}
+.topbar-left{}
+.page-title{font-family:var(--f-serif);font-size:17px;font-weight:700;color:var(--tx);letter-spacing:-.2px;}
+.page-meta{font-size:11.5px;color:var(--tx2);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.scan-badge{display:inline-flex;align-items:center;gap:5px;background:var(--amber-l);border:1px solid var(--amber-b);color:var(--amber);font-size:11.5px;font-weight:700;padding:5px 14px;border-radius:100px;}
+.scan-badge svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.tb-btn{font-family:var(--f-body);font-size:12.5px;font-weight:600;padding:7px 16px;border-radius:7px;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;gap:6px;}
+.tb-btn-ghost{background:transparent;color:var(--tx2);border:1px solid var(--border2);}
+.tb-btn-ghost:hover{color:var(--tx);background:var(--soft);}
+.tb-btn-green{background:var(--green);color:white;box-shadow:0 1px 4px rgba(22,163,74,.25);}
+.tb-btn-green:hover{background:var(--green2);transform:translateY(-1px);}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.content{flex:1;overflow-y:auto;padding:22px 24px;}
+
+/* ── UPGRADE BANNER ── */
+.upgrade-banner{
+  background:linear-gradient(135deg,#14532d 0%,#15803d 50%,#16a34a 100%);
+  border-radius:14px;padding:20px 24px;margin-bottom:18px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  position:relative;overflow:hidden;
+}
+.upgrade-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:160px;height:160px;background:rgba(255,255,255,.05);border-radius:50%;}
+.upgrade-banner::after{content:'';position:absolute;bottom:-40px;left:40%;width:120px;height:120px;background:rgba(255,255,255,.04);border-radius:50%;}
+.ub-left{position:relative;z-index:1;}
+.ub-eyebrow{font-size:10px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
+.ub-title{font-family:var(--f-serif);font-size:18px;font-weight:700;color:white;margin-bottom:5px;line-height:1.2;}
+.ub-desc{font-size:12.5px;color:rgba(255,255,255,.72);max-width:480px;line-height:1.5;}
+.ub-features{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
+.ub-feat{display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,.8);}
+.ub-feat::before{content:'✓';color:var(--green-m);font-weight:700;font-size:11px;}
+.ub-right{position:relative;z-index:1;flex-shrink:0;text-align:center;}
+.ub-price{font-family:var(--f-serif);font-size:28px;font-weight:700;color:white;line-height:1;}
+.ub-price-label{font-size:11px;color:rgba(255,255,255,.6);margin-bottom:10px;}
+.ub-cta{background:white;color:var(--green2);font-family:var(--f-body);font-size:13px;font-weight:700;padding:10px 22px;border-radius:8px;border:none;cursor:pointer;transition:all .15s;white-space:nowrap;display:block;margin-bottom:6px;}
+.ub-cta:hover{background:var(--green-l);transform:translateY(-1px);}
+.ub-note{font-size:10px;color:rgba(255,255,255,.45);}
+
+/* ── SCAN COMPLETE HEADER ── */
+.scan-complete{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:center;gap:18px;box-shadow:var(--sh-sm);}
+.scan-check{width:44px;height:44px;border-radius:50%;background:var(--green-l);border:2px solid var(--green-b);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.scan-check svg{width:20px;height:20px;fill:none;stroke:var(--green);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.scan-complete-info{flex:1;}
+.sc-title{font-family:var(--f-serif);font-size:15px;font-weight:700;color:var(--tx);margin-bottom:2px;}
+.sc-sub{font-size:12px;color:var(--tx2);}
+.scan-complete-actions{display:flex;gap:8px;}
+.sc-dl{font-family:var(--f-body);font-size:12.5px;font-weight:600;padding:8px 18px;border-radius:7px;cursor:pointer;border:none;transition:all .15s;}
+.sc-dl-primary{background:var(--green);color:white;}
+.sc-dl-primary:hover{background:var(--green2);}
+.sc-dl-ghost{background:transparent;color:var(--tx2);border:1px solid var(--border2);}
+.sc-dl-ghost:hover{color:var(--tx);background:var(--soft);}
+
+/* ── KPI STRIP ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.kpi{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--sh-sm);position:relative;overflow:hidden;}
+.kpi-top-bar{position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-label{font-size:10px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;}
+.kpi-value{font-family:var(--f-serif);font-size:26px;font-weight:700;line-height:1;margin-bottom:5px;}
+.kpi-delta{font-size:11px;font-weight:600;}
+.kpi-delta.up{color:var(--green);}
+.kpi-delta.dn{color:var(--red);}
+.kpi-delta.neu{color:var(--tx2);}
+
+/* ── SCORE + BREAKDOWN ── */
+.score-row{display:grid;grid-template-columns:260px 1fr 1fr;gap:14px;margin-bottom:16px;}
+.score-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--sh-sm);display:flex;flex-direction:column;align-items:center;text-align:center;}
+.ring-wrap{position:relative;width:110px;height:110px;margin:0 auto 12px;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-num{font-family:var(--f-serif);font-size:30px;font-weight:700;color:var(--tx);line-height:1;}
+.ring-lbl{font-size:8.5px;color:var(--tx2);font-weight:600;letter-spacing:.07em;text-transform:uppercase;}
+.score-grade{font-family:var(--f-serif);font-size:14px;font-weight:700;color:var(--green);margin-bottom:3px;}
+.score-rank{font-size:11.5px;color:var(--tx2);margin-bottom:14px;}
+.score-bars{width:100%;display:flex;flex-direction:column;gap:6px;}
+.rb-row{display:flex;align-items:center;gap:8px;}
+.rb-k{font-size:10.5px;color:var(--tx2);width:50px;text-align:left;}
+.rb-track{flex:1;height:5px;background:var(--soft);border-radius:3px;overflow:hidden;}
+.rb-fill{height:100%;border-radius:3px;background:var(--green);}
+.rb-v{font-size:10.5px;color:var(--tx);width:22px;text-align:right;font-weight:600;}
+
+/* ── CARD BASE ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--sh-sm);}
+.card-title{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px;}
+.card-sub{font-size:11px;color:var(--tx2);margin-bottom:14px;}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+
+/* ── SENTIMENT ── */
+.sent-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.sent-l{font-size:11.5px;color:var(--tx2);width:54px;}
+.sent-track{flex:1;height:6px;background:var(--soft);border-radius:3px;overflow:hidden;}
+.sent-fill{height:100%;border-radius:3px;}
+.sent-pct{font-size:11.5px;width:30px;text-align:right;font-weight:600;}
+.divider{height:1px;background:var(--border);margin:12px 0;}
+.topic-cloud{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.topic{font-size:10.5px;padding:3px 9px;border-radius:100px;font-weight:500;}
+
+/* ── RANKING ── */
+.rank-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.rank-item:last-child{border:none;padding-bottom:0;}
+.rank-item.you{background:var(--green-l);border:1px solid var(--green-b);border-radius:8px;padding:9px 10px;margin:3px -10px;}
+.rk-n{font-family:var(--f-serif);font-size:14px;font-weight:700;color:var(--tx3);width:18px;text-align:center;flex-shrink:0;}
+.rk-n.you{color:var(--green);}
+.rk-info{flex:1;}
+.rk-name{font-size:12.5px;font-weight:500;color:var(--tx);}
+.rk-name.you{color:var(--green);font-weight:600;}
+.rk-sub{font-size:10.5px;color:var(--tx3);margin-top:1px;}
+.rk-score{font-size:12.5px;font-weight:700;color:var(--amber);}
+.rk-label{font-size:9.5px;color:var(--tx3);}
+
+/* ── FINDINGS ── */
+.finding{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.finding:last-child{border:none;padding-bottom:0;}
+.finding-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.finding-title{font-size:12.5px;font-weight:600;color:var(--tx);margin-bottom:2px;}
+.finding-desc{font-size:12px;color:var(--tx2);line-height:1.55;}
+.finding-tag{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-top:5px;}
+
+/* ── LOCKED SECTION ── */
+.locked-section{position:relative;margin-bottom:16px;}
+.locked-overlay{
+  position:absolute;inset:0;
+  background:rgba(247,246,244,.88);
+  border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:10;
+  border:1.5px dashed var(--border2);
+  backdrop-filter:blur(2px);
+  gap:8px;
+}
+.lo-icon{width:36px;height:36px;background:var(--soft);border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.lo-icon svg{width:16px;height:16px;fill:none;stroke:var(--tx3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.lo-title{font-size:13px;font-weight:700;color:var(--tx2);}
+.lo-desc{font-size:12px;color:var(--tx3);text-align:center;max-width:220px;line-height:1.45;}
+.lo-btn{font-family:var(--f-body);font-size:12px;font-weight:700;padding:8px 18px;border-radius:7px;cursor:pointer;border:none;background:var(--green);color:white;transition:all .15s;margin-top:2px;}
+.lo-btn:hover{background:var(--green2);}
+.locked-content{filter:blur(3px);pointer-events:none;user-select:none;border-radius:14px;overflow:hidden;}
+
+/* ── UPGRADE MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:flex;align-items:center;justify-content:center;display:none;}
+.modal-bg.on{display:flex;}
+.modal{background:var(--white);border-radius:20px;width:560px;max-width:90vw;box-shadow:var(--sh-lg);overflow:hidden;}
+.modal-top{background:var(--green);padding:28px 32px;position:relative;overflow:hidden;}
+.modal-top::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:rgba(255,255,255,.06);border-radius:50%;}
+.modal-eyebrow{font-size:10px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.modal-title{font-family:var(--f-serif);font-size:22px;font-weight:700;color:white;margin-bottom:6px;line-height:1.2;position:relative;z-index:1;}
+.modal-subtitle{font-size:13px;color:rgba(255,255,255,.75);position:relative;z-index:1;}
+.modal-body{padding:24px 32px;}
+.modal-price-row{display:flex;align-items:baseline;gap:4px;margin-bottom:6px;}
+.modal-price{font-family:var(--f-serif);font-size:36px;font-weight:700;color:var(--tx);}
+.modal-period{font-size:14px;color:var(--tx2);}
+.modal-price-note{font-size:12px;color:var(--tx2);margin-bottom:18px;}
+.modal-feats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;}
+.modal-feat{display:flex;align-items:flex-start;gap:7px;font-size:12.5px;color:var(--tx2);}
+.modal-feat::before{content:'✓';color:var(--green);font-weight:700;font-size:12px;flex-shrink:0;margin-top:1px;}
+.modal-feat strong{color:var(--tx);font-weight:600;}
+.modal-cta{width:100%;background:var(--green);color:white;font-family:var(--f-body);font-size:14px;font-weight:700;padding:13px;border-radius:9px;border:none;cursor:pointer;transition:all .15s;margin-bottom:10px;}
+.modal-cta:hover{background:var(--green2);}
+.modal-close-btn{width:100%;background:transparent;color:var(--tx3);font-family:var(--f-body);font-size:12.5px;font-weight:500;padding:8px;border-radius:8px;border:none;cursor:pointer;}
+.modal-close-btn:hover{color:var(--tx2);}
+
+/* ── WHAT YOU'RE MISSING CTA ── */
+.missing-section{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:16px;box-shadow:var(--sh-sm);}
+.missing-title{font-family:var(--f-serif);font-size:16px;font-weight:700;color:var(--tx);margin-bottom:4px;}
+.missing-sub{font-size:12.5px;color:var(--tx2);margin-bottom:18px;}
+.missing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.missing-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative;}
+.mi-icon{font-size:18px;margin-bottom:7px;}
+.mi-title{font-size:12.5px;font-weight:600;color:var(--tx);margin-bottom:3px;}
+.mi-desc{font-size:11.5px;color:var(--tx2);line-height:1.5;}
+.mi-lock{position:absolute;top:10px;right:10px;width:16px;height:16px;background:var(--soft);border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.mi-lock svg{width:8px;height:8px;fill:none;stroke:var(--tx3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.missing-cta-row{display:flex;align-items:center;justify-content:space-between;background:var(--green-l);border:1px solid var(--green-b);border-radius:10px;padding:14px 18px;}
+.mcr-left{}
+.mcr-title{font-size:13px;font-weight:600;color:var(--green2);margin-bottom:2px;}
+.mcr-desc{font-size:11.5px;color:var(--green2);opacity:.8;}
+.mcr-btn{font-family:var(--f-body);font-size:13px;font-weight:700;padding:10px 22px;border-radius:8px;cursor:pointer;border:none;background:var(--green);color:white;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.mcr-btn:hover{background:var(--green2);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sb-logo" onclick="location.href='colorcraftai-v6_refactored_3.html'" style="cursor:pointer">
+    <div class="sb-logo-mark">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="sb-logo-text">Colorcraft<em>AI</em></div>
+  </div>
+  <div class="sb-biz">
+    <div class="sb-biz-label">Business profile</div>
+    <div class="sb-biz-name">Spice Garden Restaurant</div>
+    <div class="sb-biz-meta">Mumbai South · Google Business</div>
+    <div class="sb-plan-tag">
+      <svg viewBox="0 0 24 24" width="10" height="10"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Reputation Scan · One-time
+    </div>
+  </div>
+
+    <nav class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <div class="sb-item on">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="sb-item-locked">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Reviews
+      <svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+
+    <div class="sb-section">AI Tools</div>
+    <div class="sb-item-locked">
+      <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      AI Auto-Replies
+      <svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="sb-item-locked">
+      <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.64 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l.61-.61a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      WhatsApp Alerts
+      <svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+
+    <div class="sb-section">Analytics</div>
+    <div class="sb-item-locked">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Analytics
+      <svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="sb-item-locked">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Competitor Tracking
+      <svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+
+    <div class="sb-section">Reports</div>
+    <div class="sb-item-locked">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      PDF Reports
+      <svg class="lock-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+
+    <div class="sb-section">Account</div>
+    <div class="sb-item" onclick="">
+      <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Billing
+    </div>
+    <div class="sb-item" onclick="">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </div>
+  </nav>
+
+  <div class="sb-upgrade">
+    <div class="sb-upgrade-card" onclick="location.href='colorcraftai-onboarding.html'">
+      <div class="sb-up-label">Upgrade to unlock</div>
+      <div class="sb-up-title">Full AI Management</div>
+      <div class="sb-up-desc">AI replies, WhatsApp alerts, live monitoring & more.</div>
+      <button class="sb-up-btn">Upgrade — ₹2,999/mo →</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title">Reputation Scan Report</div>
+      <div class="page-meta">Generated Dec 5, 2025 · Spice Garden Restaurant · Mumbai</div>
+    </div>
+    <div class="topbar-right">
+      <div class="scan-badge">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        One-time Scan
+      </div>
+      <button class="tb-btn tb-btn-ghost">↓ Download PDF</button>
+      <button class="tb-btn tb-btn-green" onclick="location.href='colorcraftai-onboarding.html'">Upgrade to Full Management →</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- UPGRADE BANNER -->
+    <div class="upgrade-banner">
+      <div class="ub-left">
+        <div class="ub-eyebrow">Your scan is ready — here's what's next</div>
+        <div class="ub-title">Your reputation has gaps.<br>AI can fix them automatically.</div>
+        <div class="ub-desc">This scan shows you the problem. Full AI Management solves it — with real-time replies, WhatsApp alerts, and live competitor tracking.</div>
+        <div class="ub-features">
+          <div class="ub-feat">AI replies in &lt;60 seconds</div>
+          <div class="ub-feat">WhatsApp alerts for bad reviews</div>
+          <div class="ub-feat">Live monitoring 24/7</div>
+          <div class="ub-feat">Hindi, English & Hinglish</div>
+        </div>
+      </div>
+      <div class="ub-right">
+        <div class="ub-price">₹2,999</div>
+        <div class="ub-price-label">/month · cancel anytime</div>
+        <button class="ub-cta" onclick="location.href='colorcraftai-onboarding.html'">Start Full Management →</button>
+        <div class="ub-note">No credit card needed to start</div>
+      </div>
+    </div>
+
+    <!-- SCAN COMPLETE HEADER -->
+    <div class="scan-complete">
+      <div class="scan-check">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="scan-complete-info">
+        <div class="sc-title">Reputation scan complete — 1,240 reviews analysed</div>
+        <div class="sc-sub">Scanned Dec 5, 2025 · Google Business Profile · Spice Garden Restaurant, Mumbai South · Competitor data included</div>
+      </div>
+      <div class="scan-complete-actions">
+        <button class="sc-dl sc-dl-ghost">Share report</button>
+        <button class="sc-dl sc-dl-primary">↓ Download PDF report</button>
+      </div>
+    </div>
+
+    <!-- KPI STRIP -->
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-top-bar" style="background:var(--amber)"></div>
+        <div class="kpi-label">Current rating</div>
+        <div class="kpi-value" style="color:var(--amber)">3.8★</div>
+        <div class="kpi-delta dn">↓ Below category avg of 4.3★</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-top-bar" style="background:var(--blue)"></div>
+        <div class="kpi-label">Total reviews</div>
+        <div class="kpi-value">1,240</div>
+        <div class="kpi-delta neu">Scanned at time of report</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-top-bar" style="background:var(--red)"></div>
+        <div class="kpi-label">Response rate</div>
+        <div class="kpi-value" style="color:var(--red)">11%</div>
+        <div class="kpi-delta dn">↓ Industry avg is 68%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-top-bar" style="background:var(--amber)"></div>
+        <div class="kpi-label">Local rank</div>
+        <div class="kpi-value" style="color:var(--amber)">#7</div>
+        <div class="kpi-delta dn">Out of 12 in category</div>
+      </div>
+    </div>
+
+    <!-- SCORE + SENTIMENT + RANKING -->
+    <div class="score-row">
+      <!-- Reputation Score -->
+      <div class="score-card">
+        <div class="ring-wrap">
+          <svg width="110" height="110" viewBox="0 0 110 110">
+            <circle cx="55" cy="55" r="46" fill="none" stroke="#f0ede8" stroke-width="11"/>
+            <circle cx="55" cy="55" r="46" fill="none" stroke="#b45309" stroke-width="11" stroke-dasharray="145 144" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-center">
+            <div class="ring-num" style="color:var(--amber)">58</div>
+            <div class="ring-lbl">Score</div>
+          </div>
+        </div>
+        <div class="score-grade" style="color:var(--amber)">Needs Improvement</div>
+        <div class="score-rank">Ranked #7 of 12 · Mumbai South</div>
+        <div class="score-bars">
+          <div class="rb-row"><span class="rb-k">Service</span><div class="rb-track"><div class="rb-fill" style="width:72%;background:var(--amber)"></div></div><span class="rb-v">3.6</span></div>
+          <div class="rb-row"><span class="rb-k">Food</span><div class="rb-track"><div class="rb-fill" style="width:80%;background:var(--green)"></div></div><span class="rb-v">4.0</span></div>
+          <div class="rb-row"><span class="rb-k">Ambiance</span><div class="rb-track"><div class="rb-fill" style="width:76%;background:var(--amber)"></div></div><span class="rb-v">3.8</span></div>
+          <div class="rb-row"><span class="rb-k">Value</span><div class="rb-track"><div class="rb-fill" style="width:70%;background:var(--amber)"></div></div><span class="rb-v">3.5</span></div>
+        </div>
+      </div>
+
+      <!-- Sentiment -->
+      <div class="card">
+        <div class="card-title">Sentiment breakdown</div>
+        <div class="card-sub">AI-classified across all 1,240 reviews</div>
+        <div class="sent-row"><span class="sent-l">Positive</span><div class="sent-track"><div class="sent-fill" style="width:52%;background:var(--green)"></div></div><span class="sent-pct" style="color:var(--green)">52%</span></div>
+        <div class="sent-row"><span class="sent-l">Neutral</span><div class="sent-track"><div class="sent-fill" style="width:22%;background:var(--amber)"></div></div><span class="sent-pct" style="color:var(--amber)">22%</span></div>
+        <div class="sent-row"><span class="sent-l">Negative</span><div class="sent-track"><div class="sent-fill" style="width:26%;background:var(--red)"></div></div><span class="sent-pct" style="color:var(--red)">26%</span></div>
+        <div class="divider"></div>
+        <div style="font-size:11px;color:var(--tx2);margin-bottom:7px;font-weight:600;">Top mentioned topics</div>
+        <div class="topic-cloud">
+          <span class="topic" style="background:var(--green-l);color:var(--green2)">Food taste</span>
+          <span class="topic" style="background:var(--red-l);color:var(--red)">Slow service</span>
+          <span class="topic" style="background:var(--red-l);color:var(--red)">Long wait</span>
+          <span class="topic" style="background:var(--soft);color:var(--tx2)">Parking</span>
+          <span class="topic" style="background:var(--green-l);color:var(--green2)">Biryani</span>
+          <span class="topic" style="background:var(--red-l);color:var(--red)">Rude staff</span>
+          <span class="topic" style="background:var(--soft);color:var(--tx2)">Price</span>
+        </div>
+      </div>
+
+      <!-- Rankings -->
+      <div class="card">
+        <div class="card-title">Competitor ranking</div>
+        <div class="card-sub">Indian restaurants · Mumbai South</div>
+        <div class="rank-item"><div class="rk-n">1</div><div class="rk-info"><div class="rk-name">Bombay Bites</div><div class="rk-sub">2,100 reviews</div></div><div><div class="rk-score">4.9★</div><div class="rk-label">Leader</div></div></div>
+        <div class="rank-item"><div class="rk-n">2</div><div class="rk-info"><div class="rk-name">The Curry House</div><div class="rk-sub">1,800 reviews</div></div><div><div class="rk-score">4.7★</div><div class="rk-label">Competitor</div></div></div>
+        <div class="rank-item"><div class="rk-n">3</div><div class="rk-info"><div class="rk-name">Masala Junction</div><div class="rk-sub">1,420 reviews</div></div><div><div class="rk-score">4.5★</div><div class="rk-label">Competitor</div></div></div>
+        <div class="rank-item"><div class="rk-n">4</div><div class="rk-info"><div class="rk-name">Saffron Palace</div><div class="rk-sub">980 reviews</div></div><div><div class="rk-score">4.4★</div><div class="rk-label">Competitor</div></div></div>
+        <div class="rank-item you"><div class="rk-n you">7</div><div class="rk-info"><div class="rk-name you">Spice Garden · You</div><div class="rk-sub">1,240 reviews</div></div><div><div class="rk-score">3.8★</div><div class="rk-label" style="color:var(--amber)">Your profile</div></div></div>
+      </div>
+    </div>
+
+    <!-- KEY FINDINGS -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Key findings & action plan</div>
+          <div class="card-sub">What's hurting your reputation — and how to fix it</div>
+        </div>
+        <div style="font-size:11px;color:var(--tx3);">3 critical · 2 opportunities</div>
+      </div>
+      <div class="finding">
+        <div class="finding-dot" style="background:var(--red)"></div>
+        <div>
+          <div class="finding-title">89% of negative reviews go unanswered</div>
+          <div class="finding-desc">You replied to only 11% of reviews in the last 6 months. Unanswered negative reviews drive away new customers who see them on Google Maps. The industry benchmark is 68% response rate.</div>
+          <div class="finding-tag" style="background:var(--red-l);color:var(--red);border:1px solid var(--red-b)">🚨 Critical — fix this first</div>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-dot" style="background:var(--red)"></div>
+        <div>
+          <div class="finding-title">Friday evenings are generating 34% of your 1-star reviews</div>
+          <div class="finding-desc">Between 7–10 PM on Fridays, wait times spike and kitchen quality drops. This single time window is responsible for most of your rating damage. Adding one more kitchen staff member during this window could fix it.</div>
+          <div class="finding-tag" style="background:var(--red-l);color:var(--red);border:1px solid var(--red-b)">🚨 Critical — operational fix needed</div>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-dot" style="background:var(--amber)"></div>
+        <div>
+          <div class="finding-title">Staff complaints in 18% of all reviews</div>
+          <div class="finding-desc">Words like "rude," "ignored," and "unhelpful" appear in 224 reviews. This is the second most common complaint after wait times. A team briefing on customer communication would have immediate impact.</div>
+          <div class="finding-tag" style="background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)">⚠ High impact</div>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-dot" style="background:var(--green)"></div>
+        <div>
+          <div class="finding-title">Food quality is your biggest strength — use it</div>
+          <div class="finding-desc">63% of positive reviews specifically praise your biryani, butter chicken, and dal makhani. Your Google Business Profile doesn't highlight these dishes. Add photos and update your description to convert more profile viewers into customers.</div>
+          <div class="finding-tag" style="background:var(--green-l);color:var(--green2);border:1px solid var(--green-b)">✓ Opportunity</div>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-dot" style="background:var(--green)"></div>
+        <div>
+          <div class="finding-title">You have the reviews to reach #2 — you just need to respond</div>
+          <div class="finding-desc">Your review volume (1,240) is the 3rd highest in your category. Your rating (3.8★) is the bottleneck. Competitors ranked above you have comparable review counts but better response rates. Responding consistently is the fastest path to #2.</div>
+          <div class="finding-tag" style="background:var(--green-l);color:var(--green2);border:1px solid var(--green-b)">✓ Quick win</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOCKED: AI REPLIES PREVIEW -->
+    <div class="locked-section">
+      <div class="locked-content">
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-header">
+            <div><div class="card-title">AI reply drafts for your worst reviews</div><div class="card-sub">Ready to post — tuned to each reviewer</div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;padding:4px 0 0;">
+            <div style="background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px 14px;">
+              <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">★☆☆☆☆ Amit Kumar · "Waited 45 mins, food cold"</div>
+              <div style="font-size:12.5px;color:var(--tx2);font-style:italic;line-height:1.55;">"Hi Amit, we sincerely apologise — long waits and cold food are not acceptable. We have spoken to our kitchen team immediately. We'd love to make it right for you. Please DM us for a complimentary meal."</div>
+            </div>
+            <div style="background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px 14px;">
+              <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">★★☆☆☆ Ravi Joshi · "Rude waiter, slow service"</div>
+              <div style="font-size:12.5px;color:var(--tx2);font-style:italic;line-height:1.55;">"Hi Ravi, this is deeply concerning and not the standard we hold ourselves to. We have addressed this with the team member involved and are committed to doing better. We'd be honoured to host you again."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="locked-overlay">
+        <div class="lo-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="lo-title">AI replies locked</div>
+        <div class="lo-desc">Upgrade to Full Management to post AI replies to all 1,240 reviews — including these.</div>
+        <button class="lo-btn" onclick="location.href='colorcraftai-onboarding.html'">Unlock AI replies →</button>
+      </div>
+    </div>
+
+    <!-- LOCKED: LIVE ANALYTICS -->
+    <div class="locked-section" style="margin-bottom:16px;">
+      <div class="locked-content">
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-header">
+            <div><div class="card-title">Live rating trend</div><div class="card-sub">Real-time tracking — updated daily</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:4px;height:80px;padding:4px 0;">
+            <div style="flex:1;height:55%;background:#fee2e2;border-radius:3px 3px 0 0;"></div>
+            <div style="flex:1;height:48%;background:#fee2e2;border-radius:3px 3px 0 0;"></div>
+            <div style="flex:1;height:60%;background:#fecaca;border-radius:3px 3px 0 0;"></div>
+            <div style="flex:1;height:52%;background:#fca5a5;border-radius:3px 3px 0 0;"></div>
+            <div style="flex:1;height:65%;background:#f87171;border-radius:3px 3px 0 0;"></div>
+            <div style="flex:1;height:58%;background:#ef4444;border-radius:3px 3px 0 0;"></div>
+            <div style="flex:1;height:70%;background:#dc2626;border-radius:3px 3px 0 0;"></div>
+            <div style="flex:1;height:63%;background:#b91c1c;border-radius:3px 3px 0 0;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="locked-overlay">
+        <div class="lo-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="lo-title">Live analytics locked</div>
+        <div class="lo-desc">Track your rating in real time, week over week, with Full Management.</div>
+        <button class="lo-btn" onclick="location.href='colorcraftai-onboarding.html'">Unlock live tracking →</button>
+      </div>
+    </div>
+
+    <!-- WHAT YOU'RE MISSING -->
+    <div class="missing-section">
+      <div class="missing-title">What Full AI Management does that this scan can't</div>
+      <div class="missing-sub">Your scan identified the problems. Full Management fixes them — automatically, every day, without you lifting a finger.</div>
+      <div class="missing-grid">
+        <div class="missing-item">
+          <div class="mi-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="mi-icon">✍️</div>
+          <div class="mi-title">AI replies to every review</div>
+          <div class="mi-desc">Personalised, contextual replies in Hindi, English, or Hinglish — posted in under 60 seconds automatically.</div>
+        </div>
+        <div class="missing-item">
+          <div class="mi-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="mi-icon">💬</div>
+          <div class="mi-title">WhatsApp alert for bad reviews</div>
+          <div class="mi-desc">Instant WhatsApp when a 1★ or 2★ review lands. Reply with one tap before the damage spreads.</div>
+        </div>
+        <div class="missing-item">
+          <div class="mi-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="mi-icon">📊</div>
+          <div class="mi-title">Live competitor tracking</div>
+          <div class="mi-desc">Watch your ranking vs competitors update daily — get alerts when someone overtakes you.</div>
+        </div>
+        <div class="missing-item">
+          <div class="mi-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="mi-icon">📈</div>
+          <div class="mi-title">Real-time rating monitoring</div>
+          <div class="mi-desc">Your rating tracked daily. See what's moving it up or down and exactly why.</div>
+        </div>
+        <div class="missing-item">
+          <div class="mi-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="mi-icon">📄</div>
+          <div class="mi-title">Monthly branded PDF reports</div>
+          <div class="mi-desc">Auto-generated reports every month — share with your team or keep for records.</div>
+        </div>
+        <div class="missing-item">
+          <div class="mi-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="mi-icon">🧠</div>
+          <div class="mi-title">Weekly AI insight reports</div>
+          <div class="mi-desc">What changed, what's trending, and what action to take — delivered to WhatsApp every Monday.</div>
+        </div>
+      </div>
+      <div class="missing-cta-row">
+        <div class="mcr-left">
+          <div class="mcr-title">Your scan found 3 critical issues. Full Management fixes all of them.</div>
+          <div class="mcr-desc">Join 240+ Indian businesses already using ColorcraftAI · GST invoice included · Cancel anytime</div>
+        </div>
+        <button class="mcr-btn" onclick="location.href='colorcraftai-onboarding.html'">Start Full Management — ₹2,999/mo →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ── UPGRADE MODAL ── -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-top">
+      <div class="modal-eyebrow">Upgrade your plan</div>
+      <div class="modal-title">Full AI Management</div>
+      <div class="modal-subtitle">Everything in your scan report — fixed automatically, every single day.</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-price-row">
+        <div class="modal-price">₹2,999</div>
+        <div class="modal-period">/month</div>
+      </div>
+      <div class="modal-price-note">or ₹28,790/year · save ₹7,198 · GST invoice on every payment · cancel anytime</div>
+      <div class="modal-feats">
+        <div class="modal-feat"><strong>AI replies</strong> in &lt;60 seconds</div>
+        <div class="modal-feat"><strong>WhatsApp alerts</strong> for 1★ & 2★</div>
+        <div class="modal-feat"><strong>Hindi, English & Hinglish</strong> support</div>
+        <div class="modal-feat"><strong>Live competitor</strong> tracking</div>
+        <div class="modal-feat"><strong>Monthly PDF</strong> reports auto-generated</div>
+        <div class="modal-feat"><strong>Real-time</strong> rating monitoring</div>
+        <div class="modal-feat"><strong>GBP Photo</strong> Manager included</div>
+        <div class="modal-feat"><strong>Weekly AI insights</strong> on WhatsApp</div>
+      </div>
+      <button class="modal-cta">Start Full Management — ₹2,999/month →</button>
+      <button class="modal-close-btn" onclick="closeModal()">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(){document.getElementById('modal').classList.add('on');}
+function closeModal(){document.getElementById('modal').classList.remove('on');}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+</script>
+<script>
+(function () {
+  'use strict';
+
+  var OPENAI_URL  = 'https://api.openai.com/v1/chat/completions';
+  var MODEL       = 'gpt-4o';
+  var MODEL_LEARN = 'gpt-4o-mini';
+  var INSIGHT_KEY = 'keerti_insights_v1';
+  var PERSIST_VER = 'v3';
+
+  // ── FONT ────────────────────────────────────────────────────────
+  (function () {
+    if (!document.getElementById('ki-font')) {
+      var l = document.createElement('link');
+      l.id = 'ki-font'; l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap';
+      document.head.appendChild(l);
+    }
+  })();
+
+  // ── CSS ─────────────────────────────────────────────────────────
+  var CSS = `
+    #ki * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+
+    /* ── LAUNCHER BUBBLE ── */
+    #ki-bubble {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #16a34a; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(22,163,74,.45), 0 1px 4px rgba(0,0,0,.1);
+      transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+      z-index: 2147483640;
+    }
+    #ki-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(22,163,74,.55); }
+    #ki-bubble svg { width: 24px; height: 24px; color: #fff; }
+    #ki-bubble.open #ki-ico-chat { display: none; }
+    #ki-bubble.open #ki-ico-close { display: block !important; }
+    #ki-ico-close { display: none; }
+
+    /* Badge */
+    #ki-badge {
+      position: fixed; bottom: 66px; right: 20px;
+      min-width: 18px; height: 18px; padding: 0 4px;
+      border-radius: 99px; background: #ef4444; border: 2px solid #fff;
+      color: #fff; font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2147483641; transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+    }
+    #ki-badge.hidden { display: none; }
+
+    /* ── PANEL ── */
+    #ki-panel {
+      position: fixed; bottom: 88px; right: 24px;
+      width: 376px; height: 580px; max-height: calc(100vh - 110px);
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.18), 0 4px 16px rgba(0,0,0,.08);
+      z-index: 2147483647; display: none; flex-direction: column;
+      overflow: hidden; animation: ki-open .22s cubic-bezier(.16,1,.3,1);
+    }
+    #ki-panel.open { display: flex; }
+    @keyframes ki-open {
+      from { opacity: 0; transform: translateY(16px) scale(.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── HEADER ── */
+    #ki-header {
+      background: linear-gradient(160deg, #14532d 0%, #16a34a 100%);
+      padding: 20px 18px 18px; flex-shrink: 0; position: relative;
+      overflow: hidden;
+    }
+    #ki-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top right, rgba(255,255,255,.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    #ki-hdr-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
+    #ki-agent-row { display: flex; align-items: center; gap: 10px; }
+    #ki-agent-av {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      border: 2px solid rgba(255,255,255,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    #ki-agent-info {}
+    #ki-agent-name { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -.15px; }
+    #ki-agent-status { font-size: 11.5px; color: rgba(255,255,255,.75); margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+    .ki-online { width: 6px; height: 6px; border-radius: 50%; background: #86efac; box-shadow: 0 0 0 2px rgba(134,239,172,.3); animation: ki-pulse 2s infinite; }
+    @keyframes ki-pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    #ki-hdr-close {
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 8px; width: 30px; height: 30px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: #fff; transition: background .15s; position: relative; z-index: 1;
+    }
+    #ki-hdr-close:hover { background: rgba(255,255,255,.28); }
+    #ki-hdr-close svg { width: 14px; height: 14px; }
+    #ki-hdr-tagline {
+      font-size: 12.5px; color: rgba(255,255,255,.8); margin-top: 14px;
+      line-height: 1.5; position: relative; z-index: 1;
+    }
+
+    /* ── LEARN STRIP ── */
+    #ki-learn-strip {
+      background: #f0fdf4; border-bottom: 1px solid #dcfce7;
+      padding: 8px 16px; display: none; align-items: center;
+      justify-content: space-between; flex-shrink: 0;
+    }
+    #ki-learn-strip.show { display: flex; }
+    #ki-learn-label { font-size: 11px; color: #15803d; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+    #ki-learn-actions { display: flex; gap: 8px; }
+    .ki-learn-btn { font-size: 10.5px; cursor: pointer; font-weight: 500; background: none; border: none; padding: 0; }
+    #ki-learn-view { color: #15803d; }
+    #ki-learn-view:hover { text-decoration: underline; }
+    #ki-learn-dismiss { color: #a1a1aa; }
+
+    /* ── INSIGHT DRAWER ── */
+    #ki-drawer {
+      background: #f9fafb; border-bottom: 1px solid #f0f0f0;
+      display: none; padding: 12px 16px; flex-shrink: 0;
+      animation: ki-fade .18s ease;
+    }
+    #ki-drawer.open { display: block; }
+    @keyframes ki-fade { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+    #ki-drawer-title { font-size: 11px; font-weight: 600; color: #09090b; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; }
+    #ki-drawer-clear { font-size: 10px; color: #a1a1aa; cursor: pointer; font-weight: 400; }
+    #ki-drawer-clear:hover { color: #ef4444; }
+    #ki-drawer-list { display: flex; flex-direction: column; gap: 4px; }
+    .ki-ins { font-size: 11px; color: #52525b; padding: 5px 8px; background: #fff; border: 1px solid #f0f0f0; border-radius: 6px; line-height: 1.5; }
+    .ki-ins-empty { font-size: 11px; color: #a1a1aa; font-style: italic; }
+
+    /* ── MESSAGES ── */
+    #ki-msgs {
+      flex: 1; overflow-y: auto; padding: 16px 14px 10px;
+      display: flex; flex-direction: column; gap: 4px;
+      scroll-behavior: smooth;
+    }
+    #ki-msgs::-webkit-scrollbar { width: 3px; }
+    #ki-msgs::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 3px; }
+
+    /* Message groups */
+    .ki-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+    .ki-group.user { align-items: flex-end; }
+    .ki-group.ai   { align-items: flex-start; }
+
+    /* Agent row in group */
+    .ki-group-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .ki-group.user .ki-group-meta { justify-content: flex-end; }
+    .ki-mini-av {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #16a34a; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ki-mini-av svg { width: 9px; height: 9px; color: #fff; }
+    .ki-sender { font-size: 11px; font-weight: 600; color: #3f3f46; }
+    .ki-ago    { font-size: 10.5px; color: #a1a1aa; }
+
+    /* Bubbles */
+    .ki-bubble {
+      max-width: 280px; font-size: 13px; line-height: 1.6;
+      padding: 10px 14px; border-radius: 18px;
+      word-break: break-word; animation: ki-msg .18s ease;
+    }
+    @keyframes ki-msg { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+    .ki-bubble.ai {
+      background: #f4f4f5; color: #09090b;
+      border-radius: 4px 18px 18px 18px;
+    }
+    .ki-bubble.ai strong { color: #16a34a; font-weight: 600; }
+    .ki-bubble.user {
+      background: #f0fdf4; color: #14532d;
+      border-radius: 18px 4px 18px 18px;
+      border: 1px solid #bbf7d0;
+    }
+    /* Multi-bubble stacking */
+    .ki-group.ai  .ki-bubble:not(:last-child)  { border-radius: 4px 18px 18px 4px; margin-bottom: 2px; }
+    .ki-group.user .ki-bubble:not(:last-child)  { border-radius: 18px 4px 4px 18px; margin-bottom: 2px; }
+
+    /* Typing */
+    #ki-typing {
+      display: none; align-items: center; gap: 6px;
+      margin-bottom: 8px; animation: ki-msg .18s ease;
+    }
+    #ki-typing.show { display: flex; }
+    .ki-typing-dots {
+      background: #f4f4f5; border-radius: 4px 18px 18px 18px;
+      padding: 12px 16px; display: flex; gap: 4px; align-items: center;
+    }
+    .ki-dot { width: 5px; height: 5px; border-radius: 50%; background: #a1a1aa; animation: ki-bounce .9s infinite; }
+    .ki-dot:nth-child(2) { animation-delay: .15s; }
+    .ki-dot:nth-child(3) { animation-delay: .3s; }
+    @keyframes ki-bounce { 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-5px);opacity:1} }
+
+    /* System messages */
+    .ki-system {
+      text-align: center; font-size: 11px; color: #a1a1aa;
+      margin: 8px 0; display: flex; align-items: center; gap: 8px;
+    }
+    .ki-system::before,.ki-system::after { content:''; flex:1; height:1px; background:#f0f0f0; }
+
+    /* Email capture card */
+    .ki-card {
+      background: #fff; border: 1px solid #e4e4e7;
+      border-radius: 14px; padding: 14px; margin: 6px 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .ki-card-title { font-size: 12px; font-weight: 600; color: #09090b; margin-bottom: 10px; }
+    .ki-card-row { display: flex; gap: 0; }
+    .ki-card-input {
+      flex: 1; border: 1px solid #e4e4e7; border-radius: 8px 0 0 8px;
+      padding: 8px 12px; font-size: 12.5px; color: #09090b;
+      background: #fafafa; outline: none; font-family: inherit;
+      transition: border-color .15s;
+    }
+    .ki-card-input:focus { border-color: #16a34a; background: #fff; }
+    .ki-card-input::placeholder { color: #a1a1aa; }
+    .ki-card-submit {
+      background: #16a34a; border: none; border-radius: 0 8px 8px 0;
+      width: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .ki-card-submit:hover { background: #15803d; }
+    .ki-card-submit svg { width: 14px; height: 14px; color: #fff; }
+
+    /* Suggestions */
+    #ki-sugg {
+      padding: 0 14px 10px; display: flex; flex-wrap: wrap; gap: 6px;
+      flex-shrink: 0;
+    }
+    /* Inline follow-up suggestions inside messages */
+    .ki-followup {
+      display: flex; flex-direction: column; gap: 5px;
+      margin-top: 10px; margin-bottom: 4px;
+      padding-left: 26px; animation: ki-msg .25s ease;
+    }
+    .ki-followup-label {
+      font-size: 10px; font-weight: 600; color: #a1a1aa;
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-bottom: 2px;
+    }
+    .ki-sug {
+      background: #fff; border: 1px solid #e4e4e7; border-radius: 99px;
+      padding: 5px 12px; font-size: 12px; font-weight: 500; color: #3f3f46;
+      cursor: pointer; transition: all .12s; white-space: nowrap;
+      text-align: left; display: inline-block; width: fit-content;
+    }
+    .ki-sug:hover { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+
+    /* ── INPUT BAR ── */
+    #ki-bar {
+      border-top: 1px solid #f4f4f5; padding: 10px 12px;
+      display: flex; align-items: flex-end; gap: 8px;
+      background: #fff; flex-shrink: 0;
+    }
+    #ki-input {
+      flex: 1; border: 1.5px solid #e4e4e7; border-radius: 10px;
+      padding: 9px 13px; font-size: 13px; color: #09090b;
+      background: #fafafa; outline: none; resize: none;
+      min-height: 38px; max-height: 90px; line-height: 1.5;
+      font-family: inherit; transition: border-color .15s, box-shadow .15s;
+    }
+    #ki-input:focus { border-color: #86efac; background: #fff; box-shadow: 0 0 0 3px rgba(22,163,74,.08); }
+    #ki-input::placeholder { color: #a1a1aa; }
+    #ki-send {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: #16a34a; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background .15s, transform .15s;
+      box-shadow: 0 2px 8px rgba(22,163,74,.3);
+    }
+    #ki-send:hover { background: #15803d; transform: scale(1.05); }
+    #ki-send:disabled { background: #d4d4d8; box-shadow: none; cursor: not-allowed; transform: none; }
+    #ki-send svg { width: 15px; height: 15px; color: #fff; }
+
+    /* Footer */
+    #ki-footer { text-align: center; padding: 6px; font-size: 10px; color: #d4d4d8; background: #fff; flex-shrink: 0; }
+
+    /* Toast */
+    #ki-toast {
+      position: fixed; bottom: 92px; right: 86px;
+      background: #09090b; color: #fff;
+      font-size: 11.5px; padding: 8px 13px; border-radius: 9px;
+      display: none; z-index: 2147483648;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      animation: ki-open .2s ease; white-space: nowrap;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    @media (max-width: 480px) {
+      #ki-panel { width: calc(100vw - 12px); right: 6px; bottom: 80px; height: calc(100vh - 96px); border-radius: 16px; }
+      #ki-bubble { bottom: 16px; right: 16px; }
+      #ki-badge  { bottom: 60px; right: 12px; }
+    }
+  `;
+
+  // ── ICONS ────────────────────────────────────────────────────────
+  function icon(d, s) {
+    s = s || 16;
+    return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';
+  }
+  var I_CHAT  = '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>';
+  var I_CLOSE = '<path d="M18 6L6 18M6 6l12 12"/>';
+  var I_SEND  = '<path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/>';
+  var I_SPARK = '<path d="M12 2L9.5 9.5L2 12L9.5 14.5L12 22L14.5 14.5L22 12L14.5 9.5Z"/>';
+  var I_ARROW = '<path d="M5 12h14M12 5l7 7-7 7"/>';
+
+  // ── INSIGHT STORE ────────────────────────────────────────────────
+  function loadInsights(page) {
+    try { return (JSON.parse(localStorage.getItem(INSIGHT_KEY))||{})[page]||[]; }
+    catch(e) { return []; }
+  }
+  function saveInsight(page, text) {
+    if (!text||text.length<8) return false;
+    try {
+      var all = JSON.parse(localStorage.getItem(INSIGHT_KEY))||{};
+      var arr = all[page]||[];
+      if (arr.some(function(i){ return i.toLowerCase().slice(0,25)===text.toLowerCase().slice(0,25); })) return false;
+      all[page] = [text].concat(arr).slice(0,12);
+      localStorage.setItem(INSIGHT_KEY, JSON.stringify(all));
+      return true;
+    } catch(e) { return false; }
+  }
+  function clearInsights(page) {
+    try { var all=JSON.parse(localStorage.getItem(INSIGHT_KEY))||{}; all[page]=[]; localStorage.setItem(INSIGHT_KEY,JSON.stringify(all)); } catch(e){}
+  }
+
+  // ── SYSTEM PROMPT ────────────────────────────────────────────────
+  function buildPrompt(cfg) {
+    var base = 'You are Keerti, ColorcraftAI\'s AI reputation analyst. Be direct, warm, and data-driven. Skip greetings. Max 3 sentences unless more is asked. Bold key numbers. Never say "As an AI". PRICING: ColorcraftAI costs ₹2,999/month — never quote any other price, never say $49.';
+
+    if (cfg.page === 'homepage') {
+      base += ' Demo mode. Sample: Sharma\'s Kitchen Delhi, 4.1★, 312 reviews, 34 unanswered, issues: slow service, packaging. Show capabilities. If asked about pricing, say ₹2,999/month. End with CTA to sign up.';
+
+    } else if (cfg.page === 'scan') {
+      base += ' Scan page. Business: '+(cfg.businessName||'–')+'. Score: '+(cfg.scanScore||54)+'/100. Issues: '+(Array.isArray(cfg.issues)?cfg.issues.join(', '):(cfg.issues||'low reply rate'))+'. Explain results. Recommend upgrading to Full AI Management at ₹2,999/month when natural.';
+
+    } else if (cfg.page === 'onboarding') {
+      base += ' Onboarding wizard. The user just signed up and is setting up their account — connecting Google Business Profile, configuring WhatsApp alerts, and setting AI reply preferences. Help them complete each step confidently. Reassure them if they seem unsure. Explain what each step does in plain language. Be encouraging — they are about to see results within days.';
+
+    } else if (cfg.page === 'admin') {
+      base += ' Admin panel. This is the ColorcraftAI agency owner (internal access only). They manage all client accounts. Client data: Sharma Dental 4.4★, Spice Garden 4.1★, Hotel Crown 3.8★ (needs attention), Prime Derma 4.6★, Tandoor King 4.0★. MRR: ₹58.4L total revenue to date, avg ₹2,052/client. Help with: client health checks, drafting WhatsApp updates to clients, review response queues, churn risk, and business decisions. Be concise and business-focused.';
+
+    } else {
+      base += ' Data — business:'+(cfg.businessName||'')+', rating:'+(cfg.rating||4.7)+'★, reviews:'+(cfg.reviewCount||1240)+', replyRate:'+(cfg.replyRate||98)+'%, complaints:'+(cfg.recentIssues||[]).join('/')+', rank:#'+(cfg.competitorRank||'–')+', trend:'+(cfg.ratingTrend||'stable')+'. Answer from data. Offer to draft replies when relevant.';
+    }
+
+    var ins = loadInsights(cfg.page);
+    if (ins.length) {
+      base += '\n\nLEARNED FROM PREVIOUS CONVERSATIONS:\n'+ins.map(function(i){ return '- '+i; }).join('\n')+'\n\nUse these to personalise answers.';
+    }
+    return base;
+  }
+
+  // ── AUTO-LEARN ───────────────────────────────────────────────────
+  var learnTimer = null;
+  function triggerLearn() { clearTimeout(learnTimer); learnTimer = setTimeout(doLearn, 1800); }
+  function doLearn() {
+    var cfg=state.cfg;
+    if (state.msgs.length<4) return;
+    var ep=cfg.proxyUrl||OPENAI_URL;
+    var hdr={'Content-Type':'application/json'};
+    if (!cfg.proxyUrl&&cfg.apiKey) hdr['Authorization']='Bearer '+cfg.apiKey;
+    var convo=state.msgs.map(function(m){ return m.role.toUpperCase()+': '+m.content; }).join('\n\n');
+    fetch(ep,{
+      method:'POST', headers:hdr,
+      body:JSON.stringify({
+        model:MODEL_LEARN, max_tokens:150,
+        messages:[
+          {role:'system',content:'Extract 1-3 short insights (max 12 words each) about what this user cares about. Output ONLY valid JSON array. Example: ["Prefers short answers","Concerned about competitor ratings"]'},
+          {role:'user',content:'Page: '+cfg.page+'\n\n'+convo}
+        ]
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var raw=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content;
+      if (!raw) return;
+      raw=raw.trim().replace(/```json|```/g,'').trim();
+      var arr; try{arr=JSON.parse(raw);}catch(e){return;}
+      if (!Array.isArray(arr)) return;
+      var added=0;
+      arr.forEach(function(i){ if(typeof i==='string'&&saveInsight(cfg.page,i)) added++; });
+      if (added>0) { showToast('✦ Keerti learned something new'); renderDrawer(); showLearnStrip(); }
+    })
+    .catch(function(){});
+  }
+
+  // ── PERSIST ──────────────────────────────────────────────────────
+  function pKey()   { return (state.cfg.persistKey||'ki')+'_'+PERSIST_VER; }
+  function psave()  { if(!state.cfg.persistKey) return; try{localStorage.setItem(pKey(),JSON.stringify(state.msgs));}catch(e){} }
+  function pload()  { if(!state.cfg.persistKey) return null; try{var r=localStorage.getItem(pKey());return r?JSON.parse(r):null;}catch(e){return null;} }
+  function pclear() { try{localStorage.removeItem(pKey());}catch(e){} }
+
+  // ── STATE ────────────────────────────────────────────────────────
+  var state = { open:false, msgs:[], cfg:{}, busy:false, emailCaptured:false };
+
+  // ── HELPERS ──────────────────────────────────────────────────────
+  function q(id)    { return document.getElementById(id); }
+  function el(tag, attrs, html) {
+    var e=document.createElement(tag);
+    if(attrs) Object.keys(attrs).forEach(function(k){ e.setAttribute(k,attrs[k]); });
+    if(html!==undefined) e.innerHTML=html;
+    return e;
+  }
+  function scrollBot() { var m=q('ki-msgs'); if(m) setTimeout(function(){ m.scrollTop=m.scrollHeight; },50); }
+  function ts() { var d=new Date(),h=d.getHours(),m=d.getMinutes(); return (h%12||12)+':'+(m<10?'0':'')+m+(h>=12?'pm':'am'); }
+  function md(t) { return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>'); }
+
+  // ── RENDER MESSAGES ──────────────────────────────────────────────
+  var currentGroup = null;
+  var currentGroupRole = null;
+
+  function renderMsg(role, text, time, skipGroup) {
+    var msgs = q('ki-msgs');
+    // Group consecutive same-role messages
+    if (!skipGroup && role === currentGroupRole && currentGroup && msgs.contains(currentGroup)) {
+      var bubble = el('div', { class:'ki-bubble '+( role==='user'?'user':'ai') });
+      bubble.innerHTML = md(text);
+      currentGroup.appendChild(bubble);
+    } else {
+      var group = el('div', { class:'ki-group '+(role==='user'?'user':'ai') });
+      // Meta row
+      if (role==='ai'||role==='assistant') {
+        var meta = el('div', { class:'ki-group-meta' });
+        var mav  = el('div', { class:'ki-mini-av' });
+        mav.innerHTML = icon(I_SPARK, 9);
+        meta.appendChild(mav);
+        meta.appendChild(el('span', { class:'ki-sender' }, 'Keerti'));
+        if (time) meta.appendChild(el('span', { class:'ki-ago' }, time));
+        group.appendChild(meta);
+      }
+      var bubble = el('div', { class:'ki-bubble '+(role==='user'?'user':'ai') });
+      bubble.innerHTML = md(text);
+      group.appendChild(bubble);
+      if (role==='user' && time) group.appendChild(el('div', { class:'ki-ago', style:'margin-top:3px;font-size:10.5px;color:#a1a1aa;' }, time));
+      msgs.appendChild(group);
+      currentGroup = group;
+      currentGroupRole = role;
+    }
+    scrollBot();
+  }
+
+  function renderSystem(text) {
+    var msgs = q('ki-msgs');
+    msgs.appendChild(el('div', { class:'ki-system' }, text));
+    currentGroup = null; currentGroupRole = null;
+    scrollBot();
+  }
+
+  function renderEmailCard() {
+    if (state.emailCaptured) return;
+    var msgs = q('ki-msgs');
+    var card = el('div', { class:'ki-card', id:'ki-email-card' });
+    card.innerHTML =
+      '<div class="ki-card-title">Get notified by email</div>'+
+      '<div class="ki-card-row">'+
+        '<input class="ki-card-input" id="ki-email-inp" type="email" placeholder="email@example.com"/>'+
+        '<button class="ki-card-submit" id="ki-email-sub">'+icon(I_ARROW,14)+'</button>'+
+      '</div>';
+    msgs.appendChild(card);
+    currentGroup = null; currentGroupRole = null;
+    scrollBot();
+    setTimeout(function(){
+      var sub = q('ki-email-sub');
+      var inp = q('ki-email-inp');
+      if (sub && inp) {
+        function submitEmail() {
+          var v = inp.value.trim();
+          if (!v||!v.includes('@')) { inp.style.borderColor='#ef4444'; return; }
+          state.emailCaptured = true;
+          var c = q('ki-email-card');
+          if (c) c.remove();
+          renderSystem('Email saved — we\'ll follow up shortly');
+          renderMsg('assistant', 'Got it. A member of the team will reach out to you at **'+v+'** soon.', ts());
+        }
+        sub.addEventListener('click', submitEmail);
+        inp.addEventListener('keydown', function(e){ if(e.key==='Enter') submitEmail(); });
+      }
+    }, 100);
+  }
+
+  function showTyping() { var t=q('ki-typing'); if(t) t.classList.add('show'); scrollBot(); }
+  function hideTyping() { var t=q('ki-typing'); if(t) t.classList.remove('show'); }
+
+  // ── SUGGESTIONS ──────────────────────────────────────────────────
+  function getSugg(page) {
+    if (page==='homepage')   return ['What can you do?','Show a sample reply','Pricing?'];
+    if (page==='scan')       return ['Explain my score','What to fix first?','Reach 4.5★?'];
+    if (page==='onboarding') return ['How do I connect Google?','What does AI reply do?','How long till I see results?'];
+    if (page==='admin')      return ['Which client needs attention?','Hotel Crown status?','Draft client WhatsApp update'];
+    return ['Rating change?','Top complaints?','Draft 1★ reply','vs competitors?'];
+  }
+
+  // Follow-up suggestion pools per page
+  var FOLLOWUPS = {
+    homepage: [
+      ['How does it work?','Show me an example','What\'s included?'],
+      ['How long to see results?','Do you handle WhatsApp?','How do I get started?'],
+      ['Can I try for free?','Which platforms do you cover?','Who else uses this?'],
+    ],
+    scan: [
+      ['What should I fix first?','How long to improve?','What\'s a good score?'],
+      ['What do competitors score?','How does reply rate affect ranking?','Can you draft a reply?'],
+      ['What\'s the upgrade cost?','Will my score improve fast?','What happens after I subscribe?'],
+    ],
+    onboarding: [
+      ['What happens after I connect Google?','How do AI replies work?','When will I see first results?'],
+      ['Can I customise the reply tone?','What is WhatsApp alert?','How do I skip a step?'],
+      ['Is my data safe?','Can I connect multiple locations?','Who do I contact for help?'],
+    ],
+    admin: [
+      ['Which client has lowest reply rate?','Any churn risk this month?','Top performing client?'],
+      ['Draft update for Hotel Crown','How many reviews responded today?','Which client improved most?'],
+      ['Show clients below 4.0★','MRR this month?','Which client to prioritise?'],
+    ],
+    dashboard: [
+      ['What are customers saying?','Any urgent issues?','Draft a reply for me'],
+      ['How do I improve faster?','Compare to competitors','Why did my rating change?'],
+      ['What\'s my reply rate?','Top complaint this week?','What should I focus on?'],
+    ],
+  };
+  var followupIdx = 0;
+
+  function renderFollowup(page) {
+    var pool = FOLLOWUPS[page] || FOLLOWUPS.dashboard;
+    var set  = pool[followupIdx % pool.length];
+    followupIdx++;
+    var msgs = q('ki-msgs');
+    var row  = el('div', { class:'ki-followup' });
+    row.appendChild(el('div', { class:'ki-followup-label' }, 'Suggested questions'));
+    set.forEach(function(s) {
+      var p = el('button', { class:'ki-sug' }, s);
+      p.addEventListener('click', function() {
+        // Remove all follow-up rows
+        var rows = msgs.querySelectorAll('.ki-followup');
+        rows.forEach(function(r){ r.remove(); });
+        sendMsg(s);
+      });
+      row.appendChild(p);
+    });
+    msgs.appendChild(row);
+    scrollBot();
+  }
+
+  function hideSugg() { var s=q('ki-sugg'); if(s) s.style.display='none'; }
+
+  // ── INSIGHT DRAWER ───────────────────────────────────────────────
+  function renderDrawer() {
+    var ins = loadInsights(state.cfg.page);
+    var list = q('ki-drawer-list');
+    if (!list) return;
+    if (ins.length) {
+      list.innerHTML = ins.map(function(i){ return '<div class="ki-ins">'+i+'</div>'; }).join('');
+    } else {
+      list.innerHTML = '<span class="ki-ins-empty">No insights yet — keep chatting.</span>';
+    }
+    // Update badge count
+    var strip = q('ki-learn-strip');
+    var label = q('ki-learn-label');
+    if (ins.length && strip && label) {
+      label.innerHTML = '✦ '+ins.length+' insight'+(ins.length!==1?'s':'')+' learned';
+    }
+  }
+
+  function showLearnStrip() {
+    var s = q('ki-learn-strip');
+    if (s) s.classList.add('show');
+    renderDrawer();
+  }
+
+  // ── TOAST ────────────────────────────────────────────────────────
+  function showToast(msg) {
+    var t = q('ki-toast');
+    if (!t) return;
+    t.textContent = msg||'✦ New insight learned';
+    t.style.display='block';
+    clearTimeout(state._toast);
+    state._toast = setTimeout(function(){ t.style.display='none'; },2500);
+  }
+
+  // ── SEND ─────────────────────────────────────────────────────────
+  function sendMsg(text) {
+    text=(text||'').trim();
+    if (!text||state.busy) return;
+    hideSugg();
+    // Remove any pending follow-up rows
+    var msgs = q('ki-msgs');
+    if (msgs) { var rows=msgs.querySelectorAll('.ki-followup'); rows.forEach(function(r){r.remove();}); }
+    currentGroup=null; currentGroupRole=null;
+    state.msgs.push({role:'user',content:text});
+    renderMsg('user',text,ts());
+    var inp=q('ki-input'), btn=q('ki-send');
+    if(inp){inp.value='';inp.style.height='auto';}
+    if(btn) btn.disabled=true;
+    state.busy=true;
+    showTyping();
+
+    var cfg=state.cfg;
+    var ep=cfg.proxyUrl||OPENAI_URL;
+    var hdr={'Content-Type':'application/json'};
+    if(!cfg.proxyUrl&&cfg.apiKey) hdr['Authorization']='Bearer '+cfg.apiKey;
+
+    fetch(ep,{
+      method:'POST', headers:hdr,
+      body:JSON.stringify({
+        model:MODEL, max_tokens:400,
+        messages:[{role:'system',content:buildPrompt(cfg)}].concat(state.msgs)
+      })
+    })
+    .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
+    .then(function(res){
+      hideTyping(); state.busy=false; if(btn) btn.disabled=false;
+      if(!res.ok){ renderMsg('assistant',(res.d.error&&res.d.error.message)||'Error '+res.status,ts()); return; }
+      var reply=res.d.choices&&res.d.choices[0]&&res.d.choices[0].message&&res.d.choices[0].message.content||'–';
+      state.msgs.push({role:'assistant',content:reply});
+      renderMsg('assistant',reply,ts());
+      psave();
+      // Show follow-up suggestions after every AI reply
+      setTimeout(function(){ renderFollowup(cfg.page); }, 300);
+      // Learn every 2 exchanges
+      if (state.msgs.length%4===0) triggerLearn();
+    })
+    .catch(function(){
+      hideTyping(); state.busy=false; if(btn) btn.disabled=false;
+      renderMsg('assistant','Connection error — please try again.',ts());
+    });
+  }
+
+  // ── OPEN / CLOSE ─────────────────────────────────────────────────
+  function openPanel() {
+    state.open=true;
+    var p=q('ki-panel'); if(p) p.classList.add('open');
+    var b=q('ki-bubble'); if(b) b.classList.add('open');
+    var n=q('ki-nudge'); if(n) n.style.display='none';
+    var bdg=q('ki-badge'); if(bdg) bdg.classList.add('hidden');
+    var i=q('ki-input'); if(i) setTimeout(function(){i.focus();},220);
+    scrollBot();
+  }
+  function closePanel() {
+    state.open=false;
+    var p=q('ki-panel'); if(p) p.classList.remove('open');
+    var b=q('ki-bubble'); if(b) b.classList.remove('open');
+  }
+
+  // ── GREETING ─────────────────────────────────────────────────────
+  function greet(cfg) {
+    if (cfg.page==='homepage') return 'Ask me anything about reputation management. I\'ll show you exactly what I can do for your business.';
+    if (cfg.page==='scan') return 'Your scan is ready. Ask me what any result means, or what to fix first.';
+    return 'Connected to **'+(cfg.businessName||'your account')+'**. What do you want to know?';
+  }
+
+  // ── INIT ─────────────────────────────────────────────────────────
+  window.Keerti = {
+    init: function(cfg) {
+      state.cfg = cfg||{};
+
+      var style=document.createElement('style');
+      style.textContent=CSS;
+      document.head.appendChild(style);
+
+      var root=el('div',{id:'ki'});
+
+      // Toast
+      root.appendChild(el('div',{id:'ki-toast'},''));
+
+      // Launcher bubble
+      var bbl=el('button',{id:'ki-bubble','aria-label':'Open Keerti'});
+      bbl.innerHTML=icon(I_CHAT,24)+'<span id="ki-ico-close" style="display:none">'+icon(I_CLOSE,20)+'</span>';
+      bbl.addEventListener('click',function(){ state.open?closePanel():openPanel(); });
+      root.appendChild(bbl);
+
+      // Badge
+      var bdg=el('div',{id:'ki-badge'},'1');
+      root.appendChild(bdg);
+
+      // Panel
+      var panel=el('div',{id:'ki-panel'});
+
+      // Header
+      var initials=(cfg.businessName||'K').charAt(0).toUpperCase();
+      var hdr=el('div',{id:'ki-header'});
+      hdr.innerHTML=
+        '<div id="ki-hdr-top">'+
+          '<div id="ki-agent-row">'+
+            '<div id="ki-agent-av">'+initials+'</div>'+
+            '<div id="ki-agent-info">'+
+              '<div id="ki-agent-name">Keerti</div>'+
+              '<div id="ki-agent-status"><div class="ki-online"></div>Active now</div>'+
+            '</div>'+
+          '</div>'+
+          '<button id="ki-hdr-close">'+icon(I_CLOSE,14)+'</button>'+
+        '</div>'+
+        '<div id="ki-hdr-tagline">Your AI reputation analyst — always on, always learning.</div>';
+      panel.appendChild(hdr);
+
+      // Learn strip (hidden until insight appears)
+      var strip=el('div',{id:'ki-learn-strip'});
+      strip.innerHTML=
+        '<div id="ki-learn-label">✦ 0 insights learned</div>'+
+        '<div id="ki-learn-actions">'+
+          '<button class="ki-learn-btn" id="ki-learn-view">View</button>'+
+          '<button class="ki-learn-btn" id="ki-learn-dismiss">Dismiss</button>'+
+        '</div>';
+      panel.appendChild(strip);
+
+      // Insight drawer
+      var drawer=el('div',{id:'ki-drawer'});
+      drawer.innerHTML=
+        '<div id="ki-drawer-title">What Keerti has learned <span id="ki-drawer-clear">Clear</span></div>'+
+        '<div id="ki-drawer-list"><span class="ki-ins-empty">No insights yet.</span></div>';
+      panel.appendChild(drawer);
+
+      // Messages
+      var msgs=el('div',{id:'ki-msgs'});
+      // Typing indicator (always in DOM)
+      var typing=el('div',{id:'ki-typing'});
+      var tmav=el('div',{class:'ki-mini-av'}); tmav.innerHTML=icon(I_SPARK,9);
+      var tdots=el('div',{class:'ki-typing-dots'});
+      tdots.innerHTML='<div class="ki-dot"></div><div class="ki-dot"></div><div class="ki-dot"></div>';
+      typing.appendChild(tmav); typing.appendChild(tdots);
+      msgs.appendChild(typing);
+      panel.appendChild(msgs);
+
+      // Suggestions
+      var sugg=el('div',{id:'ki-sugg'});
+      getSugg(cfg.page).forEach(function(s){
+        var p=el('button',{class:'ki-sug'},s);
+        p.addEventListener('click',function(){ sendMsg(s); });
+        sugg.appendChild(p);
+      });
+      panel.appendChild(sugg);
+
+      // Input bar
+      var bar=el('div',{id:'ki-bar'});
+      var inp=el('textarea',{id:'ki-input',placeholder:'Message Keerti\u2026',rows:'1',autocomplete:'off'});
+      inp.addEventListener('keydown',function(e){
+        if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(inp.value); }
+      });
+      inp.addEventListener('input',function(){
+        inp.style.height='auto';
+        inp.style.height=Math.min(inp.scrollHeight,90)+'px';
+      });
+      var snd=el('button',{id:'ki-send','aria-label':'Send'});
+      snd.innerHTML=icon(I_SEND,15);
+      snd.addEventListener('click',function(){ sendMsg(inp.value); });
+      bar.appendChild(inp); bar.appendChild(snd);
+      panel.appendChild(bar);
+      panel.appendChild(el('div',{id:'ki-footer'},'Keerti \xb7 ColorcraftAI \xb7 learns from every conversation'));
+
+      root.appendChild(panel);
+      document.body.appendChild(root);
+
+      // Events
+      q('ki-hdr-close').addEventListener('click',closePanel);
+      q('ki-learn-view').addEventListener('click',function(){
+        q('ki-drawer').classList.toggle('open');
+      });
+      q('ki-learn-dismiss').addEventListener('click',function(){
+        q('ki-learn-strip').classList.remove('show');
+        q('ki-drawer').classList.remove('open');
+      });
+      q('ki-drawer-clear').addEventListener('click',function(){
+        clearInsights(cfg.page);
+        renderDrawer();
+        q('ki-learn-strip').classList.remove('show');
+        q('ki-drawer').classList.remove('open');
+      });
+
+      // Load history or show greeting
+      var hist=pload();
+      if (hist&&hist.length) {
+        state.msgs=hist;
+        // Re-render all messages
+        hist.forEach(function(m){ renderMsg(m.role==='user'?'user':'assistant',m.content,null,true); });
+      } else {
+        var g=greet(cfg);
+        state.msgs.push({role:'assistant',content:g});
+        renderMsg('assistant',g,ts());
+        psave();
+      }
+
+      // Check if insights already exist
+      var existingIns=loadInsights(cfg.page);
+      if (existingIns.length) { showLearnStrip(); }
+
+      // Nudge — no bubble nudge, just open after delay if not interacted
+      setTimeout(function(){
+        if(!state.open) bdg.classList.remove('hidden');
+      },3000);
+
+      // Learn on page close
+      window.addEventListener('beforeunload',function(){
+        if(state.msgs.length>=4) doLearn();
+      });
+    },
+
+    clearChat: function() {
+      pclear(); state.msgs=[]; state.busy=false; state.emailCaptured=false;
+      followupIdx=0;
+      currentGroup=null; currentGroupRole=null;
+      var m=q('ki-msgs');
+      // Keep typing indicator, remove everything else
+      var typing=q('ki-typing');
+      if(m){ m.innerHTML=''; if(typing) m.appendChild(typing); }
+      var s=q('ki-sugg'); if(s) s.style.display='flex';
+      var g=greet(state.cfg);
+      state.msgs.push({role:'assistant',content:g});
+      renderMsg('assistant',g,ts());
+      psave();
+    }
+  };
+
+})();
+
+document.addEventListener("DOMContentLoaded",function(){
+  Keerti.init({ page:"scan", proxyUrl:"https://keerti-proxy.vercel.app/api/keerti", businessName:"Spice Garden Restaurant", scanScore:54, issues:["unanswered reviews","low reply rate (11%)","competitor gap"], persistKey:"keerti_scan" });
+});
+</script>
+</body>
+</html>

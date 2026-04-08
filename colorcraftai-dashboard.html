@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ColorcraftAI — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f4;--white:#fff;--soft:#f0ede8;--border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);
+  --tx:#18181b;--tx2:#52525b;--tx3:#a1a1aa;
+  --green:#16a34a;--green2:#15803d;--green-l:#f0fdf4;--green-b:#bbf7d0;--green-m:#4ade80;
+  --amber:#b45309;--amber-l:#fffbeb;--amber-b:#fde68a;
+  --red:#dc2626;--red-l:#fef2f2;--red-b:#fecaca;
+  --blue:#2563eb;--blue-l:#eff6ff;--blue-b:#bfdbfe;
+  --wa:#25d366;--wa-l:#e9fdf1;--wa-d:#128c5e;
+  --sh-sm:0 1px 2px rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.05);
+  --sh:0 1px 3px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.07);
+  --sh-md:0 2px 8px rgba(0,0,0,.06),0 10px 32px rgba(0,0,0,.09);
+  --f-serif:'Playfair Display',Georgia,serif;
+  --f-body:'DM Sans',system-ui,sans-serif;
+}
+html,body{height:100%;font-family:var(--f-body);background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+
+/* ── SHELL ── */
+.shell{display:flex;height:100vh;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;flex-shrink:0;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.sb-logo-mark{width:28px;height:28px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(22,163,74,.3);}
+.sb-logo-mark svg{width:13px;height:13px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.sb-logo-text{font-family:var(--f-serif);font-size:15px;font-weight:700;color:var(--tx);}
+.sb-logo-text em{color:var(--green);font-style:italic;}
+.sb-biz{padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sb-biz-label{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
+.sb-biz-name{font-size:13px;font-weight:600;color:var(--tx);display:flex;align-items:center;justify-content:space-between;}
+.sb-biz-name svg{width:12px;height:12px;fill:none;stroke:var(--tx3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;cursor:pointer;}
+.sb-biz-meta{font-size:11px;color:var(--tx2);margin-top:2px;display:flex;align-items:center;gap:5px;}
+.sb-biz-score{display:inline-flex;align-items:center;gap:3px;background:var(--green-l);color:var(--green2);font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;border:1px solid var(--green-b);}
+.sb-nav{padding:10px 0;flex:1;}
+.sb-section{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;padding:10px 16px 4px;}
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 16px;font-size:12.5px;color:var(--tx2);cursor:pointer;transition:all .12s;border-left:2px solid transparent;margin:1px 0;font-weight:400;}
+.sb-item:hover{color:var(--tx);background:var(--bg);}
+.sb-item:hover{color:var(--tx);background:var(--bg);}
+.sb-item.on{color:var(--green);border-left-color:var(--green);background:var(--green-l);font-weight:500;}
+.sb-item-locked{display:flex;align-items:center;gap:9px;padding:7px 16px;font-size:12.5px;color:var(--locked-tx,#c4c0b8);margin:1px 0;font-weight:400;cursor:not-allowed;}
+.sb-item-locked svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.lock-icon{width:14px;height:14px;margin-left:auto;flex-shrink:0;fill:none;stroke:var(--locked-tx,#c4c0b8);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.sb-item svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.7;}
+.sb-badge{margin-left:auto;font-size:9px;font-weight:700;padding:1px 6px;border-radius:100px;background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
+.sb-badge-g{background:var(--green-l);color:var(--green);border:1px solid var(--green-b);}
+.sb-bottom{padding:12px 14px;border-top:1px solid var(--border);flex-shrink:0;}
+.sb-plan{background:var(--green-l);border:1px solid var(--green-b);border-radius:8px;padding:10px 12px;}
+.sb-plan-label{font-size:9.5px;font-weight:700;color:var(--green2);margin-bottom:2px;}
+.sb-plan-name{font-size:12px;font-weight:600;color:var(--green2);}
+.sb-plan-exp{font-size:10.5px;color:var(--green2);opacity:.7;margin-top:1px;}
+
+/* ── TOPBAR ── */
+.topbar{height:52px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;box-shadow:0 1px 0 var(--border);}
+.topbar-left{display:flex;align-items:center;gap:8px;}
+.page-title{font-family:var(--f-serif);font-size:17px;font-weight:700;color:var(--tx);letter-spacing:-.2px;}
+.page-meta{font-size:11.5px;color:var(--tx2);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.tb-sync{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--tx2);}
+.tb-sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.2)}}
+.tb-btn{font-family:var(--f-body);font-size:12.5px;font-weight:600;padding:7px 16px;border-radius:7px;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;gap:6px;}
+.tb-btn-ghost{background:transparent;color:var(--tx2);border:1px solid var(--border2);}
+.tb-btn-ghost:hover{color:var(--tx);background:var(--soft);}
+.tb-btn-green{background:var(--green);color:white;box-shadow:0 1px 4px rgba(22,163,74,.25);}
+.tb-btn-green:hover{background:var(--green2);transform:translateY(-1px);}
+.tb-avatar{width:32px;height:32px;border-radius:50%;background:var(--green-l);border:2px solid var(--green-b);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--green2);cursor:pointer;}
+
+/* ── MAIN CONTENT ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.content{flex:1;overflow-y:auto;padding:22px 24px;}
+
+/* ── PAGE VIEWS ── */
+.view{display:none;}
+.view.on{display:block;}
+
+/* ── KPI STRIP ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.kpi{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--sh-sm);position:relative;overflow:hidden;transition:box-shadow .2s,transform .15s;}
+.kpi:hover{box-shadow:var(--sh);transform:translateY(-1px);}
+.kpi-top-bar{position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-label{font-size:10px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.kpi-label svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.6;}
+.kpi-value{font-family:var(--f-serif);font-size:28px;font-weight:700;line-height:1;margin-bottom:6px;}
+.kpi-delta{font-size:11px;font-weight:600;display:flex;align-items:center;gap:3px;}
+.kpi-delta.up{color:var(--green);}
+.kpi-delta.dn{color:var(--red);}
+.kpi-spark{display:flex;align-items:flex-end;gap:2px;height:18px;margin-top:8px;}
+.ks{width:6px;border-radius:1px;}
+
+/* ── REPUTATION RING WIDGET ── */
+.rep-row{display:grid;grid-template-columns:280px 1fr;gap:14px;margin-bottom:16px;}
+.rep-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--sh-sm);display:flex;gap:20px;align-items:center;}
+.ring-wrap{position:relative;width:96px;height:96px;flex-shrink:0;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-num{font-family:var(--f-serif);font-size:26px;font-weight:700;color:var(--tx);line-height:1;}
+.ring-lbl{font-size:8.5px;color:var(--tx2);font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-top:1px;}
+.rep-info{}
+.rep-grade{font-family:var(--f-serif);font-size:15px;font-weight:700;color:var(--tx);margin-bottom:3px;}
+.rep-sub{font-size:11px;color:var(--tx2);margin-bottom:10px;}
+.rep-bars{display:flex;flex-direction:column;gap:6px;}
+.rb-row{display:flex;align-items:center;gap:8px;}
+.rb-k{font-size:10.5px;color:var(--tx2);width:48px;}
+.rb-track{flex:1;height:4px;background:var(--soft);border-radius:2px;overflow:hidden;}
+.rb-fill{height:100%;border-radius:2px;background:var(--green);}
+.rb-v{font-size:10.5px;color:var(--tx);width:22px;text-align:right;font-weight:600;}
+
+/* Trend mini-chart card */
+.trend-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:var(--sh-sm);}
+.trend-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.trend-title{font-size:12.5px;font-weight:600;color:var(--tx);}
+.trend-sub{font-size:11px;color:var(--tx2);margin-top:1px;}
+.trend-period{display:flex;gap:2px;}
+.tpbtn{font-family:var(--f-body);font-size:10.5px;font-weight:500;padding:3px 9px;border-radius:5px;cursor:pointer;border:none;background:transparent;color:var(--tx2);transition:all .12s;}
+.tpbtn.on{background:var(--soft);color:var(--tx);}
+.chart-area{position:relative;height:80px;}
+.chart-bars{display:flex;align-items:flex-end;gap:4px;height:100%;}
+.chart-bar{flex:1;border-radius:3px 3px 0 0;transition:background .15s;cursor:pointer;position:relative;}
+.chart-bar:hover .chart-tooltip{display:block;}
+.chart-tooltip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--tx);color:white;font-size:10px;font-weight:600;padding:3px 7px;border-radius:5px;white-space:nowrap;z-index:10;}
+.chart-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--tx);}
+.chart-labels{display:flex;justify-content:space-between;margin-top:5px;font-size:9.5px;color:var(--tx3);}
+
+/* ── MAIN GRID ── */
+.grid-main{display:grid;grid-template-columns:1fr 340px;gap:14px;margin-bottom:14px;}
+.grid-right{display:flex;flex-direction:column;gap:14px;}
+
+/* ── CARD BASE ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--sh-sm);}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.card-title{font-size:13px;font-weight:600;color:var(--tx);}
+.card-sub{font-size:11px;color:var(--tx2);margin-top:1px;}
+.card-action{font-size:11.5px;font-weight:600;color:var(--green);cursor:pointer;display:flex;align-items:center;gap:3px;}
+.card-action:hover{color:var(--green2);}
+
+/* ── REVIEW ITEMS ── */
+.review-filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.rf{font-family:var(--f-body);font-size:11px;font-weight:500;padding:4px 12px;border-radius:100px;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--tx2);transition:all .12s;}
+.rf:hover{border-color:var(--border2);color:var(--tx);}
+.rf.on{background:var(--green);color:white;border-color:var(--green);}
+.review-list{display:flex;flex-direction:column;gap:0;}
+.review-item{padding:14px 0;border-bottom:1px solid var(--border);}
+.review-item:last-child{border:none;padding-bottom:0;}
+.rv-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.rv-meta{display:flex;align-items:center;gap:9px;}
+.rv-av{width:32px;height:32px;border-radius:50%;background:var(--soft);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--tx2);flex-shrink:0;}
+.rv-name{font-size:13px;font-weight:600;color:var(--tx);}
+.rv-when{font-size:10.5px;color:var(--tx3);margin-top:1px;}
+.rv-right{text-align:right;}
+.rv-stars{font-size:11px;letter-spacing:.5px;}
+.rv-platform{font-size:9.5px;color:var(--tx3);margin-top:1px;}
+.rv-text{font-size:12.5px;color:var(--tx2);line-height:1.6;margin-bottom:8px;}
+.rv-text mark{background:var(--green-l);color:var(--green2);border-radius:3px;padding:0 2px;font-weight:500;}
+.rv-text mark.neg{background:var(--red-l);color:var(--red);}
+.rv-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.tag{font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500;border:1px solid;}
+.tag-pos{background:var(--green-l);color:var(--green2);border-color:var(--green-b);}
+.tag-neg{background:var(--red-l);color:var(--red);border-color:var(--red-b);}
+.tag-neu{background:var(--soft);color:var(--tx2);border-color:var(--border);}
+.ai-reply-box{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 13px;}
+.ai-reply-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.ai-reply-label{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;}
+.ai-reply-label span{width:14px;height:14px;background:var(--green-l);border:1px solid var(--green-b);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;}
+.ai-reply-actions{display:flex;gap:5px;}
+.ai-action{font-family:var(--f-body);font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:6px;cursor:pointer;border:none;transition:all .12s;}
+.ai-post{background:var(--green);color:white;}
+.ai-post:hover{background:var(--green2);}
+.ai-edit{background:var(--white);color:var(--tx2);border:1px solid var(--border);}
+.ai-edit:hover{color:var(--tx);}
+.ai-reply-text{font-size:12px;color:var(--tx2);line-height:1.55;font-style:italic;}
+.rv-replied{display:inline-flex;align-items:center;gap:5px;background:var(--green-l);border:1px solid var(--green-b);color:var(--green2);font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;}
+
+/* ── RANKINGS CARD ── */
+.rank-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.rank-item:last-child{border:none;padding-bottom:0;}
+.rank-item.you{background:var(--green-l);border:1px solid var(--green-b);border-radius:8px;padding:9px 10px;margin:3px -10px;}
+.rk-n{font-family:var(--f-serif);font-size:14px;font-weight:700;color:var(--tx3);width:18px;text-align:center;flex-shrink:0;}
+.rk-n.you{color:var(--green);}
+.rk-info{flex:1;}
+.rk-name{font-size:12.5px;font-weight:500;color:var(--tx);}
+.rk-name.you{color:var(--green);font-weight:600;}
+.rk-sub{font-size:10.5px;color:var(--tx3);margin-top:1px;}
+.rk-score{font-size:12.5px;font-weight:700;color:var(--amber);text-align:right;}
+.rk-label{font-size:9.5px;color:var(--tx3);margin-top:1px;}
+
+/* ── SENTIMENT CARD ── */
+.sent-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.sent-l{font-size:11.5px;color:var(--tx2);width:54px;}
+.sent-track{flex:1;height:6px;background:var(--soft);border-radius:3px;overflow:hidden;}
+.sent-fill{height:100%;border-radius:3px;}
+.sent-pct{font-size:11.5px;width:30px;text-align:right;font-weight:600;}
+.sent-divider{height:1px;background:var(--border);margin:10px 0;}
+.topic-cloud{display:flex;flex-wrap:wrap;gap:5px;}
+.topic{font-size:10.5px;padding:3px 9px;border-radius:100px;font-weight:500;}
+
+/* ── INSIGHT CARD ── */
+.insight-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.insight-item:last-child{border:none;padding-bottom:0;}
+.insight-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.insight-body{}
+.insight-title{font-size:12.5px;font-weight:600;color:var(--tx);margin-bottom:2px;}
+.insight-desc{font-size:11.5px;color:var(--tx2);line-height:1.5;}
+.insight-action{font-size:10.5px;color:var(--green);font-weight:600;cursor:pointer;margin-top:4px;display:inline-block;}
+
+/* ── WHATSAPP ALERTS ── */
+.wa-item{background:var(--wa-l);border:1px solid rgba(37,211,102,.2);border-radius:10px;padding:12px;margin-bottom:10px;}
+.wa-item:last-child{margin-bottom:0;}
+.wa-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.wa-severity{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px;}
+.wa-crit{background:#fef2f2;color:var(--red);border:1px solid var(--red-b);}
+.wa-warn{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);}
+.wa-info{background:var(--green-l);color:var(--green2);border:1px solid var(--green-b);}
+.wa-when{font-size:10px;color:var(--wa-d);opacity:.7;}
+.wa-reviewer{font-size:11.5px;font-weight:600;color:var(--wa-d);margin-bottom:3px;}
+.wa-text{font-size:11px;color:var(--wa-d);line-height:1.5;opacity:.85;font-style:italic;margin-bottom:8px;}
+.wa-btns{display:flex;gap:6px;}
+.wa-btn{font-family:var(--f-body);font-size:10.5px;font-weight:700;padding:5px 11px;border-radius:6px;cursor:pointer;border:none;transition:all .12s;}
+.wa-btn-p{background:var(--green);color:white;}
+.wa-btn-p:hover{background:var(--green2);}
+.wa-btn-s{background:rgba(18,140,94,.12);color:var(--wa-d);border:1px solid rgba(37,211,102,.2);}
+
+/* ── REPORTS PAGE ── */
+.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.report-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:var(--sh-sm);transition:box-shadow .2s,transform .15s;cursor:pointer;}
+.report-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px);}
+.report-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px;}
+.report-title{font-family:var(--f-serif);font-size:14px;font-weight:700;color:var(--tx);margin-bottom:4px;}
+.report-desc{font-size:12px;color:var(--tx2);line-height:1.5;margin-bottom:12px;}
+.report-meta{font-size:10.5px;color:var(--tx3);}
+.report-btn{width:100%;font-family:var(--f-body);font-size:12px;font-weight:600;padding:8px;border-radius:7px;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--tx);transition:all .12s;margin-top:10px;}
+.report-btn:hover{background:var(--green);color:white;border-color:var(--green);}
+.report-btn.generating{background:var(--green-l);color:var(--green2);border-color:var(--green-b);}
+
+/* ── SETTINGS PAGE ── */
+.settings-grid{display:grid;grid-template-columns:220px 1fr;gap:16px;}
+.settings-nav{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:8px 0;box-shadow:var(--sh-sm);height:fit-content;}
+.settings-nav-item{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:12.5px;color:var(--tx2);cursor:pointer;transition:all .12s;border-left:2px solid transparent;}
+.settings-nav-item:hover{color:var(--tx);background:var(--bg);}
+.settings-nav-item.on{color:var(--green);border-left-color:var(--green);background:var(--green-l);font-weight:500;}
+.settings-content{display:flex;flex-direction:column;gap:14px;}
+.settings-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--sh-sm);}
+.settings-card-title{font-family:var(--f-serif);font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px;}
+.settings-card-sub{font-size:11.5px;color:var(--tx2);margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.settings-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.settings-row:last-child{border:none;padding-bottom:0;}
+.settings-label{font-size:13px;font-weight:500;color:var(--tx);}
+.settings-desc{font-size:11.5px;color:var(--tx2);margin-top:2px;}
+.settings-control{}
+/* Toggle switch */
+.toggle{position:relative;display:inline-block;width:36px;height:20px;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:100px;cursor:pointer;transition:.2s;}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;background:white;border-radius:50%;transition:.2s;}
+.toggle input:checked+.toggle-slider{background:var(--green);}
+.toggle input:checked+.toggle-slider::before{transform:translateX(16px);}
+/* Select */
+.settings-select{font-family:var(--f-body);font-size:12.5px;padding:6px 10px;border:1px solid var(--border2);border-radius:7px;background:white;color:var(--tx);cursor:pointer;outline:none;}
+.settings-select:focus{border-color:var(--green);}
+/* Input */
+.settings-input{font-family:var(--f-body);font-size:12.5px;padding:7px 12px;border:1px solid var(--border2);border-radius:7px;background:white;color:var(--tx);outline:none;width:200px;}
+.settings-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.08);}
+.settings-save{font-family:var(--f-body);font-size:13px;font-weight:600;padding:9px 20px;border-radius:7px;cursor:pointer;border:none;background:var(--green);color:white;transition:all .15s;}
+.settings-save:hover{background:var(--green2);}
+
+/* ── REVIEWS PAGE ── */
+.reviews-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;}
+.rv-search{flex:1;max-width:280px;position:relative;}
+.rv-search input{width:100%;font-family:var(--f-body);font-size:12.5px;padding:7px 12px 7px 32px;border:1px solid var(--border2);border-radius:7px;outline:none;color:var(--tx);}
+.rv-search input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.08);}
+.rv-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;fill:none;stroke:var(--tx3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.rv-filters{display:flex;gap:6px;}
+.rv-stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;}
+.rv-stat{background:var(--white);border:1px solid var(--border);border-radius:9px;padding:10px 12px;box-shadow:var(--sh-sm);}
+.rv-stat-n{font-family:var(--f-serif);font-size:20px;font-weight:700;color:var(--tx);}
+.rv-stat-l{font-size:10px;color:var(--tx2);margin-top:2px;font-weight:500;}
+.rv-stat-d{font-size:10px;color:var(--green);font-weight:600;margin-top:1px;}
+
+/* ── MISC ── */
+.divider{height:1px;background:var(--border);margin:12px 0;}
+.empty-state{text-align:center;padding:32px;color:var(--tx3);}
+.empty-state svg{width:32px;height:32px;margin:0 auto 8px;opacity:.3;display:block;fill:none;stroke:currentColor;stroke-width:1.5;}
+.badge{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px;}
+.badge-green{background:var(--green-l);color:var(--green2);border:1px solid var(--green-b);}
+.badge-red{background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
+.badge-amber{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);}
+.badge-blue{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-b);}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sb-logo" onclick="location.href='colorcraftai-v6_refactored_3.html'" style="cursor:pointer">
+    <div class="sb-logo-mark">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="sb-logo-text">Colorcraft<em>AI</em></div>
+  </div>
+  <div class="sb-biz">
+    <div class="sb-biz-label">Active profile</div>
+    <div class="sb-biz-name">Spice Garden Restaurant
+      <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="sb-biz-meta">
+      <span>Mumbai South</span>
+      <div class="sb-biz-score">92 score</div>
+    </div>
+  </div>
+    <nav class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <div class="sb-item on" onclick="goView('overview')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="sb-item" onclick="goView('reviews')">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Reviews
+      <span class="sb-badge">5</span>
+    </div>
+
+    <div class="sb-section">AI Tools</div>
+    <div class="sb-item" onclick="goView('overview')">
+      <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      AI Auto-Replies
+    </div>
+    <div class="sb-item" onclick="goView('overview')">
+      <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.64 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l.61-.61a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      WhatsApp Alerts
+    </div>
+
+    <div class="sb-section">Analytics</div>
+    <div class="sb-item" onclick="goView('overview')">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Analytics
+    </div>
+    <div class="sb-item" onclick="goView('overview')">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Competitor Tracking
+    </div>
+
+    <div class="sb-section">Reports</div>
+    <div class="sb-item" onclick="goView('reports')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      PDF Reports
+      <span class="sb-badge sb-badge-g">New</span>
+    </div>
+
+    <div class="sb-section">Account</div>
+    <div class="sb-item" onclick="goView('overview')">
+      <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Billing
+    </div>
+    <div class="sb-item" onclick="goView('settings')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </div>
+  </nav>
+  <div class="sb-bottom">
+    <div class="sb-plan">
+      <div class="sb-plan-label">Current plan</div>
+      <div class="sb-plan-name">Full AI Management</div>
+      <div class="sb-plan-exp">Renews Jan 1, 2026</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="page-title" id="pageTitle">Overview</div>
+        <div class="page-meta" id="pageMeta">Spice Garden Restaurant · Google Business Profile</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="tb-sync">
+        <div class="tb-sync-dot"></div>
+        Synced 3 min ago
+      </div>
+      <button class="tb-btn tb-btn-ghost">↓ Export</button>
+      <button class="tb-btn tb-btn-green" onclick="showReport()">Generate PDF Report</button>
+      <div class="tb-avatar" title="Spice Garden">SG</div>
+    </div>
+  </div>
+
+  <!-- ── CONTENT ── -->
+  <div class="content">
+
+    <!-- ════ OVERVIEW VIEW ════ -->
+    <div class="view on" id="view-overview">
+
+      <!-- KPI STRIP -->
+      <div class="kpi-row">
+        <div class="kpi">
+          <div class="kpi-top-bar" style="background:var(--green)"></div>
+          <div class="kpi-label">
+            <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Avg rating
+          </div>
+          <div class="kpi-value" style="color:var(--amber)">4.7★</div>
+          <div class="kpi-delta up">↑ +0.2 vs last month</div>
+          <div class="kpi-spark">
+            <div class="ks" style="height:40%;background:var(--green-b)"></div>
+            <div class="ks" style="height:52%;background:var(--green-b)"></div>
+            <div class="ks" style="height:48%;background:var(--green-b)"></div>
+            <div class="ks" style="height:65%;background:var(--green-b)"></div>
+            <div class="ks" style="height:72%;background:var(--green-m)"></div>
+            <div class="ks" style="height:82%;background:var(--green-m)"></div>
+            <div class="ks" style="height:91%;background:var(--green)"></div>
+            <div class="ks" style="height:100%;background:var(--green)"></div>
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-top-bar" style="background:var(--blue)"></div>
+          <div class="kpi-label">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Total reviews
+          </div>
+          <div class="kpi-value">1,240</div>
+          <div class="kpi-delta up">↑ +87 this month</div>
+          <div class="kpi-spark">
+            <div class="ks" style="height:35%;background:#bfdbfe"></div>
+            <div class="ks" style="height:48%;background:#bfdbfe"></div>
+            <div class="ks" style="height:55%;background:#bfdbfe"></div>
+            <div class="ks" style="height:62%;background:#93c5fd"></div>
+            <div class="ks" style="height:70%;background:#93c5fd"></div>
+            <div class="ks" style="height:80%;background:#60a5fa"></div>
+            <div class="ks" style="height:88%;background:#3b82f6"></div>
+            <div class="ks" style="height:100%;background:var(--blue)"></div>
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-top-bar" style="background:var(--amber)"></div>
+          <div class="kpi-label">
+            <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Response rate
+          </div>
+          <div class="kpi-value">94%</div>
+          <div class="kpi-delta up">↑ Was 12% before AI</div>
+          <div class="kpi-spark">
+            <div class="ks" style="height:15%;background:#fde68a"></div>
+            <div class="ks" style="height:18%;background:#fde68a"></div>
+            <div class="ks" style="height:55%;background:#fcd34d"></div>
+            <div class="ks" style="height:68%;background:#fbbf24"></div>
+            <div class="ks" style="height:78%;background:#f59e0b"></div>
+            <div class="ks" style="height:86%;background:var(--amber)"></div>
+            <div class="ks" style="height:92%;background:var(--amber)"></div>
+            <div class="ks" style="height:100%;background:var(--amber)"></div>
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-top-bar" style="background:var(--green)"></div>
+          <div class="kpi-label">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M3 20C3 16.134 7.029 13 12 13s9 3.134 9 7"/></svg>
+            Local rank
+          </div>
+          <div class="kpi-value" style="color:var(--green)">#2</div>
+          <div class="kpi-delta up">↑ Up from #7</div>
+          <div class="kpi-spark">
+            <div class="ks" style="height:100%;background:var(--red-b)"></div>
+            <div class="ks" style="height:85%;background:var(--red-b)"></div>
+            <div class="ks" style="height:75%;background:#fca5a5"></div>
+            <div class="ks" style="height:65%;background:var(--amber-b)"></div>
+            <div class="ks" style="height:52%;background:var(--amber-b)"></div>
+            <div class="ks" style="height:38%;background:var(--green-b)"></div>
+            <div class="ks" style="height:28%;background:var(--green-m)"></div>
+            <div class="ks" style="height:18%;background:var(--green)"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REP WIDGET + TREND -->
+      <div class="rep-row">
+        <div class="rep-card">
+          <div class="ring-wrap">
+            <svg width="96" height="96" viewBox="0 0 96 96">
+              <circle cx="48" cy="48" r="40" fill="none" stroke="#f0fdf4" stroke-width="10"/>
+              <circle cx="48" cy="48" r="40" fill="none" stroke="#16a34a" stroke-width="10" stroke-dasharray="220 32" stroke-linecap="round"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-num">92</div>
+              <div class="ring-lbl">Score</div>
+            </div>
+          </div>
+          <div class="rep-info">
+            <div class="rep-grade">Excellent — Top 5%</div>
+            <div class="rep-sub">Indian Restaurants · Mumbai South</div>
+            <div class="rep-bars">
+              <div class="rb-row"><span class="rb-k">Service</span><div class="rb-track"><div class="rb-fill" style="width:96%"></div></div><span class="rb-v">4.8</span></div>
+              <div class="rb-row"><span class="rb-k">Food</span><div class="rb-track"><div class="rb-fill" style="width:92%"></div></div><span class="rb-v">4.6</span></div>
+              <div class="rb-row"><span class="rb-k">Ambiance</span><div class="rb-track"><div class="rb-fill" style="width:86%"></div></div><span class="rb-v">4.3</span></div>
+              <div class="rb-row"><span class="rb-k">Value</span><div class="rb-track"><div class="rb-fill" style="width:80%"></div></div><span class="rb-v">4.0</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="trend-card">
+          <div class="trend-header">
+            <div>
+              <div class="trend-title">Rating trend</div>
+              <div class="trend-sub">Google Business Profile · last 8 weeks</div>
+            </div>
+            <div class="trend-period">
+              <button class="tpbtn">4W</button>
+              <button class="tpbtn on">8W</button>
+              <button class="tpbtn">3M</button>
+            </div>
+          </div>
+          <div class="chart-area">
+            <div class="chart-bars">
+              <div class="chart-bar" style="height:48%;background:#dcfce7;border-radius:3px 3px 0 0"><div class="chart-tooltip">3.8★ · Week 1</div></div>
+              <div class="chart-bar" style="height:52%;background:#bbf7d0;border-radius:3px 3px 0 0"><div class="chart-tooltip">3.9★ · Week 2</div></div>
+              <div class="chart-bar" style="height:58%;background:#86efac;border-radius:3px 3px 0 0"><div class="chart-tooltip">4.1★ · Week 3</div></div>
+              <div class="chart-bar" style="height:62%;background:#4ade80;border-radius:3px 3px 0 0"><div class="chart-tooltip">4.2★ · Week 4</div></div>
+              <div class="chart-bar" style="height:68%;background:#22c55e;border-radius:3px 3px 0 0"><div class="chart-tooltip">4.3★ · Week 5</div></div>
+              <div class="chart-bar" style="height:74%;background:#16a34a;border-radius:3px 3px 0 0"><div class="chart-tooltip">4.5★ · Week 6</div></div>
+              <div class="chart-bar" style="height:80%;background:#15803d;border-radius:3px 3px 0 0"><div class="chart-tooltip">4.6★ · Week 7</div></div>
+              <div class="chart-bar" style="height:90%;background:#14532d;border-radius:3px 3px 0 0"><div class="chart-tooltip">4.7★ · Week 8</div></div>
+            </div>
+            <div class="chart-labels">
+              <span>W1</span><span>W2</span><span>W3</span><span>W4</span><span>W5</span><span>W6</span><span>W7</span><span>W8</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN GRID -->
+      <div class="grid-main">
+
+        <!-- LEFT: RECENT REVIEWS -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Recent reviews</div>
+              <div class="card-sub">AI-analysed · keyword highlights · reply drafts</div>
+            </div>
+            <div class="card-action" onclick="goView('reviews')">View all 1,240 →</div>
+          </div>
+
+          <div class="review-filters">
+            <button class="rf on">All</button>
+            <button class="rf">⭐ 1–2 star</button>
+            <button class="rf">Unreplied</button>
+            <button class="rf">This week</button>
+          </div>
+
+          <!-- Review 1 — unreplied, negative -->
+          <div class="review-item">
+            <div class="rv-top">
+              <div class="rv-meta">
+                <div class="rv-av">AK</div>
+                <div>
+                  <div class="rv-name">Amit Kumar</div>
+                  <div class="rv-when">2 hours ago</div>
+                </div>
+              </div>
+              <div class="rv-right">
+                <div class="rv-stars" style="color:#ef4444">★☆☆☆☆</div>
+                <div class="rv-platform">Google · <span class="badge badge-red">Unreplied</span></div>
+              </div>
+            </div>
+            <p class="rv-text">Waited <mark class="neg">45 minutes</mark> and the <mark class="neg">food came cold</mark>. Very disappointing experience. <mark class="neg">Will not return</mark>.</p>
+            <div class="rv-tags">
+              <span class="tag tag-neg">Negative</span>
+              <span class="tag tag-neg">Wait time</span>
+              <span class="tag tag-neg">Food quality</span>
+            </div>
+            <div class="ai-reply-box">
+              <div class="ai-reply-header">
+                <div class="ai-reply-label"><span>✦</span>AI reply draft</div>
+                <div class="ai-reply-actions">
+                  <button class="ai-action ai-edit">Edit</button>
+                  <button class="ai-action ai-post">Post reply</button>
+                </div>
+              </div>
+              <div class="ai-reply-text">"Hi Amit, we sincerely apologise for your experience — long waits and cold food are not acceptable. We've spoken to our kitchen team and are fixing this immediately. We'd love to make it right for you. Please DM us for a complimentary meal."</div>
+            </div>
+          </div>
+
+          <!-- Review 2 — replied, positive -->
+          <div class="review-item">
+            <div class="rv-top">
+              <div class="rv-meta">
+                <div class="rv-av">RS</div>
+                <div>
+                  <div class="rv-name">Rahul Sharma</div>
+                  <div class="rv-when">Yesterday</div>
+                </div>
+              </div>
+              <div class="rv-right">
+                <div class="rv-stars" style="color:#f59e0b">★★★★★</div>
+                <div class="rv-platform">Google · <span class="badge badge-green">Replied</span></div>
+              </div>
+            </div>
+            <p class="rv-text">The <mark>butter chicken</mark> was absolutely incredible — <mark>best I've had in years</mark>. <mark>Staff were warm</mark> and attentive. Highly recommend.</p>
+            <div class="rv-tags">
+              <span class="tag tag-pos">Positive</span>
+              <span class="tag tag-pos">Food quality</span>
+              <span class="tag tag-pos">Staff</span>
+            </div>
+            <div class="rv-replied">✓ AI replied · 47 seconds after review</div>
+          </div>
+
+          <!-- Review 3 — unreplied, mixed -->
+          <div class="review-item">
+            <div class="rv-top">
+              <div class="rv-meta">
+                <div class="rv-av">SP</div>
+                <div>
+                  <div class="rv-name">Sneha Patel</div>
+                  <div class="rv-when">2 days ago</div>
+                </div>
+              </div>
+              <div class="rv-right">
+                <div class="rv-stars" style="color:#f59e0b">★★★★☆</div>
+                <div class="rv-platform">Google · <span class="badge badge-amber">Pending</span></div>
+              </div>
+            </div>
+            <p class="rv-text">Great food, love the <mark>ambiance</mark>. The <mark class="neg">wait was too long</mark> on Friday evening — nearly 25 min. Will return for the biryani.</p>
+            <div class="rv-tags">
+              <span class="tag tag-pos">Ambiance</span>
+              <span class="tag tag-neg">Wait time</span>
+              <span class="tag tag-neu">Mixed</span>
+            </div>
+            <div class="ai-reply-box">
+              <div class="ai-reply-header">
+                <div class="ai-reply-label"><span>✦</span>AI reply draft</div>
+                <div class="ai-reply-actions">
+                  <button class="ai-action ai-edit">Edit</button>
+                  <button class="ai-action ai-post">Post reply</button>
+                </div>
+              </div>
+              <div class="ai-reply-text">"Hi Sneha, thank you so much! We're glad you loved the ambiance and food. We apologise for the Friday wait — we're adding more kitchen staff during peak hours. The biryani will be waiting for you!"</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="grid-right">
+
+          <!-- LOCAL RANKINGS -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Local ranking</div>
+                <div class="card-sub">Indian restaurants · Mumbai South</div>
+              </div>
+              <span class="badge badge-green">↑ #2</span>
+            </div>
+            <div class="rank-item"><div class="rk-n">1</div><div class="rk-info"><div class="rk-name">Bombay Bites</div><div class="rk-sub">2,100 reviews</div></div><div><div class="rk-score">4.9★</div><div class="rk-label">Competitor</div></div></div>
+            <div class="rank-item you"><div class="rk-n you">2</div><div class="rk-info"><div class="rk-name you">Spice Garden · You</div><div class="rk-sub">1,240 reviews</div></div><div><div class="rk-score">4.7★</div><div class="rk-label" style="color:var(--green)">Your profile</div></div></div>
+            <div class="rank-item"><div class="rk-n">3</div><div class="rk-info"><div class="rk-name">The Curry House</div><div class="rk-sub">980 reviews</div></div><div><div class="rk-score">4.5★</div><div class="rk-label">Competitor</div></div></div>
+            <div class="rank-item"><div class="rk-n">4</div><div class="rk-info"><div class="rk-name">Masala Junction</div><div class="rk-sub">765 reviews</div></div><div><div class="rk-score">4.3★</div><div class="rk-label">Competitor</div></div></div>
+          </div>
+
+          <!-- SENTIMENT -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Sentiment analysis</div>
+                <div class="card-sub">All 1,240 reviews · AI-classified</div>
+              </div>
+            </div>
+            <div class="sent-row"><span class="sent-l">Positive</span><div class="sent-track"><div class="sent-fill" style="width:78%;background:var(--green)"></div></div><span class="sent-pct" style="color:var(--green)">78%</span></div>
+            <div class="sent-row"><span class="sent-l">Neutral</span><div class="sent-track"><div class="sent-fill" style="width:14%;background:var(--amber)"></div></div><span class="sent-pct" style="color:var(--amber)">14%</span></div>
+            <div class="sent-row"><span class="sent-l">Negative</span><div class="sent-track"><div class="sent-fill" style="width:8%;background:var(--red)"></div></div><span class="sent-pct" style="color:var(--red)">8%</span></div>
+            <div class="sent-divider"></div>
+            <div style="font-size:11px;color:var(--tx2);margin-bottom:7px;font-weight:500;">Top mentioned topics</div>
+            <div class="topic-cloud">
+              <span class="topic" style="background:var(--green-l);color:var(--green2)">Food quality</span>
+              <span class="topic" style="background:var(--green-l);color:var(--green2)">Friendly staff</span>
+              <span class="topic" style="background:var(--green-l);color:var(--green2)">Great ambiance</span>
+              <span class="topic" style="background:var(--soft);color:var(--tx2)">Wait time</span>
+              <span class="topic" style="background:var(--red-l);color:var(--red)">Parking</span>
+              <span class="topic" style="background:var(--green-l);color:var(--green2)">Value for money</span>
+            </div>
+          </div>
+
+          <!-- AI INSIGHTS -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">AI insights</div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-dot" style="background:var(--green)"></div>
+              <div class="insight-body">
+                <div class="insight-title">On track for #1 in 6 weeks</div>
+                <div class="insight-desc">Maintain 4.8+ rating and 90%+ response rate to overtake Bombay Bites.</div>
+                <span class="insight-action">View plan →</span>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-dot" style="background:var(--amber)"></div>
+              <div class="insight-body">
+                <div class="insight-title">12 reviews mention parking</div>
+                <div class="insight-desc">Add parking guidance to your GBP listing — quick win to reduce negative mentions.</div>
+                <span class="insight-action">Update listing →</span>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-dot" style="background:var(--blue)"></div>
+              <div class="insight-body">
+                <div class="insight-title">Friday evenings drive 3★ reviews</div>
+                <div class="insight-desc">31% of lower ratings are from Friday 7–10 PM. Consider adding extra kitchen staff.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WHATSAPP ALERTS -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">WhatsApp alerts</div>
+              <span class="badge badge-red">2 urgent</span>
+            </div>
+            <div class="wa-item">
+              <div class="wa-item-top">
+                <span class="wa-severity wa-crit">🚨 1-star review</span>
+                <span class="wa-when">2 hours ago</span>
+              </div>
+              <div class="wa-reviewer">Amit Kumar</div>
+              <div class="wa-text">"Waited 45 minutes, food came cold…"</div>
+              <div class="wa-btns">
+                <button class="wa-btn wa-btn-p">Reply with AI</button>
+                <button class="wa-btn wa-btn-s">View on Google</button>
+              </div>
+            </div>
+            <div class="wa-item">
+              <div class="wa-item-top">
+                <span class="wa-severity wa-warn">⚠ 2-star review</span>
+                <span class="wa-when">5 hours ago</span>
+              </div>
+              <div class="wa-reviewer">Ravi Joshi</div>
+              <div class="wa-text">"Service was slow and rude waiter…"</div>
+              <div class="wa-btns">
+                <button class="wa-btn wa-btn-p">Reply with AI</button>
+                <button class="wa-btn wa-btn-s">View on Google</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ REVIEWS VIEW ════ -->
+    <div class="view" id="view-reviews">
+      <div class="rv-stat-row">
+        <div class="rv-stat"><div class="rv-stat-n">1,240</div><div class="rv-stat-l">Total reviews</div><div class="rv-stat-d">↑ +87 this month</div></div>
+        <div class="rv-stat"><div class="rv-stat-n" style="color:var(--green)">94%</div><div class="rv-stat-l">Response rate</div><div class="rv-stat-d" style="color:var(--green)">↑ Was 12%</div></div>
+        <div class="rv-stat"><div class="rv-stat-n" style="color:var(--amber)">4.7★</div><div class="rv-stat-l">Avg rating</div><div class="rv-stat-d" style="color:var(--green)">↑ +0.2</div></div>
+        <div class="rv-stat"><div class="rv-stat-n" style="color:var(--red)">5</div><div class="rv-stat-l">Need reply</div><div class="rv-stat-d" style="color:var(--red)">Action required</div></div>
+        <div class="rv-stat"><div class="rv-stat-n">47s</div><div class="rv-stat-l">Avg reply time</div><div class="rv-stat-d" style="color:var(--green)">By AI</div></div>
+      </div>
+      <div class="reviews-toolbar">
+        <div class="rv-search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search reviews…"/>
+        </div>
+        <div class="rv-filters">
+          <button class="rf on">All</button>
+          <button class="rf">⭐ 1–2★</button>
+          <button class="rf">3★</button>
+          <button class="rf">4–5★</button>
+          <button class="rf">Unreplied</button>
+          <button class="rf">This week</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="review-item">
+          <div class="rv-top"><div class="rv-meta"><div class="rv-av">AK</div><div><div class="rv-name">Amit Kumar</div><div class="rv-when">2 hours ago</div></div></div><div class="rv-right"><div class="rv-stars" style="color:#ef4444">★☆☆☆☆</div><div class="rv-platform">Google · <span class="badge badge-red">Unreplied</span></div></div></div>
+          <p class="rv-text">Waited <mark class="neg">45 minutes</mark> and the <mark class="neg">food came cold</mark>. Very disappointing. <mark class="neg">Will not return</mark>.</p>
+          <div class="rv-tags"><span class="tag tag-neg">Negative</span><span class="tag tag-neg">Wait time</span><span class="tag tag-neg">Food quality</span></div>
+          <div class="ai-reply-box"><div class="ai-reply-header"><div class="ai-reply-label"><span>✦</span>AI reply draft</div><div class="ai-reply-actions"><button class="ai-action ai-edit">Edit</button><button class="ai-action ai-post">Post reply</button></div></div><div class="ai-reply-text">"Hi Amit, we sincerely apologise — long waits and cold food are unacceptable. We've spoken to the kitchen team immediately. Please DM us for a complimentary meal, we'd love to make it right."</div></div>
+        </div>
+        <div class="review-item">
+          <div class="rv-top"><div class="rv-meta"><div class="rv-av">RJ</div><div><div class="rv-name">Ravi Joshi</div><div class="rv-when">5 hours ago</div></div></div><div class="rv-right"><div class="rv-stars" style="color:#ef4444">★★☆☆☆</div><div class="rv-platform">Google · <span class="badge badge-red">Unreplied</span></div></div></div>
+          <p class="rv-text">Service was <mark class="neg">very slow</mark>. The waiter was <mark class="neg">rude</mark> when we asked about the wait. Food was okay but overall bad experience.</p>
+          <div class="rv-tags"><span class="tag tag-neg">Service</span><span class="tag tag-neg">Staff</span><span class="tag tag-neu">Food</span></div>
+          <div class="ai-reply-box"><div class="ai-reply-header"><div class="ai-reply-label"><span>✦</span>AI reply draft</div><div class="ai-reply-actions"><button class="ai-action ai-edit">Edit</button><button class="ai-action ai-post">Post reply</button></div></div><div class="ai-reply-text">"Hi Ravi, this is not the standard we hold ourselves to, and we are deeply sorry. We have addressed this with the staff member involved. We'd love to host you again — please reach out and we'll personally ensure a great experience."</div></div>
+        </div>
+        <div class="review-item">
+          <div class="rv-top"><div class="rv-meta"><div class="rv-av">RS</div><div><div class="rv-name">Rahul Sharma</div><div class="rv-when">Yesterday</div></div></div><div class="rv-right"><div class="rv-stars" style="color:#f59e0b">★★★★★</div><div class="rv-platform">Google · <span class="badge badge-green">Replied</span></div></div></div>
+          <p class="rv-text">The <mark>butter chicken</mark> was absolutely incredible. <mark>Best I've had in years</mark>. Staff were <mark>warm and attentive</mark>. Already planning my next visit!</p>
+          <div class="rv-tags"><span class="tag tag-pos">Positive</span><span class="tag tag-pos">Food quality</span><span class="tag tag-pos">Staff</span></div>
+          <div class="rv-replied">✓ AI replied in 47 seconds</div>
+        </div>
+        <div class="review-item">
+          <div class="rv-top"><div class="rv-meta"><div class="rv-av">SP</div><div><div class="rv-name">Sneha Patel</div><div class="rv-when">2 days ago</div></div></div><div class="rv-right"><div class="rv-stars" style="color:#f59e0b">★★★★☆</div><div class="rv-platform">Google · <span class="badge badge-amber">Pending</span></div></div></div>
+          <p class="rv-text">Great food and <mark>ambiance</mark>. The <mark class="neg">wait was long</mark> on Friday evening. Will definitely return for the biryani.</p>
+          <div class="rv-tags"><span class="tag tag-pos">Ambiance</span><span class="tag tag-neg">Wait time</span></div>
+          <div class="ai-reply-box"><div class="ai-reply-header"><div class="ai-reply-label"><span>✦</span>AI reply draft</div><div class="ai-reply-actions"><button class="ai-action ai-edit">Edit</button><button class="ai-action ai-post">Post reply</button></div></div><div class="ai-reply-text">"Hi Sneha, thank you! We're glad you loved the food and ambiance. We apologise for the Friday wait — we're staffing up during peak hours. The biryani will be ready when you are!"</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ REPORTS VIEW ════ -->
+    <div class="view" id="view-reports">
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="report-icon" style="background:var(--green-l);">📊</div>
+          <div class="report-title">Monthly Reputation Report</div>
+          <div class="report-desc">Complete overview of your reputation score, rating trends, sentiment analysis, and competitor ranking for the past month.</div>
+          <div class="report-meta">Last generated: Dec 1, 2025 · PDF · 12 pages</div>
+          <button class="report-btn" onclick="this.textContent='⏳ Generating…';this.classList.add('generating');setTimeout(()=>{this.textContent='↓ Download PDF';this.classList.remove('generating')},2000)">↓ Download PDF</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:var(--blue-l);">🎯</div>
+          <div class="report-title">Competitor Benchmark Report</div>
+          <div class="report-desc">How you compare against the top 5 competitors in your area — ratings, response rates, review volume, and keyword analysis.</div>
+          <div class="report-meta">Last generated: Nov 28, 2025 · PDF · 8 pages</div>
+          <button class="report-btn" onclick="this.textContent='⏳ Generating…';this.classList.add('generating');setTimeout(()=>{this.textContent='↓ Download PDF';this.classList.remove('generating')},2000)">↓ Download PDF</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon" style="background:var(--amber-l);">🧠</div>
+          <div class="report-title">AI Insights Report</div>
+          <div class="report-desc">What your customers are really saying — top topics, recurring complaints, praise patterns, and AI-recommended action plan.</div>
+          <div class="report-meta">Last generated: Dec 3, 2025 · PDF · 10 pages</div>
+          <button class="report-btn" onclick="this.textContent='⏳ Generating…';this.classList.add('generating');setTimeout(()=>{this.textContent='↓ Download PDF';this.classList.remove('generating')},2000)">↓ Download PDF</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Report history</div><div class="card-sub">All previously generated reports</div></div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:8px 0;font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Report</th>
+            <th style="text-align:left;padding:8px 0;font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Generated</th>
+            <th style="text-align:left;padding:8px 0;font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Type</th>
+            <th style="text-align:right;padding:8px 0;font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Action</th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border)"><td style="padding:11px 0;font-size:12.5px;color:var(--tx)">Monthly Reputation — December 2025</td><td style="padding:11px 0;font-size:12.5px;color:var(--tx2)">Dec 1, 2025</td><td style="padding:11px 0"><span class="badge badge-green">Monthly</span></td><td style="padding:11px 0;text-align:right"><span style="font-size:12px;color:var(--green);font-weight:600;cursor:pointer">↓ Download</span></td></tr>
+            <tr style="border-bottom:1px solid var(--border)"><td style="padding:11px 0;font-size:12.5px;color:var(--tx)">Competitor Benchmark — November 2025</td><td style="padding:11px 0;font-size:12.5px;color:var(--tx2)">Nov 28, 2025</td><td style="padding:11px 0"><span class="badge badge-blue">Benchmark</span></td><td style="padding:11px 0;text-align:right"><span style="font-size:12px;color:var(--green);font-weight:600;cursor:pointer">↓ Download</span></td></tr>
+            <tr style="border-bottom:1px solid var(--border)"><td style="padding:11px 0;font-size:12.5px;color:var(--tx)">Monthly Reputation — November 2025</td><td style="padding:11px 0;font-size:12.5px;color:var(--tx2)">Nov 1, 2025</td><td style="padding:11px 0"><span class="badge badge-green">Monthly</span></td><td style="padding:11px 0;text-align:right"><span style="font-size:12px;color:var(--green);font-weight:600;cursor:pointer">↓ Download</span></td></tr>
+            <tr><td style="padding:11px 0;font-size:12.5px;color:var(--tx)">AI Insights — October 2025</td><td style="padding:11px 0;font-size:12.5px;color:var(--tx2)">Oct 15, 2025</td><td style="padding:11px 0"><span class="badge badge-amber">Insights</span></td><td style="padding:11px 0;text-align:right"><span style="font-size:12px;color:var(--green);font-weight:600;cursor:pointer">↓ Download</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════ SETTINGS VIEW ════ -->
+    <div class="view" id="view-settings">
+      <div class="settings-grid">
+        <div class="settings-nav">
+          <div class="settings-nav-item on">AI & Replies</div>
+          <div class="settings-nav-item">WhatsApp Alerts</div>
+          <div class="settings-nav-item">Google Profile</div>
+          <div class="settings-nav-item">Notifications</div>
+          <div class="settings-nav-item">Billing & Plan</div>
+        </div>
+        <div class="settings-content">
+          <div class="settings-card">
+            <div class="settings-card-title">AI Reply Settings</div>
+            <div class="settings-card-sub">Control how ColorcraftAI responds to your reviews</div>
+            <div class="settings-row">
+              <div><div class="settings-label">Auto-reply mode</div><div class="settings-desc">AI posts replies automatically without your approval</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-label">Reply language</div><div class="settings-desc">AI detects reviewer language and matches it</div></div>
+              <select class="settings-select">
+                <option>Auto-detect (recommended)</option>
+                <option>English only</option>
+                <option>Hindi only</option>
+                <option>Hinglish</option>
+              </select>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-label">Reply tone</div><div class="settings-desc">How the AI sounds in responses</div></div>
+              <select class="settings-select">
+                <option>Professional & warm</option>
+                <option>Formal</option>
+                <option>Casual & friendly</option>
+              </select>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-label">Skip 5-star replies</div><div class="settings-desc">Don't auto-reply to 5-star reviews (save credits)</div></div>
+              <label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label>
+            </div>
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;">
+              <button class="settings-save">Save changes</button>
+            </div>
+          </div>
+          <div class="settings-card">
+            <div class="settings-card-title">WhatsApp Alerts</div>
+            <div class="settings-card-sub">Configure when and how you receive WhatsApp notifications</div>
+            <div class="settings-row">
+              <div><div class="settings-label">WhatsApp number</div><div class="settings-desc">Alerts are sent to this number</div></div>
+              <input class="settings-input" type="text" value="+91 98765 43210"/>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-label">Alert for 1-star reviews</div><div class="settings-desc">Immediate WhatsApp notification</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-label">Alert for 2-star reviews</div><div class="settings-desc">Immediate WhatsApp notification</div></div>
+              <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="settings-row">
+              <div><div class="settings-label">Alert for 3–5 star reviews</div><div class="settings-desc">Notification for positive reviews too</div></div>
+              <label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label>
+            </div>
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;">
+              <button class="settings-save">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+function goView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('on'));
+  document.getElementById('view-'+v).classList.add('on');
+  const titles={overview:'Overview',reviews:'Reviews',reports:'PDF Reports',settings:'Settings'};
+  const metas={overview:'Spice Garden Restaurant · Google Business Profile',reviews:'All reviews · 1,240 total',reports:'Generate and download PDF reports',settings:'Account and AI configuration'};
+  document.getElementById('pageTitle').textContent=titles[v]||v;
+  document.getElementById('pageMeta').textContent=metas[v]||'';
+  event.currentTarget.classList.add('on');
+}
+function showReport(){
+  goView('reports');
+  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.sb-item')[3].classList.add('on');
+}
+document.querySelectorAll('.rf').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    this.closest('.review-filters, .rv-filters').querySelectorAll('.rf').forEach(b=>b.classList.remove('on'));
+    this.classList.add('on');
+  });
+});
+document.querySelectorAll('.tpbtn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    this.closest('.trend-period').querySelectorAll('.tpbtn').forEach(b=>b.classList.remove('on'));
+    this.classList.add('on');
+  });
+});
+document.querySelectorAll('.settings-nav-item').forEach(item=>{
+  item.addEventListener('click',function(){
+    this.closest('.settings-nav').querySelectorAll('.settings-nav-item').forEach(i=>i.classList.remove('on'));
+    this.classList.add('on');
+  });
+});
+</script>
+<script>
+(function () {
+  'use strict';
+
+  var OPENAI_URL  = 'https://api.openai.com/v1/chat/completions';
+  var MODEL       = 'gpt-4o';
+  var MODEL_LEARN = 'gpt-4o-mini';
+  var INSIGHT_KEY = 'keerti_insights_v1';
+  var PERSIST_VER = 'v3';
+
+  // ── FONT ────────────────────────────────────────────────────────
+  (function () {
+    if (!document.getElementById('ki-font')) {
+      var l = document.createElement('link');
+      l.id = 'ki-font'; l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap';
+      document.head.appendChild(l);
+    }
+  })();
+
+  // ── CSS ─────────────────────────────────────────────────────────
+  var CSS = `
+    #ki * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+
+    /* ── LAUNCHER BUBBLE ── */
+    #ki-bubble {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #16a34a; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(22,163,74,.45), 0 1px 4px rgba(0,0,0,.1);
+      transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+      z-index: 2147483640;
+    }
+    #ki-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(22,163,74,.55); }
+    #ki-bubble svg { width: 24px; height: 24px; color: #fff; }
+    #ki-bubble.open #ki-ico-chat { display: none; }
+    #ki-bubble.open #ki-ico-close { display: block !important; }
+    #ki-ico-close { display: none; }
+
+    /* Badge */
+    #ki-badge {
+      position: fixed; bottom: 66px; right: 20px;
+      min-width: 18px; height: 18px; padding: 0 4px;
+      border-radius: 99px; background: #ef4444; border: 2px solid #fff;
+      color: #fff; font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2147483641; transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+    }
+    #ki-badge.hidden { display: none; }
+
+    /* ── PANEL ── */
+    #ki-panel {
+      position: fixed; bottom: 88px; right: 24px;
+      width: 376px; height: 580px; max-height: calc(100vh - 110px);
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.18), 0 4px 16px rgba(0,0,0,.08);
+      z-index: 2147483647; display: none; flex-direction: column;
+      overflow: hidden; animation: ki-open .22s cubic-bezier(.16,1,.3,1);
+    }
+    #ki-panel.open { display: flex; }
+    @keyframes ki-open {
+      from { opacity: 0; transform: translateY(16px) scale(.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── HEADER ── */
+    #ki-header {
+      background: linear-gradient(160deg, #14532d 0%, #16a34a 100%);
+      padding: 20px 18px 18px; flex-shrink: 0; position: relative;
+      overflow: hidden;
+    }
+    #ki-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top right, rgba(255,255,255,.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    #ki-hdr-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
+    #ki-agent-row { display: flex; align-items: center; gap: 10px; }
+    #ki-agent-av {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      border: 2px solid rgba(255,255,255,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    #ki-agent-info {}
+    #ki-agent-name { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -.15px; }
+    #ki-agent-status { font-size: 11.5px; color: rgba(255,255,255,.75); margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+    .ki-online { width: 6px; height: 6px; border-radius: 50%; background: #86efac; box-shadow: 0 0 0 2px rgba(134,239,172,.3); animation: ki-pulse 2s infinite; }
+    @keyframes ki-pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    #ki-hdr-close {
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 8px; width: 30px; height: 30px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: #fff; transition: background .15s; position: relative; z-index: 1;
+    }
+    #ki-hdr-close:hover { background: rgba(255,255,255,.28); }
+    #ki-hdr-close svg { width: 14px; height: 14px; }
+    #ki-hdr-tagline {
+      font-size: 12.5px; color: rgba(255,255,255,.8); margin-top: 14px;
+      line-height: 1.5; position: relative; z-index: 1;
+    }
+
+    /* ── LEARN STRIP ── */
+    #ki-learn-strip {
+      background: #f0fdf4; border-bottom: 1px solid #dcfce7;
+      padding: 8px 16px; display: none; align-items: center;
+      justify-content: space-between; flex-shrink: 0;
+    }
+    #ki-learn-strip.show { display: flex; }
+    #ki-learn-label { font-size: 11px; color: #15803d; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+    #ki-learn-actions { display: flex; gap: 8px; }
+    .ki-learn-btn { font-size: 10.5px; cursor: pointer; font-weight: 500; background: none; border: none; padding: 0; }
+    #ki-learn-view { color: #15803d; }
+    #ki-learn-view:hover { text-decoration: underline; }
+    #ki-learn-dismiss { color: #a1a1aa; }
+
+    /* ── INSIGHT DRAWER ── */
+    #ki-drawer {
+      background: #f9fafb; border-bottom: 1px solid #f0f0f0;
+      display: none; padding: 12px 16px; flex-shrink: 0;
+      animation: ki-fade .18s ease;
+    }
+    #ki-drawer.open { display: block; }
+    @keyframes ki-fade { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+    #ki-drawer-title { font-size: 11px; font-weight: 600; color: #09090b; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; }
+    #ki-drawer-clear { font-size: 10px; color: #a1a1aa; cursor: pointer; font-weight: 400; }
+    #ki-drawer-clear:hover { color: #ef4444; }
+    #ki-drawer-list { display: flex; flex-direction: column; gap: 4px; }
+    .ki-ins { font-size: 11px; color: #52525b; padding: 5px 8px; background: #fff; border: 1px solid #f0f0f0; border-radius: 6px; line-height: 1.5; }
+    .ki-ins-empty { font-size: 11px; color: #a1a1aa; font-style: italic; }
+
+    /* ── MESSAGES ── */
+    #ki-msgs {
+      flex: 1; overflow-y: auto; padding: 16px 14px 10px;
+      display: flex; flex-direction: column; gap: 4px;
+      scroll-behavior: smooth;
+    }
+    #ki-msgs::-webkit-scrollbar { width: 3px; }
+    #ki-msgs::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 3px; }
+
+    /* Message groups */
+    .ki-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+    .ki-group.user { align-items: flex-end; }
+    .ki-group.ai   { align-items: flex-start; }
+
+    /* Agent row in group */
+    .ki-group-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .ki-group.user .ki-group-meta { justify-content: flex-end; }
+    .ki-mini-av {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #16a34a; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ki-mini-av svg { width: 9px; height: 9px; color: #fff; }
+    .ki-sender { font-size: 11px; font-weight: 600; color: #3f3f46; }
+    .ki-ago    { font-size: 10.5px; color: #a1a1aa; }
+
+    /* Bubbles */
+    .ki-bubble {
+      max-width: 280px; font-size: 13px; line-height: 1.6;
+      padding: 10px 14px; border-radius: 18px;
+      word-break: break-word; animation: ki-msg .18s ease;
+    }
+    @keyframes ki-msg { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+    .ki-bubble.ai {
+      background: #f4f4f5; color: #09090b;
+      border-radius: 4px 18px 18px 18px;
+    }
+    .ki-bubble.ai strong { color: #16a34a; font-weight: 600; }
+    .ki-bubble.user {
+      background: #f0fdf4; color: #14532d;
+      border-radius: 18px 4px 18px 18px;
+      border: 1px solid #bbf7d0;
+    }
+    /* Multi-bubble stacking */
+    .ki-group.ai  .ki-bubble:not(:last-child)  { border-radius: 4px 18px 18px 4px; margin-bottom: 2px; }
+    .ki-group.user .ki-bubble:not(:last-child)  { border-radius: 18px 4px 4px 18px; margin-bottom: 2px; }
+
+    /* Typing */
+    #ki-typing {
+      display: none; align-items: center; gap: 6px;
+      margin-bottom: 8px; animation: ki-msg .18s ease;
+    }
+    #ki-typing.show { display: flex; }
+    .ki-typing-dots {
+      background: #f4f4f5; border-radius: 4px 18px 18px 18px;
+      padding: 12px 16px; display: flex; gap: 4px; align-items: center;
+    }
+    .ki-dot { width: 5px; height: 5px; border-radius: 50%; background: #a1a1aa; animation: ki-bounce .9s infinite; }
+    .ki-dot:nth-child(2) { animation-delay: .15s; }
+    .ki-dot:nth-child(3) { animation-delay: .3s; }
+    @keyframes ki-bounce { 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-5px);opacity:1} }
+
+    /* System messages */
+    .ki-system {
+      text-align: center; font-size: 11px; color: #a1a1aa;
+      margin: 8px 0; display: flex; align-items: center; gap: 8px;
+    }
+    .ki-system::before,.ki-system::after { content:''; flex:1; height:1px; background:#f0f0f0; }
+
+    /* Email capture card */
+    .ki-card {
+      background: #fff; border: 1px solid #e4e4e7;
+      border-radius: 14px; padding: 14px; margin: 6px 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .ki-card-title { font-size: 12px; font-weight: 600; color: #09090b; margin-bottom: 10px; }
+    .ki-card-row { display: flex; gap: 0; }
+    .ki-card-input {
+      flex: 1; border: 1px solid #e4e4e7; border-radius: 8px 0 0 8px;
+      padding: 8px 12px; font-size: 12.5px; color: #09090b;
+      background: #fafafa; outline: none; font-family: inherit;
+      transition: border-color .15s;
+    }
+    .ki-card-input:focus { border-color: #16a34a; background: #fff; }
+    .ki-card-input::placeholder { color: #a1a1aa; }
+    .ki-card-submit {
+      background: #16a34a; border: none; border-radius: 0 8px 8px 0;
+      width: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .ki-card-submit:hover { background: #15803d; }
+    .ki-card-submit svg { width: 14px; height: 14px; color: #fff; }
+
+    /* Suggestions */
+    #ki-sugg {
+      padding: 0 14px 10px; display: flex; flex-wrap: wrap; gap: 6px;
+      flex-shrink: 0;
+    }
+    /* Inline follow-up suggestions inside messages */
+    .ki-followup {
+      display: flex; flex-direction: column; gap: 5px;
+      margin-top: 10px; margin-bottom: 4px;
+      padding-left: 26px; animation: ki-msg .25s ease;
+    }
+    .ki-followup-label {
+      font-size: 10px; font-weight: 600; color: #a1a1aa;
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-bottom: 2px;
+    }
+    .ki-sug {
+      background: #fff; border: 1px solid #e4e4e7; border-radius: 99px;
+      padding: 5px 12px; font-size: 12px; font-weight: 500; color: #3f3f46;
+      cursor: pointer; transition: all .12s; white-space: nowrap;
+      text-align: left; display: inline-block; width: fit-content;
+    }
+    .ki-sug:hover { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+
+    /* ── INPUT BAR ── */
+    #ki-bar {
+      border-top: 1px solid #f4f4f5; padding: 10px 12px;
+      display: flex; align-items: flex-end; gap: 8px;
+      background: #fff; flex-shrink: 0;
+    }
+    #ki-input {
+      flex: 1; border: 1.5px solid #e4e4e7; border-radius: 10px;
+      padding: 9px 13px; font-size: 13px; color: #09090b;
+      background: #fafafa; outline: none; resize: none;
+      min-height: 38px; max-height: 90px; line-height: 1.5;
+      font-family: inherit; transition: border-color .15s, box-shadow .15s;
+    }
+    #ki-input:focus { border-color: #86efac; background: #fff; box-shadow: 0 0 0 3px rgba(22,163,74,.08); }
+    #ki-input::placeholder { color: #a1a1aa; }
+    #ki-send {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: #16a34a; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background .15s, transform .15s;
+      box-shadow: 0 2px 8px rgba(22,163,74,.3);
+    }
+    #ki-send:hover { background: #15803d; transform: scale(1.05); }
+    #ki-send:disabled { background: #d4d4d8; box-shadow: none; cursor: not-allowed; transform: none; }
+    #ki-send svg { width: 15px; height: 15px; color: #fff; }
+
+    /* Footer */
+    #ki-footer { text-align: center; padding: 6px; font-size: 10px; color: #d4d4d8; background: #fff; flex-shrink: 0; }
+
+    /* Toast */
+    #ki-toast {
+      position: fixed; bottom: 92px; right: 86px;
+      background: #09090b; color: #fff;
+      font-size: 11.5px; padding: 8px 13px; border-radius: 9px;
+      display: none; z-index: 2147483648;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      animation: ki-open .2s ease; white-space: nowrap;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    @media (max-width: 480px) {
+      #ki-panel { width: calc(100vw - 12px); right: 6px; bottom: 80px; height: calc(100vh - 96px); border-radius: 16px; }
+      #ki-bubble { bottom: 16px; right: 16px; }
+      #ki-badge  { bottom: 60px; right: 12px; }
+    }
+  `;
+
+  // ── ICONS ────────────────────────────────────────────────────────
+  function icon(d, s) {
+    s = s || 16;
+    return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';
+  }
+  var I_CHAT  = '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>';
+  var I_CLOSE = '<path d="M18 6L6 18M6 6l12 12"/>';
+  var I_SEND  = '<path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/>';
+  var I_SPARK = '<path d="M12 2L9.5 9.5L2 12L9.5 14.5L12 22L14.5 14.5L22 12L14.5 9.5Z"/>';
+  var I_ARROW = '<path d="M5 12h14M12 5l7 7-7 7"/>';
+
+  // ── INSIGHT STORE ────────────────────────────────────────────────
+  function loadInsights(page) {
+    try { return (JSON.parse(localStorage.getItem(INSIGHT_KEY))||{})[page]||[]; }
+    catch(e) { return []; }
+  }
+  function saveInsight(page, text) {
+    if (!text||text.length<8) return false;
+    try {
+      var all = JSON.parse(localStorage.getItem(INSIGHT_KEY))||{};
+      var arr = all[page]||[];
+      if (arr.some(function(i){ return i.toLowerCase().slice(0,25)===text.toLowerCase().slice(0,25); })) return false;
+      all[page] = [text].concat(arr).slice(0,12);
+      localStorage.setItem(INSIGHT_KEY, JSON.stringify(all));
+      return true;
+    } catch(e) { return false; }
+  }
+  function clearInsights(page) {
+    try { var all=JSON.parse(localStorage.getItem(INSIGHT_KEY))||{}; all[page]=[]; localStorage.setItem(INSIGHT_KEY,JSON.stringify(all)); } catch(e){}
+  }
+
+  // ── SYSTEM PROMPT ────────────────────────────────────────────────
+  function buildPrompt(cfg) {
+    var base = 'You are Keerti, ColorcraftAI\'s AI reputation analyst. Be direct, warm, and data-driven. Skip greetings. Max 3 sentences unless more is asked. Bold key numbers. Never say "As an AI". PRICING: ColorcraftAI costs ₹2,999/month — never quote any other price, never say $49.';
+
+    if (cfg.page === 'homepage') {
+      base += ' Demo mode. Sample: Sharma\'s Kitchen Delhi, 4.1★, 312 reviews, 34 unanswered, issues: slow service, packaging. Show capabilities. If asked about pricing, say ₹2,999/month. End with CTA to sign up.';
+
+    } else if (cfg.page === 'scan') {
+      base += ' Scan page. Business: '+(cfg.businessName||'–')+'. Score: '+(cfg.scanScore||54)+'/100. Issues: '+(Array.isArray(cfg.issues)?cfg.issues.join(', '):(cfg.issues||'low reply rate'))+'. Explain results. Recommend upgrading to Full AI Management at ₹2,999/month when natural.';
+
+    } else if (cfg.page === 'onboarding') {
+      base += ' Onboarding wizard. The user just signed up and is setting up their account — connecting Google Business Profile, configuring WhatsApp alerts, and setting AI reply preferences. Help them complete each step confidently. Reassure them if they seem unsure. Explain what each step does in plain language. Be encouraging — they are about to see results within days.';
+
+    } else if (cfg.page === 'admin') {
+      base += ' Admin panel. This is the ColorcraftAI agency owner (internal access only). They manage all client accounts. Client data: Sharma Dental 4.4★, Spice Garden 4.1★, Hotel Crown 3.8★ (needs attention), Prime Derma 4.6★, Tandoor King 4.0★. MRR: ₹58.4L total revenue to date, avg ₹2,052/client. Help with: client health checks, drafting WhatsApp updates to clients, review response queues, churn risk, and business decisions. Be concise and business-focused.';
+
+    } else {
+      base += ' Data — business:'+(cfg.businessName||'')+', rating:'+(cfg.rating||4.7)+'★, reviews:'+(cfg.reviewCount||1240)+', replyRate:'+(cfg.replyRate||98)+'%, complaints:'+(cfg.recentIssues||[]).join('/')+', rank:#'+(cfg.competitorRank||'–')+', trend:'+(cfg.ratingTrend||'stable')+'. Answer from data. Offer to draft replies when relevant.';
+    }
+
+    var ins = loadInsights(cfg.page);
+    if (ins.length) {
+      base += '\n\nLEARNED FROM PREVIOUS CONVERSATIONS:\n'+ins.map(function(i){ return '- '+i; }).join('\n')+'\n\nUse these to personalise answers.';
+    }
+    return base;
+  }
+
+  // ── AUTO-LEARN ───────────────────────────────────────────────────
+  var learnTimer = null;
+  function triggerLearn() { clearTimeout(learnTimer); learnTimer = setTimeout(doLearn, 1800); }
+  function doLearn() {
+    var cfg=state.cfg;
+    if (state.msgs.length<4) return;
+    var ep=cfg.proxyUrl||OPENAI_URL;
+    var hdr={'Content-Type':'application/json'};
+    if (!cfg.proxyUrl&&cfg.apiKey) hdr['Authorization']='Bearer '+cfg.apiKey;
+    var convo=state.msgs.map(function(m){ return m.role.toUpperCase()+': '+m.content; }).join('\n\n');
+    fetch(ep,{
+      method:'POST', headers:hdr,
+      body:JSON.stringify({
+        model:MODEL_LEARN, max_tokens:150,
+        messages:[
+          {role:'system',content:'Extract 1-3 short insights (max 12 words each) about what this user cares about. Output ONLY valid JSON array. Example: ["Prefers short answers","Concerned about competitor ratings"]'},
+          {role:'user',content:'Page: '+cfg.page+'\n\n'+convo}
+        ]
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var raw=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content;
+      if (!raw) return;
+      raw=raw.trim().replace(/```json|```/g,'').trim();
+      var arr; try{arr=JSON.parse(raw);}catch(e){return;}
+      if (!Array.isArray(arr)) return;
+      var added=0;
+      arr.forEach(function(i){ if(typeof i==='string'&&saveInsight(cfg.page,i)) added++; });
+      if (added>0) { showToast('✦ Keerti learned something new'); renderDrawer(); showLearnStrip(); }
+    })
+    .catch(function(){});
+  }
+
+  // ── PERSIST ──────────────────────────────────────────────────────
+  function pKey()   { return (state.cfg.persistKey||'ki')+'_'+PERSIST_VER; }
+  function psave()  { if(!state.cfg.persistKey) return; try{localStorage.setItem(pKey(),JSON.stringify(state.msgs));}catch(e){} }
+  function pload()  { if(!state.cfg.persistKey) return null; try{var r=localStorage.getItem(pKey());return r?JSON.parse(r):null;}catch(e){return null;} }
+  function pclear() { try{localStorage.removeItem(pKey());}catch(e){} }
+
+  // ── STATE ────────────────────────────────────────────────────────
+  var state = { open:false, msgs:[], cfg:{}, busy:false, emailCaptured:false };
+
+  // ── HELPERS ──────────────────────────────────────────────────────
+  function q(id)    { return document.getElementById(id); }
+  function el(tag, attrs, html) {
+    var e=document.createElement(tag);
+    if(attrs) Object.keys(attrs).forEach(function(k){ e.setAttribute(k,attrs[k]); });
+    if(html!==undefined) e.innerHTML=html;
+    return e;
+  }
+  function scrollBot() { var m=q('ki-msgs'); if(m) setTimeout(function(){ m.scrollTop=m.scrollHeight; },50); }
+  function ts() { var d=new Date(),h=d.getHours(),m=d.getMinutes(); return (h%12||12)+':'+(m<10?'0':'')+m+(h>=12?'pm':'am'); }
+  function md(t) { return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>'); }
+
+  // ── RENDER MESSAGES ──────────────────────────────────────────────
+  var currentGroup = null;
+  var currentGroupRole = null;
+
+  function renderMsg(role, text, time, skipGroup) {
+    var msgs = q('ki-msgs');
+    // Group consecutive same-role messages
+    if (!skipGroup && role === currentGroupRole && currentGroup && msgs.contains(currentGroup)) {
+      var bubble = el('div', { class:'ki-bubble '+( role==='user'?'user':'ai') });
+      bubble.innerHTML = md(text);
+      currentGroup.appendChild(bubble);
+    } else {
+      var group = el('div', { class:'ki-group '+(role==='user'?'user':'ai') });
+      // Meta row
+      if (role==='ai'||role==='assistant') {
+        var meta = el('div', { class:'ki-group-meta' });
+        var mav  = el('div', { class:'ki-mini-av' });
+        mav.innerHTML = icon(I_SPARK, 9);
+        meta.appendChild(mav);
+        meta.appendChild(el('span', { class:'ki-sender' }, 'Keerti'));
+        if (time) meta.appendChild(el('span', { class:'ki-ago' }, time));
+        group.appendChild(meta);
+      }
+      var bubble = el('div', { class:'ki-bubble '+(role==='user'?'user':'ai') });
+      bubble.innerHTML = md(text);
+      group.appendChild(bubble);
+      if (role==='user' && time) group.appendChild(el('div', { class:'ki-ago', style:'margin-top:3px;font-size:10.5px;color:#a1a1aa;' }, time));
+      msgs.appendChild(group);
+      currentGroup = group;
+      currentGroupRole = role;
+    }
+    scrollBot();
+  }
+
+  function renderSystem(text) {
+    var msgs = q('ki-msgs');
+    msgs.appendChild(el('div', { class:'ki-system' }, text));
+    currentGroup = null; currentGroupRole = null;
+    scrollBot();
+  }
+
+  function renderEmailCard() {
+    if (state.emailCaptured) return;
+    var msgs = q('ki-msgs');
+    var card = el('div', { class:'ki-card', id:'ki-email-card' });
+    card.innerHTML =
+      '<div class="ki-card-title">Get notified by email</div>'+
+      '<div class="ki-card-row">'+
+        '<input class="ki-card-input" id="ki-email-inp" type="email" placeholder="email@example.com"/>'+
+        '<button class="ki-card-submit" id="ki-email-sub">'+icon(I_ARROW,14)+'</button>'+
+      '</div>';
+    msgs.appendChild(card);
+    currentGroup = null; currentGroupRole = null;
+    scrollBot();
+    setTimeout(function(){
+      var sub = q('ki-email-sub');
+      var inp = q('ki-email-inp');
+      if (sub && inp) {
+        function submitEmail() {
+          var v = inp.value.trim();
+          if (!v||!v.includes('@')) { inp.style.borderColor='#ef4444'; return; }
+          state.emailCaptured = true;
+          var c = q('ki-email-card');
+          if (c) c.remove();
+          renderSystem('Email saved — we\'ll follow up shortly');
+          renderMsg('assistant', 'Got it. A member of the team will reach out to you at **'+v+'** soon.', ts());
+        }
+        sub.addEventListener('click', submitEmail);
+        inp.addEventListener('keydown', function(e){ if(e.key==='Enter') submitEmail(); });
+      }
+    }, 100);
+  }
+
+  function showTyping() { var t=q('ki-typing'); if(t) t.classList.add('show'); scrollBot(); }
+  function hideTyping() { var t=q('ki-typing'); if(t) t.classList.remove('show'); }
+
+  // ── SUGGESTIONS ──────────────────────────────────────────────────
+  function getSugg(page) {
+    if (page==='homepage')   return ['What can you do?','Show a sample reply','Pricing?'];
+    if (page==='scan')       return ['Explain my score','What to fix first?','Reach 4.5★?'];
+    if (page==='onboarding') return ['How do I connect Google?','What does AI reply do?','How long till I see results?'];
+    if (page==='admin')      return ['Which client needs attention?','Hotel Crown status?','Draft client WhatsApp update'];
+    return ['Rating change?','Top complaints?','Draft 1★ reply','vs competitors?'];
+  }
+
+  // Follow-up suggestion pools per page
+  var FOLLOWUPS = {
+    homepage: [
+      ['How does it work?','Show me an example','What\'s included?'],
+      ['How long to see results?','Do you handle WhatsApp?','How do I get started?'],
+      ['Can I try for free?','Which platforms do you cover?','Who else uses this?'],
+    ],
+    scan: [
+      ['What should I fix first?','How long to improve?','What\'s a good score?'],
+      ['What do competitors score?','How does reply rate affect ranking?','Can you draft a reply?'],
+      ['What\'s the upgrade cost?','Will my score improve fast?','What happens after I subscribe?'],
+    ],
+    onboarding: [
+      ['What happens after I connect Google?','How do AI replies work?','When will I see first results?'],
+      ['Can I customise the reply tone?','What is WhatsApp alert?','How do I skip a step?'],
+      ['Is my data safe?','Can I connect multiple locations?','Who do I contact for help?'],
+    ],
+    admin: [
+      ['Which client has lowest reply rate?','Any churn risk this month?','Top performing client?'],
+      ['Draft update for Hotel Crown','How many reviews responded today?','Which client improved most?'],
+      ['Show clients below 4.0★','MRR this month?','Which client to prioritise?'],
+    ],
+    dashboard: [
+      ['What are customers saying?','Any urgent issues?','Draft a reply for me'],
+      ['How do I improve faster?','Compare to competitors','Why did my rating change?'],
+      ['What\'s my reply rate?','Top complaint this week?','What should I focus on?'],
+    ],
+  };
+  var followupIdx = 0;
+
+  function renderFollowup(page) {
+    var pool = FOLLOWUPS[page] || FOLLOWUPS.dashboard;
+    var set  = pool[followupIdx % pool.length];
+    followupIdx++;
+    var msgs = q('ki-msgs');
+    var row  = el('div', { class:'ki-followup' });
+    row.appendChild(el('div', { class:'ki-followup-label' }, 'Suggested questions'));
+    set.forEach(function(s) {
+      var p = el('button', { class:'ki-sug' }, s);
+      p.addEventListener('click', function() {
+        // Remove all follow-up rows
+        var rows = msgs.querySelectorAll('.ki-followup');
+        rows.forEach(function(r){ r.remove(); });
+        sendMsg(s);
+      });
+      row.appendChild(p);
+    });
+    msgs.appendChild(row);
+    scrollBot();
+  }
+
+  function hideSugg() { var s=q('ki-sugg'); if(s) s.style.display='none'; }
+
+  // ── INSIGHT DRAWER ───────────────────────────────────────────────
+  function renderDrawer() {
+    var ins = loadInsights(state.cfg.page);
+    var list = q('ki-drawer-list');
+    if (!list) return;
+    if (ins.length) {
+      list.innerHTML = ins.map(function(i){ return '<div class="ki-ins">'+i+'</div>'; }).join('');
+    } else {
+      list.innerHTML = '<span class="ki-ins-empty">No insights yet — keep chatting.</span>';
+    }
+    // Update badge count
+    var strip = q('ki-learn-strip');
+    var label = q('ki-learn-label');
+    if (ins.length && strip && label) {
+      label.innerHTML = '✦ '+ins.length+' insight'+(ins.length!==1?'s':'')+' learned';
+    }
+  }
+
+  function showLearnStrip() {
+    var s = q('ki-learn-strip');
+    if (s) s.classList.add('show');
+    renderDrawer();
+  }
+
+  // ── TOAST ────────────────────────────────────────────────────────
+  function showToast(msg) {
+    var t = q('ki-toast');
+    if (!t) return;
+    t.textContent = msg||'✦ New insight learned';
+    t.style.display='block';
+    clearTimeout(state._toast);
+    state._toast = setTimeout(function(){ t.style.display='none'; },2500);
+  }
+
+  // ── SEND ─────────────────────────────────────────────────────────
+  function sendMsg(text) {
+    text=(text||'').trim();
+    if (!text||state.busy) return;
+    hideSugg();
+    // Remove any pending follow-up rows
+    var msgs = q('ki-msgs');
+    if (msgs) { var rows=msgs.querySelectorAll('.ki-followup'); rows.forEach(function(r){r.remove();}); }
+    currentGroup=null; currentGroupRole=null;
+    state.msgs.push({role:'user',content:text});
+    renderMsg('user',text,ts());
+    var inp=q('ki-input'), btn=q('ki-send');
+    if(inp){inp.value='';inp.style.height='auto';}
+    if(btn) btn.disabled=true;
+    state.busy=true;
+    showTyping();
+
+    var cfg=state.cfg;
+    var ep=cfg.proxyUrl||OPENAI_URL;
+    var hdr={'Content-Type':'application/json'};
+    if(!cfg.proxyUrl&&cfg.apiKey) hdr['Authorization']='Bearer '+cfg.apiKey;
+
+    fetch(ep,{
+      method:'POST', headers:hdr,
+      body:JSON.stringify({
+        model:MODEL, max_tokens:400,
+        messages:[{role:'system',content:buildPrompt(cfg)}].concat(state.msgs)
+      })
+    })
+    .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
+    .then(function(res){
+      hideTyping(); state.busy=false; if(btn) btn.disabled=false;
+      if(!res.ok){ renderMsg('assistant',(res.d.error&&res.d.error.message)||'Error '+res.status,ts()); return; }
+      var reply=res.d.choices&&res.d.choices[0]&&res.d.choices[0].message&&res.d.choices[0].message.content||'–';
+      state.msgs.push({role:'assistant',content:reply});
+      renderMsg('assistant',reply,ts());
+      psave();
+      // Show follow-up suggestions after every AI reply
+      setTimeout(function(){ renderFollowup(cfg.page); }, 300);
+      // Learn every 2 exchanges
+      if (state.msgs.length%4===0) triggerLearn();
+    })
+    .catch(function(){
+      hideTyping(); state.busy=false; if(btn) btn.disabled=false;
+      renderMsg('assistant','Connection error — please try again.',ts());
+    });
+  }
+
+  // ── OPEN / CLOSE ─────────────────────────────────────────────────
+  function openPanel() {
+    state.open=true;
+    var p=q('ki-panel'); if(p) p.classList.add('open');
+    var b=q('ki-bubble'); if(b) b.classList.add('open');
+    var n=q('ki-nudge'); if(n) n.style.display='none';
+    var bdg=q('ki-badge'); if(bdg) bdg.classList.add('hidden');
+    var i=q('ki-input'); if(i) setTimeout(function(){i.focus();},220);
+    scrollBot();
+  }
+  function closePanel() {
+    state.open=false;
+    var p=q('ki-panel'); if(p) p.classList.remove('open');
+    var b=q('ki-bubble'); if(b) b.classList.remove('open');
+  }
+
+  // ── GREETING ─────────────────────────────────────────────────────
+  function greet(cfg) {
+    if (cfg.page==='homepage') return 'Ask me anything about reputation management. I\'ll show you exactly what I can do for your business.';
+    if (cfg.page==='scan') return 'Your scan is ready. Ask me what any result means, or what to fix first.';
+    return 'Connected to **'+(cfg.businessName||'your account')+'**. What do you want to know?';
+  }
+
+  // ── INIT ─────────────────────────────────────────────────────────
+  window.Keerti = {
+    init: function(cfg) {
+      state.cfg = cfg||{};
+
+      var style=document.createElement('style');
+      style.textContent=CSS;
+      document.head.appendChild(style);
+
+      var root=el('div',{id:'ki'});
+
+      // Toast
+      root.appendChild(el('div',{id:'ki-toast'},''));
+
+      // Launcher bubble
+      var bbl=el('button',{id:'ki-bubble','aria-label':'Open Keerti'});
+      bbl.innerHTML=icon(I_CHAT,24)+'<span id="ki-ico-close" style="display:none">'+icon(I_CLOSE,20)+'</span>';
+      bbl.addEventListener('click',function(){ state.open?closePanel():openPanel(); });
+      root.appendChild(bbl);
+
+      // Badge
+      var bdg=el('div',{id:'ki-badge'},'1');
+      root.appendChild(bdg);
+
+      // Panel
+      var panel=el('div',{id:'ki-panel'});
+
+      // Header
+      var initials=(cfg.businessName||'K').charAt(0).toUpperCase();
+      var hdr=el('div',{id:'ki-header'});
+      hdr.innerHTML=
+        '<div id="ki-hdr-top">'+
+          '<div id="ki-agent-row">'+
+            '<div id="ki-agent-av">'+initials+'</div>'+
+            '<div id="ki-agent-info">'+
+              '<div id="ki-agent-name">Keerti</div>'+
+              '<div id="ki-agent-status"><div class="ki-online"></div>Active now</div>'+
+            '</div>'+
+          '</div>'+
+          '<button id="ki-hdr-close">'+icon(I_CLOSE,14)+'</button>'+
+        '</div>'+
+        '<div id="ki-hdr-tagline">Your AI reputation analyst — always on, always learning.</div>';
+      panel.appendChild(hdr);
+
+      // Learn strip (hidden until insight appears)
+      var strip=el('div',{id:'ki-learn-strip'});
+      strip.innerHTML=
+        '<div id="ki-learn-label">✦ 0 insights learned</div>'+
+        '<div id="ki-learn-actions">'+
+          '<button class="ki-learn-btn" id="ki-learn-view">View</button>'+
+          '<button class="ki-learn-btn" id="ki-learn-dismiss">Dismiss</button>'+
+        '</div>';
+      panel.appendChild(strip);
+
+      // Insight drawer
+      var drawer=el('div',{id:'ki-drawer'});
+      drawer.innerHTML=
+        '<div id="ki-drawer-title">What Keerti has learned <span id="ki-drawer-clear">Clear</span></div>'+
+        '<div id="ki-drawer-list"><span class="ki-ins-empty">No insights yet.</span></div>';
+      panel.appendChild(drawer);
+
+      // Messages
+      var msgs=el('div',{id:'ki-msgs'});
+      // Typing indicator (always in DOM)
+      var typing=el('div',{id:'ki-typing'});
+      var tmav=el('div',{class:'ki-mini-av'}); tmav.innerHTML=icon(I_SPARK,9);
+      var tdots=el('div',{class:'ki-typing-dots'});
+      tdots.innerHTML='<div class="ki-dot"></div><div class="ki-dot"></div><div class="ki-dot"></div>';
+      typing.appendChild(tmav); typing.appendChild(tdots);
+      msgs.appendChild(typing);
+      panel.appendChild(msgs);
+
+      // Suggestions
+      var sugg=el('div',{id:'ki-sugg'});
+      getSugg(cfg.page).forEach(function(s){
+        var p=el('button',{class:'ki-sug'},s);
+        p.addEventListener('click',function(){ sendMsg(s); });
+        sugg.appendChild(p);
+      });
+      panel.appendChild(sugg);
+
+      // Input bar
+      var bar=el('div',{id:'ki-bar'});
+      var inp=el('textarea',{id:'ki-input',placeholder:'Message Keerti\u2026',rows:'1',autocomplete:'off'});
+      inp.addEventListener('keydown',function(e){
+        if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(inp.value); }
+      });
+      inp.addEventListener('input',function(){
+        inp.style.height='auto';
+        inp.style.height=Math.min(inp.scrollHeight,90)+'px';
+      });
+      var snd=el('button',{id:'ki-send','aria-label':'Send'});
+      snd.innerHTML=icon(I_SEND,15);
+      snd.addEventListener('click',function(){ sendMsg(inp.value); });
+      bar.appendChild(inp); bar.appendChild(snd);
+      panel.appendChild(bar);
+      panel.appendChild(el('div',{id:'ki-footer'},'Keerti \xb7 ColorcraftAI \xb7 learns from every conversation'));
+
+      root.appendChild(panel);
+      document.body.appendChild(root);
+
+      // Events
+      q('ki-hdr-close').addEventListener('click',closePanel);
+      q('ki-learn-view').addEventListener('click',function(){
+        q('ki-drawer').classList.toggle('open');
+      });
+      q('ki-learn-dismiss').addEventListener('click',function(){
+        q('ki-learn-strip').classList.remove('show');
+        q('ki-drawer').classList.remove('open');
+      });
+      q('ki-drawer-clear').addEventListener('click',function(){
+        clearInsights(cfg.page);
+        renderDrawer();
+        q('ki-learn-strip').classList.remove('show');
+        q('ki-drawer').classList.remove('open');
+      });
+
+      // Load history or show greeting
+      var hist=pload();
+      if (hist&&hist.length) {
+        state.msgs=hist;
+        // Re-render all messages
+        hist.forEach(function(m){ renderMsg(m.role==='user'?'user':'assistant',m.content,null,true); });
+      } else {
+        var g=greet(cfg);
+        state.msgs.push({role:'assistant',content:g});
+        renderMsg('assistant',g,ts());
+        psave();
+      }
+
+      // Check if insights already exist
+      var existingIns=loadInsights(cfg.page);
+      if (existingIns.length) { showLearnStrip(); }
+
+      // Nudge — no bubble nudge, just open after delay if not interacted
+      setTimeout(function(){
+        if(!state.open) bdg.classList.remove('hidden');
+      },3000);
+
+      // Learn on page close
+      window.addEventListener('beforeunload',function(){
+        if(state.msgs.length>=4) doLearn();
+      });
+    },
+
+    clearChat: function() {
+      pclear(); state.msgs=[]; state.busy=false; state.emailCaptured=false;
+      followupIdx=0;
+      currentGroup=null; currentGroupRole=null;
+      var m=q('ki-msgs');
+      // Keep typing indicator, remove everything else
+      var typing=q('ki-typing');
+      if(m){ m.innerHTML=''; if(typing) m.appendChild(typing); }
+      var s=q('ki-sugg'); if(s) s.style.display='flex';
+      var g=greet(state.cfg);
+      state.msgs.push({role:'assistant',content:g});
+      renderMsg('assistant',g,ts());
+      psave();
+    }
+  };
+
+})();
+
+document.addEventListener("DOMContentLoaded",function(){
+  Keerti.init({ page:"dashboard", proxyUrl:"https://keerti-proxy.vercel.app/api/keerti", businessName:"Spice Garden Restaurant", rating:4.7, reviewCount:1240, replyRate:98, recentIssues:["wait times","parking"], competitorRank:2, ratingTrend:"up 0.1\u2605 this month", persistKey:"keerti_dashboard" });
+});
+</script>
+</body>
+</html>

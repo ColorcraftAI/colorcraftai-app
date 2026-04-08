@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ColorcraftAI — Get Started</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f4;--white:#fff;--soft:#f0ede8;--border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);
+  --tx:#18181b;--tx2:#52525b;--tx3:#a1a1aa;
+  --green:#16a34a;--green2:#15803d;--green-l:#f0fdf4;--green-b:#bbf7d0;--green-m:#4ade80;
+  --amber:#b45309;--amber-l:#fffbeb;--amber-b:#fde68a;
+  --red:#dc2626;--red-l:#fef2f2;--red-b:#fecaca;
+  --sh:0 1px 3px rgba(0,0,0,.05),0 6px 20px rgba(0,0,0,.07);
+  --sh-md:0 2px 8px rgba(0,0,0,.06),0 12px 36px rgba(0,0,0,.09);
+  --sh-lg:0 8px 24px rgba(0,0,0,.08),0 24px 64px rgba(0,0,0,.12);
+  --f-serif:'Playfair Display',Georgia,serif;
+  --f-body:'DM Sans',system-ui,sans-serif;
+}
+html,body{min-height:100%;font-family:var(--f-body);background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+
+/* ── TOP BAR ── */
+.ob-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:52px;display:flex;align-items:center;justify-content:space-between;}
+.ob-logo{font-family:var(--f-serif);font-size:16px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:8px;}
+.ob-logo-mark{width:26px;height:26px;background:var(--green);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.ob-logo-mark svg{width:12px;height:12px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.ob-logo em{color:var(--green);font-style:italic;}
+.ob-help{font-size:12.5px;color:var(--tx2);cursor:pointer;display:flex;align-items:center;gap:5px;}
+.ob-help:hover{color:var(--tx);}
+.ob-help svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;}
+.progress-steps{max-width:680px;margin:0 auto;display:flex;align-items:center;padding:14px 0;}
+.ps-step{display:flex;align-items:center;gap:10px;flex:1;position:relative;}
+.ps-step:last-child{flex:none;}
+.ps-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .3s;}
+.ps-circle.done{background:var(--green);color:white;box-shadow:0 1px 4px rgba(22,163,74,.3);}
+.ps-circle.active{background:var(--green);color:white;box-shadow:0 0 0 4px rgba(22,163,74,.15);}
+.ps-circle.pending{background:var(--soft);color:var(--tx3);border:1px solid var(--border2);}
+.ps-label{font-size:12px;font-weight:500;}
+.ps-label.done{color:var(--green2);}
+.ps-label.active{color:var(--tx);font-weight:600;}
+.ps-label.pending{color:var(--tx3);}
+.ps-line{flex:1;height:1px;background:var(--border);margin:0 10px;transition:background .3s;}
+.ps-line.done{background:var(--green);}
+
+/* ── MAIN WRAP ── */
+.ob-wrap{max-width:680px;margin:0 auto;padding:40px 24px 60px;}
+
+/* ── STEP PANELS ── */
+.step-panel{display:none;}
+.step-panel.on{display:block;}
+
+/* ── STEP HEADER ── */
+.step-header{margin-bottom:32px;}
+.step-eyebrow{font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.step-title{font-family:var(--f-serif);font-size:28px;font-weight:700;color:var(--tx);letter-spacing:-.3px;line-height:1.15;margin-bottom:8px;}
+.step-sub{font-size:14px;color:var(--tx2);line-height:1.6;font-weight:300;}
+
+/* ── CARD ── */
+.ob-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:var(--sh);margin-bottom:14px;}
+.ob-card-title{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:4px;}
+.ob-card-sub{font-size:11.5px;color:var(--tx2);margin-bottom:18px;}
+
+/* ── GOOGLE CONNECT ── */
+.google-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:12px;
+  background:var(--white);border:1.5px solid var(--border2);border-radius:10px;
+  padding:14px;cursor:pointer;transition:all .2s;
+  font-family:var(--f-body);font-size:14px;font-weight:600;color:var(--tx);
+  box-shadow:var(--sh);
+}
+.google-btn:hover{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.08),var(--sh);}
+.google-btn svg{flex-shrink:0;}
+.connect-status{display:flex;align-items:center;gap:10px;background:var(--green-l);border:1px solid var(--green-b);border-radius:10px;padding:14px 16px;margin-top:12px;}
+.cs-icon{width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cs-icon svg{width:15px;height:15px;fill:none;stroke:white;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.cs-text{flex:1;}
+.cs-name{font-size:13px;font-weight:600;color:var(--green2);}
+.cs-sub{font-size:11px;color:var(--green2);opacity:.8;margin-top:1px;}
+.cs-change{font-size:11.5px;color:var(--green);font-weight:600;cursor:pointer;}
+
+/* ── PROFILE PREVIEW ── */
+.profile-preview{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:14px;}
+.pp-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.pp-icon{width:40px;height:40px;border-radius:8px;background:var(--green-l);border:1px solid var(--green-b);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.pp-name{font-size:14px;font-weight:700;color:var(--tx);}
+.pp-meta{font-size:11px;color:var(--tx2);margin-top:1px;}
+.pp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.pp-stat{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center;}
+.pp-stat-n{font-family:var(--f-serif);font-size:18px;font-weight:700;color:var(--tx);}
+.pp-stat-l{font-size:10px;color:var(--tx2);margin-top:2px;}
+
+/* ── WHATSAPP SETUP ── */
+.wa-input-row{display:flex;gap:10px;align-items:flex-start;}
+.wa-code{font-family:var(--f-body);font-size:13.5px;padding:10px 14px;border:1px solid var(--border2);border-radius:8px;background:white;color:var(--tx);width:90px;outline:none;}
+.wa-number{font-family:var(--f-body);font-size:13.5px;padding:10px 14px;border:1px solid var(--border2);border-radius:8px;background:white;color:var(--tx);flex:1;outline:none;}
+.wa-number:focus,.wa-code:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.08);}
+.wa-send-btn{font-family:var(--f-body);font-size:13px;font-weight:600;padding:10px 20px;border-radius:8px;background:var(--green);color:white;border:none;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.wa-send-btn:hover{background:var(--green2);}
+.wa-sent{display:flex;align-items:center;gap:10px;background:var(--green-l);border:1px solid var(--green-b);border-radius:9px;padding:12px 14px;margin-top:12px;}
+.wa-sent svg{width:18px;height:18px;fill:none;stroke:var(--green);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.wa-sent-text{font-size:12.5px;color:var(--green2);line-height:1.45;}
+.wa-sent-text strong{font-weight:600;}
+.otp-row{display:flex;gap:8px;margin-top:12px;}
+.otp-input{width:44px;height:48px;border:1.5px solid var(--border2);border-radius:8px;font-family:var(--f-serif);font-size:20px;font-weight:700;text-align:center;color:var(--tx);outline:none;transition:border .15s;}
+.otp-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.08);}
+.otp-input.filled{border-color:var(--green);background:var(--green-l);}
+
+/* ── ALERT PREFS ── */
+.alert-option{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:8px;}
+.alert-option:hover{border-color:var(--border2);}
+.alert-option.selected{border-color:var(--green);background:var(--green-l);}
+.ao-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s;}
+.alert-option.selected .ao-radio{border-color:var(--green);background:var(--green);}
+.ao-radio-dot{width:6px;height:6px;border-radius:50%;background:white;}
+.ao-title{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:3px;}
+.ao-desc{font-size:12px;color:var(--tx2);line-height:1.5;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);}
+.toggle-row:last-child{border:none;}
+.toggle-label{font-size:13px;font-weight:500;color:var(--tx);}
+.toggle-desc{font-size:11.5px;color:var(--tx2);margin-top:2px;}
+.toggle{position:relative;display:inline-block;width:36px;height:20px;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:100px;cursor:pointer;transition:.2s;}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;background:white;border-radius:50%;transition:.2s;}
+.toggle input:checked+.toggle-slider{background:var(--green);}
+.toggle input:checked+.toggle-slider::before{transform:translateX(16px);}
+
+/* ── PLAN SELECTION ── */
+.plan-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.plan-opt{border:2px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all .2s;position:relative;}
+.plan-opt:hover{border-color:var(--border2);}
+.plan-opt.selected{border-color:var(--green);background:var(--green-l);}
+.po-check{position:absolute;top:14px;right:14px;width:20px;height:20px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.plan-opt.selected .po-check{background:var(--green);border-color:var(--green);}
+.po-check svg{width:10px;height:10px;fill:none;stroke:white;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+.po-badge{display:inline-flex;font-size:9.5px;font-weight:700;padding:2px 9px;border-radius:100px;margin-bottom:10px;letter-spacing:.04em;}
+.po-name{font-family:var(--f-serif);font-size:15px;font-weight:700;color:var(--tx);margin-bottom:4px;}
+.po-price{font-family:var(--f-serif);font-size:26px;font-weight:700;color:var(--tx);line-height:1;margin-bottom:2px;}
+.po-price sup{font-size:13px;font-family:var(--f-body);vertical-align:top;margin-top:7px;display:inline-block;color:var(--tx2);}
+.po-price sub{font-size:12px;font-family:var(--f-body);color:var(--tx2);font-weight:400;}
+.po-type{font-size:11px;color:var(--amber);font-weight:600;margin-bottom:8px;}
+.po-desc{font-size:12px;color:var(--tx2);line-height:1.5;}
+
+/* ── COMPLETION ── */
+.completion-card{background:linear-gradient(135deg,#14532d,#16a34a);border-radius:20px;padding:36px;text-align:center;box-shadow:var(--sh-lg);position:relative;overflow:hidden;}
+.completion-card::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:rgba(255,255,255,.06);border-radius:50%;}
+.completion-card::after{content:'';position:absolute;bottom:-60px;left:-30px;width:200px;height:200px;background:rgba(255,255,255,.04);border-radius:50%;}
+.cc-icon{width:64px;height:64px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;position:relative;z-index:1;}
+.cc-icon svg{width:28px;height:28px;fill:none;stroke:white;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.cc-title{font-family:var(--f-serif);font-size:26px;font-weight:700;color:white;margin-bottom:8px;position:relative;z-index:1;}
+.cc-sub{font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:28px;position:relative;z-index:1;}
+.cc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;position:relative;z-index:1;}
+.cc-stat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:12px;}
+.cc-stat-n{font-family:var(--f-serif);font-size:22px;font-weight:700;color:white;line-height:1;}
+.cc-stat-l{font-size:10.5px;color:rgba(255,255,255,.65);margin-top:3px;}
+.cc-btn{display:block;width:100%;background:white;color:var(--green2);font-family:var(--f-body);font-size:14px;font-weight:700;padding:14px;border-radius:10px;border:none;cursor:pointer;transition:all .15s;position:relative;z-index:1;}
+.cc-btn:hover{background:var(--green-l);transform:translateY(-1px);}
+
+/* ── NEXT STEP CARD ── */
+.next-steps{margin-top:14px;}
+.ns-item{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--white);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;box-shadow:var(--sh);}
+.ns-num{width:24px;height:24px;border-radius:50%;background:var(--green-l);border:1px solid var(--green-b);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green2);flex-shrink:0;margin-top:1px;}
+.ns-title{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px;}
+.ns-desc{font-size:12px;color:var(--tx2);line-height:1.5;}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;gap:10px;align-items:center;margin-top:24px;}
+.btn-primary{font-family:var(--f-body);font-size:14px;font-weight:700;padding:12px 28px;border-radius:9px;background:var(--green);color:white;border:none;cursor:pointer;transition:all .15s;box-shadow:0 1px 4px rgba(22,163,74,.3);}
+.btn-primary:hover{background:var(--green2);transform:translateY(-1px);}
+.btn-secondary{font-family:var(--f-body);font-size:13.5px;font-weight:500;padding:11px 22px;border-radius:9px;background:transparent;color:var(--tx2);border:1px solid var(--border2);cursor:pointer;transition:all .15s;}
+.btn-secondary:hover{color:var(--tx);border-color:var(--border2);background:var(--soft);}
+.btn-skip{font-family:var(--f-body);font-size:12.5px;font-weight:500;color:var(--tx3);background:transparent;border:none;cursor:pointer;margin-left:auto;padding:4px;}
+.btn-skip:hover{color:var(--tx2);}
+
+/* ── SECURITY BADGE ── */
+.security-note{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--tx3);margin-top:14px;}
+.security-note svg{width:13px;height:13px;fill:none;stroke:var(--tx3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+
+/* ── PLAN TAG ── */
+.plan-tag-scan{background:var(--amber-l);color:var(--amber);}
+.plan-tag-full{background:var(--green-l);color:var(--green2);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="ob-nav">
+  <div class="ob-logo" onclick="location.href='colorcraftai-v6_refactored_3.html'" style="cursor:pointer">
+    <div class="ob-logo-mark">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    Colorcraft<em>AI</em>
+  </div>
+  <div class="ob-help">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    Need help?
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="ps-step">
+      <div class="ps-circle done" id="pc1">✓</div>
+      <div class="ps-label done" id="pl1">Account</div>
+    </div>
+    <div class="ps-line" id="pline1"></div>
+    <div class="ps-step">
+      <div class="ps-circle active" id="pc2">2</div>
+      <div class="ps-label active" id="pl2">Connect Google</div>
+    </div>
+    <div class="ps-line" id="pline2"></div>
+    <div class="ps-step">
+      <div class="ps-circle pending" id="pc3">3</div>
+      <div class="ps-label pending" id="pl3">WhatsApp</div>
+    </div>
+    <div class="ps-line" id="pline3"></div>
+    <div class="ps-step">
+      <div class="ps-circle pending" id="pc4">4</div>
+      <div class="ps-label pending" id="pl4">Choose plan</div>
+    </div>
+    <div class="ps-line" id="pline4"></div>
+    <div class="ps-step">
+      <div class="ps-circle pending" id="pc5">5</div>
+      <div class="ps-label pending" id="pl5">You're live!</div>
+    </div>
+  </div>
+</div>
+
+<div class="ob-wrap">
+
+  <!-- ── STEP 2: CONNECT GOOGLE ── -->
+  <div class="step-panel on" id="step2">
+    <div class="step-header">
+      <div class="step-eyebrow">Step 2 of 4</div>
+      <div class="step-title">Connect your Google<br>Business Profile</div>
+      <div class="step-sub">We need read access to your reviews so we can analyse them and start monitoring in real time. We never post anything without your approval.</div>
+    </div>
+
+    <div class="ob-card">
+      <div class="ob-card-title">Sign in with Google</div>
+      <div class="ob-card-sub">Grant access to your Google Business Profile — takes 30 seconds</div>
+      <button class="google-btn" onclick="showConnected()">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
+      <div class="connect-status" id="connect-status" style="display:none;">
+        <div class="cs-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="cs-text">
+          <div class="cs-name">Spice Garden Restaurant</div>
+          <div class="cs-sub">Mumbai South · Google Business Profile connected</div>
+        </div>
+        <div class="cs-change">Change</div>
+      </div>
+      <div class="profile-preview" id="profile-preview" style="display:none;">
+        <div class="pp-row">
+          <div class="pp-icon">🍽️</div>
+          <div>
+            <div class="pp-name">Spice Garden Restaurant</div>
+            <div class="pp-meta">Mumbai South, Maharashtra · Indian Restaurant</div>
+          </div>
+        </div>
+        <div class="pp-stats">
+          <div class="pp-stat"><div class="pp-stat-n" style="color:var(--amber)">3.8★</div><div class="pp-stat-l">Current rating</div></div>
+          <div class="pp-stat"><div class="pp-stat-n">1,240</div><div class="pp-stat-l">Total reviews</div></div>
+          <div class="pp-stat"><div class="pp-stat-n" style="color:var(--red)">11%</div><div class="pp-stat-l">Response rate</div></div>
+        </div>
+      </div>
+      <div class="security-note">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Read-only access · We never post without your approval · Revoke anytime from Google settings
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="step2-next" onclick="goStep(3)" style="opacity:.4;pointer-events:none;">Continue →</button>
+      <button class="btn-skip" onclick="goStep(3)">Skip for now</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: WHATSAPP ── -->
+  <div class="step-panel" id="step3">
+    <div class="step-header">
+      <div class="step-eyebrow">Step 3 of 4</div>
+      <div class="step-title">Set up WhatsApp alerts</div>
+      <div class="step-sub">Get instant alerts on WhatsApp when a bad review lands. You'll be able to reply with one tap — before the damage spreads.</div>
+    </div>
+
+    <div class="ob-card">
+      <div class="ob-card-title">Your WhatsApp number</div>
+      <div class="ob-card-sub">We'll send review alerts to this number via official WhatsApp Business API</div>
+      <div class="wa-input-row">
+        <input class="wa-code" type="text" value="+91" readonly/>
+        <input class="wa-number" type="tel" placeholder="98765 43210" id="wa-num"/>
+        <button class="wa-send-btn" onclick="sendOTP()">Send OTP</button>
+      </div>
+      <div class="wa-sent" id="wa-sent" style="display:none;">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.64 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.29 6.29l.61-.61a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <div class="wa-sent-text"><strong>OTP sent to +91 98765 43210</strong><br/>Check your WhatsApp — enter the 6-digit code below</div>
+      </div>
+      <div id="otp-section" style="display:none;margin-top:14px;">
+        <div style="font-size:12px;color:var(--tx2);margin-bottom:8px;font-weight:500;">Enter OTP from WhatsApp</div>
+        <div class="otp-row">
+          <input class="otp-input" type="text" maxlength="1" oninput="otpInput(this,1)"/>
+          <input class="otp-input" type="text" maxlength="1" oninput="otpInput(this,2)"/>
+          <input class="otp-input" type="text" maxlength="1" oninput="otpInput(this,3)"/>
+          <input class="otp-input" type="text" maxlength="1" oninput="otpInput(this,4)"/>
+          <input class="otp-input" type="text" maxlength="1" oninput="otpInput(this,5)"/>
+          <input class="otp-input" type="text" maxlength="1" oninput="otpInput(this,6)"/>
+        </div>
+        <div style="font-size:11px;color:var(--tx3);margin-top:8px;">Didn't get it? <span style="color:var(--green);cursor:pointer;font-weight:600;">Resend OTP</span></div>
+      </div>
+    </div>
+
+    <div class="ob-card">
+      <div class="ob-card-title">Alert preferences</div>
+      <div class="ob-card-sub">Choose what triggers a WhatsApp notification</div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">🚨 1-star reviews</div><div class="toggle-desc">Immediate alert — highest priority</div></div>
+        <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">⚠️ 2-star reviews</div><div class="toggle-desc">Immediate alert — respond before it spreads</div></div>
+        <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">⭐ 3-star reviews</div><div class="toggle-desc">Alert within 30 minutes</div></div>
+        <label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-label">✅ 4–5 star reviews</div><div class="toggle-desc">Daily digest of positive reviews</div></div>
+        <label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+
+    <div class="ob-card">
+      <div class="ob-card-title">AI reply mode</div>
+      <div class="ob-card-sub">How should AI handle your reviews?</div>
+      <div class="alert-option selected" onclick="selectMode(this)">
+        <div class="ao-radio"><div class="ao-radio-dot"></div></div>
+        <div>
+          <div class="ao-title">Approval mode (recommended)</div>
+          <div class="ao-desc">AI drafts a reply and sends it to WhatsApp. You approve with one tap before it posts. Full control, zero effort.</div>
+        </div>
+      </div>
+      <div class="alert-option" onclick="selectMode(this)">
+        <div class="ao-radio"></div>
+        <div>
+          <div class="ao-title">Auto-reply mode</div>
+          <div class="ao-desc">AI posts replies automatically within 60 seconds. No action needed from you. You're alerted after posting.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="goStep(2)">← Back</button>
+      <button class="btn-primary" onclick="goStep(4)">Continue →</button>
+      <button class="btn-skip" onclick="goStep(4)">Skip for now</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: PLAN ── -->
+  <div class="step-panel" id="step4">
+    <div class="step-header">
+      <div class="step-eyebrow">Step 4 of 4</div>
+      <div class="step-title">Choose your plan</div>
+      <div class="step-sub">Start with a one-time scan to understand your reputation — or jump straight into full AI management. No commitment required.</div>
+    </div>
+
+    <div class="plan-options">
+      <div class="plan-opt" id="plan-scan" onclick="selectPlan('scan')">
+        <div class="po-check" id="check-scan"></div>
+        <div class="po-badge plan-tag-scan">One-time</div>
+        <div class="po-name">Reputation Scan</div>
+        <div class="po-price"><sup>₹</sup>999</div>
+        <div class="po-type">One-time payment · No subscription</div>
+        <div class="po-desc">See exactly where your reputation stands — full analysis, competitor ranking, and a branded PDF report.</div>
+      </div>
+      <div class="plan-opt selected" id="plan-full" onclick="selectPlan('full')">
+        <div class="po-check" id="check-full"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="po-badge plan-tag-full">Most popular</div>
+        <div class="po-name">Full AI Management</div>
+        <div class="po-price"><sup>₹</sup>2,999<sub>/mo</sub></div>
+        <div class="po-type">Monthly subscription · Cancel anytime</div>
+        <div class="po-desc">AI handles everything — replies, alerts, tracking, and monthly reports. Start free for 14 days.</div>
+      </div>
+    </div>
+
+    <div class="ob-card" id="plan-detail-full">
+      <div class="ob-card-title">What's included in Full AI Management</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
+        <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--tx2);"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>AI replies in Hindi, English & Hinglish</div>
+        <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--tx2);"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>Instant WhatsApp alerts for bad reviews</div>
+        <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--tx2);"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>Live competitor ranking tracking</div>
+        <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--tx2);"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>Monthly branded PDF reports</div>
+        <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--tx2);"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>AI sentiment & insights dashboard</div>
+        <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--tx2);"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>GST invoice on every payment</div>
+      </div>
+      <div style="margin-top:14px;background:var(--green-l);border:1px solid var(--green-b);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--green2);">
+        <strong>14-day free trial</strong> · No credit card required to start · Cancel from settings anytime
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="goStep(3)">← Back</button>
+      <button class="btn-primary" onclick="goStep(5)" id="plan-cta">Start 14-day free trial →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 5: COMPLETE ── -->
+  <div class="step-panel" id="step5">
+    <div class="completion-card">
+      <div class="cc-icon">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="cc-title">You're all set, Priya! 🎉</div>
+      <div class="cc-sub">ColorcraftAI is now monitoring your Google Business Profile. Your first scan is running — results ready in about 2 minutes.</div>
+      <div class="cc-stats">
+        <div class="cc-stat"><div class="cc-stat-n">1,240</div><div class="cc-stat-l">Reviews being analysed</div></div>
+        <div class="cc-stat"><div class="cc-stat-n">&lt;60s</div><div class="cc-stat-l">First AI reply ready</div></div>
+        <div class="cc-stat"><div class="cc-stat-n">Live</div><div class="cc-stat-l">Monitoring active</div></div>
+      </div>
+      <button class="cc-btn" onclick="location.href='colorcraftai-dashboard.html'">Go to my dashboard →</button>
+    </div>
+
+    <div class="next-steps">
+      <div style="font-size:12px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">While your scan runs, here's what to expect</div>
+      <div class="ns-item">
+        <div class="ns-num">1</div>
+        <div>
+          <div class="ns-title">WhatsApp test message incoming</div>
+          <div class="ns-desc">You'll receive a test alert on +91 98765 43210 within the next 2 minutes. Tap "Reply with AI" to see it in action.</div>
+        </div>
+      </div>
+      <div class="ns-item">
+        <div class="ns-num">2</div>
+        <div>
+          <div class="ns-title">Reputation score calculated</div>
+          <div class="ns-desc">Your full reputation score, sentiment breakdown, and competitor ranking will appear on your dashboard shortly.</div>
+        </div>
+      </div>
+      <div class="ns-item">
+        <div class="ns-num">3</div>
+        <div>
+          <div class="ns-title">AI reply drafts ready</div>
+          <div class="ns-desc">For every review that needs a response, we've drafted a personalised reply. Review and post from your Reviews tab.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end ob-wrap -->
+
+<script>
+var currentStep = 2;
+var connected = false;
+
+function goStep(n){
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('on'));
+  var panel = document.getElementById('step'+n);
+  if(panel) panel.classList.add('on');
+  currentStep = n;
+  updateProgress(n);
+  window.scrollTo(0,0);
+}
+
+function updateProgress(n){
+  for(var i=1;i<=5;i++){
+    var circle = document.getElementById('pc'+i);
+    var label  = document.getElementById('pl'+i);
+    var line   = document.getElementById('pline'+i);
+    if(!circle) continue;
+    if(i < n){
+      circle.className='ps-circle done'; circle.textContent='✓';
+      if(label) label.className='ps-label done';
+      if(line)  line.className='ps-line done';
+    } else if(i === n){
+      circle.className='ps-circle active'; circle.textContent=i;
+      if(label) label.className='ps-label active';
+      if(line)  line.className='ps-line';
+    } else {
+      circle.className='ps-circle pending'; circle.textContent=i;
+      if(label) label.className='ps-label pending';
+      if(line)  line.className='ps-line';
+    }
+  }
+}
+
+function showConnected(){
+  document.getElementById('connect-status').style.display='flex';
+  document.getElementById('profile-preview').style.display='block';
+  var btn = document.getElementById('step2-next');
+  btn.style.opacity='1'; btn.style.pointerEvents='auto';
+}
+
+function sendOTP(){
+  var num = document.getElementById('wa-num').value;
+  if(!num){ alert('Please enter your WhatsApp number'); return; }
+  document.getElementById('wa-sent').style.display='flex';
+  document.getElementById('otp-section').style.display='block';
+}
+
+function otpInput(el, idx){
+  el.classList.add('filled');
+  if(el.value.length===1 && idx<6){
+    var inputs = document.querySelectorAll('.otp-input');
+    inputs[idx].focus();
+  }
+  var all = document.querySelectorAll('.otp-input');
+  var full = true;
+  all.forEach(function(i){ if(!i.value) full=false; });
+}
+
+function selectMode(el){
+  document.querySelectorAll('.alert-option').forEach(function(o){ o.classList.remove('selected'); o.querySelector('.ao-radio').innerHTML=''; });
+  el.classList.add('selected');
+  el.querySelector('.ao-radio').innerHTML='<div class="ao-radio-dot"></div>';
+}
+
+function selectPlan(plan){
+  document.getElementById('plan-scan').classList.toggle('selected', plan==='scan');
+  document.getElementById('plan-full').classList.toggle('selected', plan==='full');
+  var checkS = document.getElementById('check-scan');
+  var checkF = document.getElementById('check-full');
+  checkS.innerHTML = plan==='scan' ? '<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '';
+  checkF.innerHTML = plan==='full' ? '<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '';
+  document.getElementById('plan-detail-full').style.display = plan==='full' ? 'block' : 'none';
+  document.getElementById('plan-cta').textContent = plan==='full' ? 'Start 14-day free trial →' : 'Get Reputation Scan →';
+}
+</script>
+<script>
+(function () {
+  'use strict';
+
+  var OPENAI_URL  = 'https://api.openai.com/v1/chat/completions';
+  var MODEL       = 'gpt-4o';
+  var MODEL_LEARN = 'gpt-4o-mini';
+  var INSIGHT_KEY = 'keerti_insights_v1';
+  var PERSIST_VER = 'v3';
+
+  // ── FONT ────────────────────────────────────────────────────────
+  (function () {
+    if (!document.getElementById('ki-font')) {
+      var l = document.createElement('link');
+      l.id = 'ki-font'; l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap';
+      document.head.appendChild(l);
+    }
+  })();
+
+  // ── CSS ─────────────────────────────────────────────────────────
+  var CSS = `
+    #ki * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+
+    /* ── LAUNCHER BUBBLE ── */
+    #ki-bubble {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #16a34a; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(22,163,74,.45), 0 1px 4px rgba(0,0,0,.1);
+      transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+      z-index: 2147483640;
+    }
+    #ki-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(22,163,74,.55); }
+    #ki-bubble svg { width: 24px; height: 24px; color: #fff; }
+    #ki-bubble.open #ki-ico-chat { display: none; }
+    #ki-bubble.open #ki-ico-close { display: block !important; }
+    #ki-ico-close { display: none; }
+
+    /* Badge */
+    #ki-badge {
+      position: fixed; bottom: 66px; right: 20px;
+      min-width: 18px; height: 18px; padding: 0 4px;
+      border-radius: 99px; background: #ef4444; border: 2px solid #fff;
+      color: #fff; font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2147483641; transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+    }
+    #ki-badge.hidden { display: none; }
+
+    /* ── PANEL ── */
+    #ki-panel {
+      position: fixed; bottom: 88px; right: 24px;
+      width: 376px; height: 580px; max-height: calc(100vh - 110px);
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.18), 0 4px 16px rgba(0,0,0,.08);
+      z-index: 2147483647; display: none; flex-direction: column;
+      overflow: hidden; animation: ki-open .22s cubic-bezier(.16,1,.3,1);
+    }
+    #ki-panel.open { display: flex; }
+    @keyframes ki-open {
+      from { opacity: 0; transform: translateY(16px) scale(.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── HEADER ── */
+    #ki-header {
+      background: linear-gradient(160deg, #14532d 0%, #16a34a 100%);
+      padding: 20px 18px 18px; flex-shrink: 0; position: relative;
+      overflow: hidden;
+    }
+    #ki-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top right, rgba(255,255,255,.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    #ki-hdr-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
+    #ki-agent-row { display: flex; align-items: center; gap: 10px; }
+    #ki-agent-av {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      border: 2px solid rgba(255,255,255,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    #ki-agent-info {}
+    #ki-agent-name { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -.15px; }
+    #ki-agent-status { font-size: 11.5px; color: rgba(255,255,255,.75); margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+    .ki-online { width: 6px; height: 6px; border-radius: 50%; background: #86efac; box-shadow: 0 0 0 2px rgba(134,239,172,.3); animation: ki-pulse 2s infinite; }
+    @keyframes ki-pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    #ki-hdr-close {
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 8px; width: 30px; height: 30px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: #fff; transition: background .15s; position: relative; z-index: 1;
+    }
+    #ki-hdr-close:hover { background: rgba(255,255,255,.28); }
+    #ki-hdr-close svg { width: 14px; height: 14px; }
+    #ki-hdr-tagline {
+      font-size: 12.5px; color: rgba(255,255,255,.8); margin-top: 14px;
+      line-height: 1.5; position: relative; z-index: 1;
+    }
+
+    /* ── LEARN STRIP ── */
+    #ki-learn-strip {
+      background: #f0fdf4; border-bottom: 1px solid #dcfce7;
+      padding: 8px 16px; display: none; align-items: center;
+      justify-content: space-between; flex-shrink: 0;
+    }
+    #ki-learn-strip.show { display: flex; }
+    #ki-learn-label { font-size: 11px; color: #15803d; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+    #ki-learn-actions { display: flex; gap: 8px; }
+    .ki-learn-btn { font-size: 10.5px; cursor: pointer; font-weight: 500; background: none; border: none; padding: 0; }
+    #ki-learn-view { color: #15803d; }
+    #ki-learn-view:hover { text-decoration: underline; }
+    #ki-learn-dismiss { color: #a1a1aa; }
+
+    /* ── INSIGHT DRAWER ── */
+    #ki-drawer {
+      background: #f9fafb; border-bottom: 1px solid #f0f0f0;
+      display: none; padding: 12px 16px; flex-shrink: 0;
+      animation: ki-fade .18s ease;
+    }
+    #ki-drawer.open { display: block; }
+    @keyframes ki-fade { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+    #ki-drawer-title { font-size: 11px; font-weight: 600; color: #09090b; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; }
+    #ki-drawer-clear { font-size: 10px; color: #a1a1aa; cursor: pointer; font-weight: 400; }
+    #ki-drawer-clear:hover { color: #ef4444; }
+    #ki-drawer-list { display: flex; flex-direction: column; gap: 4px; }
+    .ki-ins { font-size: 11px; color: #52525b; padding: 5px 8px; background: #fff; border: 1px solid #f0f0f0; border-radius: 6px; line-height: 1.5; }
+    .ki-ins-empty { font-size: 11px; color: #a1a1aa; font-style: italic; }
+
+    /* ── MESSAGES ── */
+    #ki-msgs {
+      flex: 1; overflow-y: auto; padding: 16px 14px 10px;
+      display: flex; flex-direction: column; gap: 4px;
+      scroll-behavior: smooth;
+    }
+    #ki-msgs::-webkit-scrollbar { width: 3px; }
+    #ki-msgs::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 3px; }
+
+    /* Message groups */
+    .ki-group { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+    .ki-group.user { align-items: flex-end; }
+    .ki-group.ai   { align-items: flex-start; }
+
+    /* Agent row in group */
+    .ki-group-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .ki-group.user .ki-group-meta { justify-content: flex-end; }
+    .ki-mini-av {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #16a34a; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ki-mini-av svg { width: 9px; height: 9px; color: #fff; }
+    .ki-sender { font-size: 11px; font-weight: 600; color: #3f3f46; }
+    .ki-ago    { font-size: 10.5px; color: #a1a1aa; }
+
+    /* Bubbles */
+    .ki-bubble {
+      max-width: 280px; font-size: 13px; line-height: 1.6;
+      padding: 10px 14px; border-radius: 18px;
+      word-break: break-word; animation: ki-msg .18s ease;
+    }
+    @keyframes ki-msg { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+    .ki-bubble.ai {
+      background: #f4f4f5; color: #09090b;
+      border-radius: 4px 18px 18px 18px;
+    }
+    .ki-bubble.ai strong { color: #16a34a; font-weight: 600; }
+    .ki-bubble.user {
+      background: #f0fdf4; color: #14532d;
+      border-radius: 18px 4px 18px 18px;
+      border: 1px solid #bbf7d0;
+    }
+    /* Multi-bubble stacking */
+    .ki-group.ai  .ki-bubble:not(:last-child)  { border-radius: 4px 18px 18px 4px; margin-bottom: 2px; }
+    .ki-group.user .ki-bubble:not(:last-child)  { border-radius: 18px 4px 4px 18px; margin-bottom: 2px; }
+
+    /* Typing */
+    #ki-typing {
+      display: none; align-items: center; gap: 6px;
+      margin-bottom: 8px; animation: ki-msg .18s ease;
+    }
+    #ki-typing.show { display: flex; }
+    .ki-typing-dots {
+      background: #f4f4f5; border-radius: 4px 18px 18px 18px;
+      padding: 12px 16px; display: flex; gap: 4px; align-items: center;
+    }
+    .ki-dot { width: 5px; height: 5px; border-radius: 50%; background: #a1a1aa; animation: ki-bounce .9s infinite; }
+    .ki-dot:nth-child(2) { animation-delay: .15s; }
+    .ki-dot:nth-child(3) { animation-delay: .3s; }
+    @keyframes ki-bounce { 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-5px);opacity:1} }
+
+    /* System messages */
+    .ki-system {
+      text-align: center; font-size: 11px; color: #a1a1aa;
+      margin: 8px 0; display: flex; align-items: center; gap: 8px;
+    }
+    .ki-system::before,.ki-system::after { content:''; flex:1; height:1px; background:#f0f0f0; }
+
+    /* Email capture card */
+    .ki-card {
+      background: #fff; border: 1px solid #e4e4e7;
+      border-radius: 14px; padding: 14px; margin: 6px 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .ki-card-title { font-size: 12px; font-weight: 600; color: #09090b; margin-bottom: 10px; }
+    .ki-card-row { display: flex; gap: 0; }
+    .ki-card-input {
+      flex: 1; border: 1px solid #e4e4e7; border-radius: 8px 0 0 8px;
+      padding: 8px 12px; font-size: 12.5px; color: #09090b;
+      background: #fafafa; outline: none; font-family: inherit;
+      transition: border-color .15s;
+    }
+    .ki-card-input:focus { border-color: #16a34a; background: #fff; }
+    .ki-card-input::placeholder { color: #a1a1aa; }
+    .ki-card-submit {
+      background: #16a34a; border: none; border-radius: 0 8px 8px 0;
+      width: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .ki-card-submit:hover { background: #15803d; }
+    .ki-card-submit svg { width: 14px; height: 14px; color: #fff; }
+
+    /* Suggestions */
+    #ki-sugg {
+      padding: 0 14px 10px; display: flex; flex-wrap: wrap; gap: 6px;
+      flex-shrink: 0;
+    }
+    /* Inline follow-up suggestions inside messages */
+    .ki-followup {
+      display: flex; flex-direction: column; gap: 5px;
+      margin-top: 10px; margin-bottom: 4px;
+      padding-left: 26px; animation: ki-msg .25s ease;
+    }
+    .ki-followup-label {
+      font-size: 10px; font-weight: 600; color: #a1a1aa;
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-bottom: 2px;
+    }
+    .ki-sug {
+      background: #fff; border: 1px solid #e4e4e7; border-radius: 99px;
+      padding: 5px 12px; font-size: 12px; font-weight: 500; color: #3f3f46;
+      cursor: pointer; transition: all .12s; white-space: nowrap;
+      text-align: left; display: inline-block; width: fit-content;
+    }
+    .ki-sug:hover { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+
+    /* ── INPUT BAR ── */
+    #ki-bar {
+      border-top: 1px solid #f4f4f5; padding: 10px 12px;
+      display: flex; align-items: flex-end; gap: 8px;
+      background: #fff; flex-shrink: 0;
+    }
+    #ki-input {
+      flex: 1; border: 1.5px solid #e4e4e7; border-radius: 10px;
+      padding: 9px 13px; font-size: 13px; color: #09090b;
+      background: #fafafa; outline: none; resize: none;
+      min-height: 38px; max-height: 90px; line-height: 1.5;
+      font-family: inherit; transition: border-color .15s, box-shadow .15s;
+    }
+    #ki-input:focus { border-color: #86efac; background: #fff; box-shadow: 0 0 0 3px rgba(22,163,74,.08); }
+    #ki-input::placeholder { color: #a1a1aa; }
+    #ki-send {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: #16a34a; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background .15s, transform .15s;
+      box-shadow: 0 2px 8px rgba(22,163,74,.3);
+    }
+    #ki-send:hover { background: #15803d; transform: scale(1.05); }
+    #ki-send:disabled { background: #d4d4d8; box-shadow: none; cursor: not-allowed; transform: none; }
+    #ki-send svg { width: 15px; height: 15px; color: #fff; }
+
+    /* Footer */
+    #ki-footer { text-align: center; padding: 6px; font-size: 10px; color: #d4d4d8; background: #fff; flex-shrink: 0; }
+
+    /* Toast */
+    #ki-toast {
+      position: fixed; bottom: 92px; right: 86px;
+      background: #09090b; color: #fff;
+      font-size: 11.5px; padding: 8px 13px; border-radius: 9px;
+      display: none; z-index: 2147483648;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      animation: ki-open .2s ease; white-space: nowrap;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    @media (max-width: 480px) {
+      #ki-panel { width: calc(100vw - 12px); right: 6px; bottom: 80px; height: calc(100vh - 96px); border-radius: 16px; }
+      #ki-bubble { bottom: 16px; right: 16px; }
+      #ki-badge  { bottom: 60px; right: 12px; }
+    }
+  `;
+
+  // ── ICONS ────────────────────────────────────────────────────────
+  function icon(d, s) {
+    s = s || 16;
+    return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';
+  }
+  var I_CHAT  = '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>';
+  var I_CLOSE = '<path d="M18 6L6 18M6 6l12 12"/>';
+  var I_SEND  = '<path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/>';
+  var I_SPARK = '<path d="M12 2L9.5 9.5L2 12L9.5 14.5L12 22L14.5 14.5L22 12L14.5 9.5Z"/>';
+  var I_ARROW = '<path d="M5 12h14M12 5l7 7-7 7"/>';
+
+  // ── INSIGHT STORE ────────────────────────────────────────────────
+  function loadInsights(page) {
+    try { return (JSON.parse(localStorage.getItem(INSIGHT_KEY))||{})[page]||[]; }
+    catch(e) { return []; }
+  }
+  function saveInsight(page, text) {
+    if (!text||text.length<8) return false;
+    try {
+      var all = JSON.parse(localStorage.getItem(INSIGHT_KEY))||{};
+      var arr = all[page]||[];
+      if (arr.some(function(i){ return i.toLowerCase().slice(0,25)===text.toLowerCase().slice(0,25); })) return false;
+      all[page] = [text].concat(arr).slice(0,12);
+      localStorage.setItem(INSIGHT_KEY, JSON.stringify(all));
+      return true;
+    } catch(e) { return false; }
+  }
+  function clearInsights(page) {
+    try { var all=JSON.parse(localStorage.getItem(INSIGHT_KEY))||{}; all[page]=[]; localStorage.setItem(INSIGHT_KEY,JSON.stringify(all)); } catch(e){}
+  }
+
+  // ── SYSTEM PROMPT ────────────────────────────────────────────────
+  function buildPrompt(cfg) {
+    var base = 'You are Keerti, ColorcraftAI\'s AI reputation analyst. Be direct, warm, and data-driven. Skip greetings. Max 3 sentences unless more is asked. Bold key numbers. Never say "As an AI". PRICING: ColorcraftAI costs ₹2,999/month — never quote any other price, never say $49.';
+
+    if (cfg.page === 'homepage') {
+      base += ' Demo mode. Sample: Sharma\'s Kitchen Delhi, 4.1★, 312 reviews, 34 unanswered, issues: slow service, packaging. Show capabilities. If asked about pricing, say ₹2,999/month. End with CTA to sign up.';
+
+    } else if (cfg.page === 'scan') {
+      base += ' Scan page. Business: '+(cfg.businessName||'–')+'. Score: '+(cfg.scanScore||54)+'/100. Issues: '+(Array.isArray(cfg.issues)?cfg.issues.join(', '):(cfg.issues||'low reply rate'))+'. Explain results. Recommend upgrading to Full AI Management at ₹2,999/month when natural.';
+
+    } else if (cfg.page === 'onboarding') {
+      base += ' Onboarding wizard. The user just signed up and is setting up their account — connecting Google Business Profile, configuring WhatsApp alerts, and setting AI reply preferences. Help them complete each step confidently. Reassure them if they seem unsure. Explain what each step does in plain language. Be encouraging — they are about to see results within days.';
+
+    } else if (cfg.page === 'admin') {
+      base += ' Admin panel. This is the ColorcraftAI agency owner (internal access only). They manage all client accounts. Client data: Sharma Dental 4.4★, Spice Garden 4.1★, Hotel Crown 3.8★ (needs attention), Prime Derma 4.6★, Tandoor King 4.0★. MRR: ₹58.4L total revenue to date, avg ₹2,052/client. Help with: client health checks, drafting WhatsApp updates to clients, review response queues, churn risk, and business decisions. Be concise and business-focused.';
+
+    } else {
+      base += ' Data — business:'+(cfg.businessName||'')+', rating:'+(cfg.rating||4.7)+'★, reviews:'+(cfg.reviewCount||1240)+', replyRate:'+(cfg.replyRate||98)+'%, complaints:'+(cfg.recentIssues||[]).join('/')+', rank:#'+(cfg.competitorRank||'–')+', trend:'+(cfg.ratingTrend||'stable')+'. Answer from data. Offer to draft replies when relevant.';
+    }
+
+    var ins = loadInsights(cfg.page);
+    if (ins.length) {
+      base += '\n\nLEARNED FROM PREVIOUS CONVERSATIONS:\n'+ins.map(function(i){ return '- '+i; }).join('\n')+'\n\nUse these to personalise answers.';
+    }
+    return base;
+  }
+
+  // ── AUTO-LEARN ───────────────────────────────────────────────────
+  var learnTimer = null;
+  function triggerLearn() { clearTimeout(learnTimer); learnTimer = setTimeout(doLearn, 1800); }
+  function doLearn() {
+    var cfg=state.cfg;
+    if (state.msgs.length<4) return;
+    var ep=cfg.proxyUrl||OPENAI_URL;
+    var hdr={'Content-Type':'application/json'};
+    if (!cfg.proxyUrl&&cfg.apiKey) hdr['Authorization']='Bearer '+cfg.apiKey;
+    var convo=state.msgs.map(function(m){ return m.role.toUpperCase()+': '+m.content; }).join('\n\n');
+    fetch(ep,{
+      method:'POST', headers:hdr,
+      body:JSON.stringify({
+        model:MODEL_LEARN, max_tokens:150,
+        messages:[
+          {role:'system',content:'Extract 1-3 short insights (max 12 words each) about what this user cares about. Output ONLY valid JSON array. Example: ["Prefers short answers","Concerned about competitor ratings"]'},
+          {role:'user',content:'Page: '+cfg.page+'\n\n'+convo}
+        ]
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var raw=d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content;
+      if (!raw) return;
+      raw=raw.trim().replace(/```json|```/g,'').trim();
+      var arr; try{arr=JSON.parse(raw);}catch(e){return;}
+      if (!Array.isArray(arr)) return;
+      var added=0;
+      arr.forEach(function(i){ if(typeof i==='string'&&saveInsight(cfg.page,i)) added++; });
+      if (added>0) { showToast('✦ Keerti learned something new'); renderDrawer(); showLearnStrip(); }
+    })
+    .catch(function(){});
+  }
+
+  // ── PERSIST ──────────────────────────────────────────────────────
+  function pKey()   { return (state.cfg.persistKey||'ki')+'_'+PERSIST_VER; }
+  function psave()  { if(!state.cfg.persistKey) return; try{localStorage.setItem(pKey(),JSON.stringify(state.msgs));}catch(e){} }
+  function pload()  { if(!state.cfg.persistKey) return null; try{var r=localStorage.getItem(pKey());return r?JSON.parse(r):null;}catch(e){return null;} }
+  function pclear() { try{localStorage.removeItem(pKey());}catch(e){} }
+
+  // ── STATE ────────────────────────────────────────────────────────
+  var state = { open:false, msgs:[], cfg:{}, busy:false, emailCaptured:false };
+
+  // ── HELPERS ──────────────────────────────────────────────────────
+  function q(id)    { return document.getElementById(id); }
+  function el(tag, attrs, html) {
+    var e=document.createElement(tag);
+    if(attrs) Object.keys(attrs).forEach(function(k){ e.setAttribute(k,attrs[k]); });
+    if(html!==undefined) e.innerHTML=html;
+    return e;
+  }
+  function scrollBot() { var m=q('ki-msgs'); if(m) setTimeout(function(){ m.scrollTop=m.scrollHeight; },50); }
+  function ts() { var d=new Date(),h=d.getHours(),m=d.getMinutes(); return (h%12||12)+':'+(m<10?'0':'')+m+(h>=12?'pm':'am'); }
+  function md(t) { return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>'); }
+
+  // ── RENDER MESSAGES ──────────────────────────────────────────────
+  var currentGroup = null;
+  var currentGroupRole = null;
+
+  function renderMsg(role, text, time, skipGroup) {
+    var msgs = q('ki-msgs');
+    // Group consecutive same-role messages
+    if (!skipGroup && role === currentGroupRole && currentGroup && msgs.contains(currentGroup)) {
+      var bubble = el('div', { class:'ki-bubble '+( role==='user'?'user':'ai') });
+      bubble.innerHTML = md(text);
+      currentGroup.appendChild(bubble);
+    } else {
+      var group = el('div', { class:'ki-group '+(role==='user'?'user':'ai') });
+      // Meta row
+      if (role==='ai'||role==='assistant') {
+        var meta = el('div', { class:'ki-group-meta' });
+        var mav  = el('div', { class:'ki-mini-av' });
+        mav.innerHTML = icon(I_SPARK, 9);
+        meta.appendChild(mav);
+        meta.appendChild(el('span', { class:'ki-sender' }, 'Keerti'));
+        if (time) meta.appendChild(el('span', { class:'ki-ago' }, time));
+        group.appendChild(meta);
+      }
+      var bubble = el('div', { class:'ki-bubble '+(role==='user'?'user':'ai') });
+      bubble.innerHTML = md(text);
+      group.appendChild(bubble);
+      if (role==='user' && time) group.appendChild(el('div', { class:'ki-ago', style:'margin-top:3px;font-size:10.5px;color:#a1a1aa;' }, time));
+      msgs.appendChild(group);
+      currentGroup = group;
+      currentGroupRole = role;
+    }
+    scrollBot();
+  }
+
+  function renderSystem(text) {
+    var msgs = q('ki-msgs');
+    msgs.appendChild(el('div', { class:'ki-system' }, text));
+    currentGroup = null; currentGroupRole = null;
+    scrollBot();
+  }
+
+  function renderEmailCard() {
+    if (state.emailCaptured) return;
+    var msgs = q('ki-msgs');
+    var card = el('div', { class:'ki-card', id:'ki-email-card' });
+    card.innerHTML =
+      '<div class="ki-card-title">Get notified by email</div>'+
+      '<div class="ki-card-row">'+
+        '<input class="ki-card-input" id="ki-email-inp" type="email" placeholder="email@example.com"/>'+
+        '<button class="ki-card-submit" id="ki-email-sub">'+icon(I_ARROW,14)+'</button>'+
+      '</div>';
+    msgs.appendChild(card);
+    currentGroup = null; currentGroupRole = null;
+    scrollBot();
+    setTimeout(function(){
+      var sub = q('ki-email-sub');
+      var inp = q('ki-email-inp');
+      if (sub && inp) {
+        function submitEmail() {
+          var v = inp.value.trim();
+          if (!v||!v.includes('@')) { inp.style.borderColor='#ef4444'; return; }
+          state.emailCaptured = true;
+          var c = q('ki-email-card');
+          if (c) c.remove();
+          renderSystem('Email saved — we\'ll follow up shortly');
+          renderMsg('assistant', 'Got it. A member of the team will reach out to you at **'+v+'** soon.', ts());
+        }
+        sub.addEventListener('click', submitEmail);
+        inp.addEventListener('keydown', function(e){ if(e.key==='Enter') submitEmail(); });
+      }
+    }, 100);
+  }
+
+  function showTyping() { var t=q('ki-typing'); if(t) t.classList.add('show'); scrollBot(); }
+  function hideTyping() { var t=q('ki-typing'); if(t) t.classList.remove('show'); }
+
+  // ── SUGGESTIONS ──────────────────────────────────────────────────
+  function getSugg(page) {
+    if (page==='homepage')   return ['What can you do?','Show a sample reply','Pricing?'];
+    if (page==='scan')       return ['Explain my score','What to fix first?','Reach 4.5★?'];
+    if (page==='onboarding') return ['How do I connect Google?','What does AI reply do?','How long till I see results?'];
+    if (page==='admin')      return ['Which client needs attention?','Hotel Crown status?','Draft client WhatsApp update'];
+    return ['Rating change?','Top complaints?','Draft 1★ reply','vs competitors?'];
+  }
+
+  // Follow-up suggestion pools per page
+  var FOLLOWUPS = {
+    homepage: [
+      ['How does it work?','Show me an example','What\'s included?'],
+      ['How long to see results?','Do you handle WhatsApp?','How do I get started?'],
+      ['Can I try for free?','Which platforms do you cover?','Who else uses this?'],
+    ],
+    scan: [
+      ['What should I fix first?','How long to improve?','What\'s a good score?'],
+      ['What do competitors score?','How does reply rate affect ranking?','Can you draft a reply?'],
+      ['What\'s the upgrade cost?','Will my score improve fast?','What happens after I subscribe?'],
+    ],
+    onboarding: [
+      ['What happens after I connect Google?','How do AI replies work?','When will I see first results?'],
+      ['Can I customise the reply tone?','What is WhatsApp alert?','How do I skip a step?'],
+      ['Is my data safe?','Can I connect multiple locations?','Who do I contact for help?'],
+    ],
+    admin: [
+      ['Which client has lowest reply rate?','Any churn risk this month?','Top performing client?'],
+      ['Draft update for Hotel Crown','How many reviews responded today?','Which client improved most?'],
+      ['Show clients below 4.0★','MRR this month?','Which client to prioritise?'],
+    ],
+    dashboard: [
+      ['What are customers saying?','Any urgent issues?','Draft a reply for me'],
+      ['How do I improve faster?','Compare to competitors','Why did my rating change?'],
+      ['What\'s my reply rate?','Top complaint this week?','What should I focus on?'],
+    ],
+  };
+  var followupIdx = 0;
+
+  function renderFollowup(page) {
+    var pool = FOLLOWUPS[page] || FOLLOWUPS.dashboard;
+    var set  = pool[followupIdx % pool.length];
+    followupIdx++;
+    var msgs = q('ki-msgs');
+    var row  = el('div', { class:'ki-followup' });
+    row.appendChild(el('div', { class:'ki-followup-label' }, 'Suggested questions'));
+    set.forEach(function(s) {
+      var p = el('button', { class:'ki-sug' }, s);
+      p.addEventListener('click', function() {
+        // Remove all follow-up rows
+        var rows = msgs.querySelectorAll('.ki-followup');
+        rows.forEach(function(r){ r.remove(); });
+        sendMsg(s);
+      });
+      row.appendChild(p);
+    });
+    msgs.appendChild(row);
+    scrollBot();
+  }
+
+  function hideSugg() { var s=q('ki-sugg'); if(s) s.style.display='none'; }
+
+  // ── INSIGHT DRAWER ───────────────────────────────────────────────
+  function renderDrawer() {
+    var ins = loadInsights(state.cfg.page);
+    var list = q('ki-drawer-list');
+    if (!list) return;
+    if (ins.length) {
+      list.innerHTML = ins.map(function(i){ return '<div class="ki-ins">'+i+'</div>'; }).join('');
+    } else {
+      list.innerHTML = '<span class="ki-ins-empty">No insights yet — keep chatting.</span>';
+    }
+    // Update badge count
+    var strip = q('ki-learn-strip');
+    var label = q('ki-learn-label');
+    if (ins.length && strip && label) {
+      label.innerHTML = '✦ '+ins.length+' insight'+(ins.length!==1?'s':'')+' learned';
+    }
+  }
+
+  function showLearnStrip() {
+    var s = q('ki-learn-strip');
+    if (s) s.classList.add('show');
+    renderDrawer();
+  }
+
+  // ── TOAST ────────────────────────────────────────────────────────
+  function showToast(msg) {
+    var t = q('ki-toast');
+    if (!t) return;
+    t.textContent = msg||'✦ New insight learned';
+    t.style.display='block';
+    clearTimeout(state._toast);
+    state._toast = setTimeout(function(){ t.style.display='none'; },2500);
+  }
+
+  // ── SEND ─────────────────────────────────────────────────────────
+  function sendMsg(text) {
+    text=(text||'').trim();
+    if (!text||state.busy) return;
+    hideSugg();
+    // Remove any pending follow-up rows
+    var msgs = q('ki-msgs');
+    if (msgs) { var rows=msgs.querySelectorAll('.ki-followup'); rows.forEach(function(r){r.remove();}); }
+    currentGroup=null; currentGroupRole=null;
+    state.msgs.push({role:'user',content:text});
+    renderMsg('user',text,ts());
+    var inp=q('ki-input'), btn=q('ki-send');
+    if(inp){inp.value='';inp.style.height='auto';}
+    if(btn) btn.disabled=true;
+    state.busy=true;
+    showTyping();
+
+    var cfg=state.cfg;
+    var ep=cfg.proxyUrl||OPENAI_URL;
+    var hdr={'Content-Type':'application/json'};
+    if(!cfg.proxyUrl&&cfg.apiKey) hdr['Authorization']='Bearer '+cfg.apiKey;
+
+    fetch(ep,{
+      method:'POST', headers:hdr,
+      body:JSON.stringify({
+        model:MODEL, max_tokens:400,
+        messages:[{role:'system',content:buildPrompt(cfg)}].concat(state.msgs)
+      })
+    })
+    .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
+    .then(function(res){
+      hideTyping(); state.busy=false; if(btn) btn.disabled=false;
+      if(!res.ok){ renderMsg('assistant',(res.d.error&&res.d.error.message)||'Error '+res.status,ts()); return; }
+      var reply=res.d.choices&&res.d.choices[0]&&res.d.choices[0].message&&res.d.choices[0].message.content||'–';
+      state.msgs.push({role:'assistant',content:reply});
+      renderMsg('assistant',reply,ts());
+      psave();
+      // Show follow-up suggestions after every AI reply
+      setTimeout(function(){ renderFollowup(cfg.page); }, 300);
+      // Learn every 2 exchanges
+      if (state.msgs.length%4===0) triggerLearn();
+    })
+    .catch(function(){
+      hideTyping(); state.busy=false; if(btn) btn.disabled=false;
+      renderMsg('assistant','Connection error — please try again.',ts());
+    });
+  }
+
+  // ── OPEN / CLOSE ─────────────────────────────────────────────────
+  function openPanel() {
+    state.open=true;
+    var p=q('ki-panel'); if(p) p.classList.add('open');
+    var b=q('ki-bubble'); if(b) b.classList.add('open');
+    var n=q('ki-nudge'); if(n) n.style.display='none';
+    var bdg=q('ki-badge'); if(bdg) bdg.classList.add('hidden');
+    var i=q('ki-input'); if(i) setTimeout(function(){i.focus();},220);
+    scrollBot();
+  }
+  function closePanel() {
+    state.open=false;
+    var p=q('ki-panel'); if(p) p.classList.remove('open');
+    var b=q('ki-bubble'); if(b) b.classList.remove('open');
+  }
+
+  // ── GREETING ─────────────────────────────────────────────────────
+  function greet(cfg) {
+    if (cfg.page==='homepage') return 'Ask me anything about reputation management. I\'ll show you exactly what I can do for your business.';
+    if (cfg.page==='scan') return 'Your scan is ready. Ask me what any result means, or what to fix first.';
+    return 'Connected to **'+(cfg.businessName||'your account')+'**. What do you want to know?';
+  }
+
+  // ── INIT ─────────────────────────────────────────────────────────
+  window.Keerti = {
+    init: function(cfg) {
+      state.cfg = cfg||{};
+
+      var style=document.createElement('style');
+      style.textContent=CSS;
+      document.head.appendChild(style);
+
+      var root=el('div',{id:'ki'});
+
+      // Toast
+      root.appendChild(el('div',{id:'ki-toast'},''));
+
+      // Launcher bubble
+      var bbl=el('button',{id:'ki-bubble','aria-label':'Open Keerti'});
+      bbl.innerHTML=icon(I_CHAT,24)+'<span id="ki-ico-close" style="display:none">'+icon(I_CLOSE,20)+'</span>';
+      bbl.addEventListener('click',function(){ state.open?closePanel():openPanel(); });
+      root.appendChild(bbl);
+
+      // Badge
+      var bdg=el('div',{id:'ki-badge'},'1');
+      root.appendChild(bdg);
+
+      // Panel
+      var panel=el('div',{id:'ki-panel'});
+
+      // Header
+      var initials=(cfg.businessName||'K').charAt(0).toUpperCase();
+      var hdr=el('div',{id:'ki-header'});
+      hdr.innerHTML=
+        '<div id="ki-hdr-top">'+
+          '<div id="ki-agent-row">'+
+            '<div id="ki-agent-av">'+initials+'</div>'+
+            '<div id="ki-agent-info">'+
+              '<div id="ki-agent-name">Keerti</div>'+
+              '<div id="ki-agent-status"><div class="ki-online"></div>Active now</div>'+
+            '</div>'+
+          '</div>'+
+          '<button id="ki-hdr-close">'+icon(I_CLOSE,14)+'</button>'+
+        '</div>'+
+        '<div id="ki-hdr-tagline">Your AI reputation analyst — always on, always learning.</div>';
+      panel.appendChild(hdr);
+
+      // Learn strip (hidden until insight appears)
+      var strip=el('div',{id:'ki-learn-strip'});
+      strip.innerHTML=
+        '<div id="ki-learn-label">✦ 0 insights learned</div>'+
+        '<div id="ki-learn-actions">'+
+          '<button class="ki-learn-btn" id="ki-learn-view">View</button>'+
+          '<button class="ki-learn-btn" id="ki-learn-dismiss">Dismiss</button>'+
+        '</div>';
+      panel.appendChild(strip);
+
+      // Insight drawer
+      var drawer=el('div',{id:'ki-drawer'});
+      drawer.innerHTML=
+        '<div id="ki-drawer-title">What Keerti has learned <span id="ki-drawer-clear">Clear</span></div>'+
+        '<div id="ki-drawer-list"><span class="ki-ins-empty">No insights yet.</span></div>';
+      panel.appendChild(drawer);
+
+      // Messages
+      var msgs=el('div',{id:'ki-msgs'});
+      // Typing indicator (always in DOM)
+      var typing=el('div',{id:'ki-typing'});
+      var tmav=el('div',{class:'ki-mini-av'}); tmav.innerHTML=icon(I_SPARK,9);
+      var tdots=el('div',{class:'ki-typing-dots'});
+      tdots.innerHTML='<div class="ki-dot"></div><div class="ki-dot"></div><div class="ki-dot"></div>';
+      typing.appendChild(tmav); typing.appendChild(tdots);
+      msgs.appendChild(typing);
+      panel.appendChild(msgs);
+
+      // Suggestions
+      var sugg=el('div',{id:'ki-sugg'});
+      getSugg(cfg.page).forEach(function(s){
+        var p=el('button',{class:'ki-sug'},s);
+        p.addEventListener('click',function(){ sendMsg(s); });
+        sugg.appendChild(p);
+      });
+      panel.appendChild(sugg);
+
+      // Input bar
+      var bar=el('div',{id:'ki-bar'});
+      var inp=el('textarea',{id:'ki-input',placeholder:'Message Keerti\u2026',rows:'1',autocomplete:'off'});
+      inp.addEventListener('keydown',function(e){
+        if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(inp.value); }
+      });
+      inp.addEventListener('input',function(){
+        inp.style.height='auto';
+        inp.style.height=Math.min(inp.scrollHeight,90)+'px';
+      });
+      var snd=el('button',{id:'ki-send','aria-label':'Send'});
+      snd.innerHTML=icon(I_SEND,15);
+      snd.addEventListener('click',function(){ sendMsg(inp.value); });
+      bar.appendChild(inp); bar.appendChild(snd);
+      panel.appendChild(bar);
+      panel.appendChild(el('div',{id:'ki-footer'},'Keerti \xb7 ColorcraftAI \xb7 learns from every conversation'));
+
+      root.appendChild(panel);
+      document.body.appendChild(root);
+
+      // Events
+      q('ki-hdr-close').addEventListener('click',closePanel);
+      q('ki-learn-view').addEventListener('click',function(){
+        q('ki-drawer').classList.toggle('open');
+      });
+      q('ki-learn-dismiss').addEventListener('click',function(){
+        q('ki-learn-strip').classList.remove('show');
+        q('ki-drawer').classList.remove('open');
+      });
+      q('ki-drawer-clear').addEventListener('click',function(){
+        clearInsights(cfg.page);
+        renderDrawer();
+        q('ki-learn-strip').classList.remove('show');
+        q('ki-drawer').classList.remove('open');
+      });
+
+      // Load history or show greeting
+      var hist=pload();
+      if (hist&&hist.length) {
+        state.msgs=hist;
+        // Re-render all messages
+        hist.forEach(function(m){ renderMsg(m.role==='user'?'user':'assistant',m.content,null,true); });
+      } else {
+        var g=greet(cfg);
+        state.msgs.push({role:'assistant',content:g});
+        renderMsg('assistant',g,ts());
+        psave();
+      }
+
+      // Check if insights already exist
+      var existingIns=loadInsights(cfg.page);
+      if (existingIns.length) { showLearnStrip(); }
+
+      // Nudge — no bubble nudge, just open after delay if not interacted
+      setTimeout(function(){
+        if(!state.open) bdg.classList.remove('hidden');
+      },3000);
+
+      // Learn on page close
+      window.addEventListener('beforeunload',function(){
+        if(state.msgs.length>=4) doLearn();
+      });
+    },
+
+    clearChat: function() {
+      pclear(); state.msgs=[]; state.busy=false; state.emailCaptured=false;
+      followupIdx=0;
+      currentGroup=null; currentGroupRole=null;
+      var m=q('ki-msgs');
+      // Keep typing indicator, remove everything else
+      var typing=q('ki-typing');
+      if(m){ m.innerHTML=''; if(typing) m.appendChild(typing); }
+      var s=q('ki-sugg'); if(s) s.style.display='flex';
+      var g=greet(state.cfg);
+      state.msgs.push({role:'assistant',content:g});
+      renderMsg('assistant',g,ts());
+      psave();
+    }
+  };
+
+})();
+
+document.addEventListener("DOMContentLoaded",function(){
+  Keerti.init({ page:"onboarding", proxyUrl:"https://keerti-proxy.vercel.app/api/keerti", persistKey:"keerti_onboarding" });
+});
+</script>
+</body>
+</html>
